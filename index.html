@@ -119,6 +119,28 @@ body[data-theme="cosmos"]>.shell{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){body[data-theme="cosmos"]::before{animation:none}}
 @media(max-width:600px){.stemEn{font-size:15px}.stemZh,.requiredContext{font-size:14px}.zhToolbar{padding:13px}}
 
+
+/* IELTS Quest V8: Essay Assessment Studio */
+.essay-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(250px,.7fr);gap:15px;margin-bottom:20px}
+.essay-hero>div{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:22px}
+.essay-hero h2{font-size:clamp(24px,3vw,34px);margin:10px 0}.essay-hero p{color:var(--muted);line-height:1.8;margin:7px 0}
+.essay-icon{font-size:34px}.essay-chip{display:inline-block;font-size:12px;padding:4px 10px;border-radius:30px;background:rgba(72,226,183,.12);color:var(--mint);margin-right:7px;margin-top:6px}
+.essay-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.essay-field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.essay-field.full{grid-column:1/-1}.essay-field label{font-weight:700;color:var(--ink);font-size:14px}.essay-field select,.essay-field textarea,.essay-field input{min-width:0;width:100%;background:#0d2038;color:var(--ink);border:1px solid var(--border);padding:12px 13px;border-radius:11px;font-family:inherit;font-size:15px}
+.essay-field textarea{line-height:1.75;min-height:112px;resize:vertical}.essay-field textarea#essayBody{min-height:280px;font-size:16px}
+.essay-field select:focus,.essay-field textarea:focus,.essay-field input:focus{outline:2px solid var(--mint);outline-offset:1px}
+.essay-info{background:rgba(121,186,255,.09);border:1px solid rgba(121,186,255,.22);padding:13px;border-radius:12px;font-size:13px;line-height:1.8;color:var(--muted)}
+.essay-form{display:flex;flex-direction:column;gap:18px}.essay-submitbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.essay-submitbar .btn{padding:12px 19px}.essay-statrow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:7px 0}
+.essay-count{font-weight:750}.essay-count.warn{color:var(--gold)}.essay-subnotice{font-size:12px;color:var(--muted);line-height:1.7}
+.essay-warn{padding:12px 14px;border:1px solid rgba(255,202,118,.3);background:rgba(240,173,74,.07);border-radius:12px;color:var(--gold);font-size:13px;line-height:1.7}
+.essay-status{border-radius:11px;padding:12px;line-height:1.65;border:1px solid var(--border);font-size:14px;white-space:pre-wrap}
+.essay-report{white-space:pre-wrap;line-height:1.9;font-size:14px;padding:18px;border-radius:14px;background:#0b1a32;border:1px solid var(--border);max-height:760px;overflow:auto;overflow-wrap:anywhere}
+.essay-section{scroll-margin-top:16px}.essay-footer{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.8}
+.essay-suggest{display:flex;flex-wrap:wrap;gap:8px}.essay-suggest button{border:1px solid var(--border);background:var(--panel2);color:var(--ink);border-radius:12px;padding:9px 12px;text-align:left;cursor:pointer;line-height:1.35;max-width:100%}.essay-suggest button:hover{border-color:var(--mint)}
+.essay-image-preview{max-width:100%;max-height:250px;object-fit:contain;border:1px solid var(--border);background:white;border-radius:12px;margin-top:10px}
+.essay-resulthead{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.essay-pillrow{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+@media(max-width:760px){.essay-hero{grid-template-columns:1fr}.essay-grid{grid-template-columns:1fr}.essay-field.full{grid-column:1}.essay-hero>div{padding:17px}.essay-form{gap:13px}.essay-submitbar .btn{flex:1 1 150px}}
 </style>
 </head>
 <body>
@@ -128,7 +150,7 @@ body[data-theme="cosmos"]>.shell{position:relative;z-index:1}
   <div class="topright"><div class="statpill">⭐ <b id="headLevel">Lv.1</b></div><div class="statpill">🪙 <b id="headCoins">0</b></div><div class="statpill">🔥 <b id="headStreak">0</b></div><button class="iconbutton" id="soundBtn" title="音效开关" aria-label="切换音效">🔊</button></div>
 </header>
 <div class="accountline" id="accountLine"><span id="accountIdentity">💾 本机试玩版 · 记录只保存在当前浏览器</span><span id="syncStatus" class="syncStatus"></span><button id="logoutBtn" hidden>退出登录</button></div>
-<nav class="tabs" aria-label="主要页面"><button class="tab active" data-tab="home">🏠 训练大厅</button><button class="tab" data-tab="library">📚 我的词库</button><button class="tab" data-tab="review">🧠 错题本</button><button class="tab" data-tab="shop">🎁 奖励商店</button></nav>
+<nav class="tabs" aria-label="主要页面"><button class="tab active" data-tab="home">🏠 训练大厅</button><button class="tab" data-tab="library">📚 我的词库</button><button class="tab" data-tab="review">🧠 错题本</button><button class="tab" data-tab="shop">🎁 奖励商店</button><button class="tab" data-tab="essay">✍️ AI 作文精批</button></nav>
 <main id="app"><section class="panel" style="padding:24px;margin:24px 0"><h2>IELTS Quest 雅思写作训练</h2><p>⚠️ 当前页面没有运行游戏脚本。如果你在 iPad 的“文件”预览中打开，请不要在预览里玩：它可能不支持 JavaScript。</p><p>请在 Safari 打开 <a style="color:#47e5bb" href="https://convika.com/tools/html-viewer/">HTML 文件运行器</a>，选择本 HTML 文件，并开启“Run scripts”，就可以运行游戏。</p><p>电脑用户可直接用 Chrome、Safari 或 Edge 打开本文件。</p></section></main>
 <footer>IELTS Quest · 浏览器互动游戏 · 云端账号配置成功后，各学生的学习档案独立保存；尚未配置时为本机试玩版<br>自主练习辅助工具，非 IELTS 官方产品；示例答案供教学训练使用。</footer>
 </div>
@@ -769,5 +791,110 @@ document.addEventListener('visibilitychange',()=>{
 if(CLOUD_ENABLED){document.getElementById('accountIdentity').textContent='🔒 需要学生账号登录';startCloud()}
 else{save();render()}
 
+</script>
+<script id="essay-studio-js">
+'use strict';
+// IELTS Quest V8: front-end assessment studio. No provider secret belongs in client code.
+const ESSAY_AI_ENDPOINT = ''; // Later: CloudBase HTTP Gateway authenticated URL; NEVER put an API secret here.
+const ESSAY_ORIGINAL_BANK = [{"id": "o-t2-education", "type": "task2", "label": "教育｜大学应该培养什么能力", "prompt": "Some people believe that universities should focus on academic knowledge, while others argue that practical skills are more important. Discuss both views and give your own opinion.", "zh": "一些人认为大学应重视学术知识，另一些人认为实践技能更重要。讨论双方观点并给出你的看法。"}, {"id": "o-t2-technology", "type": "task2", "label": "科技｜人工智能与就业", "prompt": "Some people think that artificial intelligence will create more opportunities for workers, while others believe it will cause unemployment. Discuss both views and give your own opinion.", "zh": "有人认为人工智能将创造就业机会，也有人认为它会导致失业。讨论双方观点并给出你的看法。"}, {"id": "o-t2-environment", "type": "task2", "label": "环境｜城市交通政策", "prompt": "Governments should make public transport free in large cities to reduce traffic congestion and air pollution. To what extent do you agree or disagree?", "zh": "政府应让大城市公共交通免费，以减少拥堵和污染。你在多大程度上同意？"}, {"id": "o-t2-media", "type": "task2", "label": "媒体｜针对儿童的广告", "prompt": "Advertising aimed at children should be restricted. Do the advantages of such restrictions outweigh the disadvantages?", "zh": "针对儿童的广告应受到限制。这种限制利大于弊吗？"}, {"id": "o-t2-work", "type": "task2", "label": "工作｜弹性办公安排", "prompt": "Many employees now work remotely. What problems can this create for employers and employees, and what solutions would you recommend?", "zh": "越来越多员工远程工作。这会给雇主和员工带来什么问题？你有什么解决办法？"}, {"id": "o-t2-society", "type": "task2", "label": "社会｜公共文化设施", "prompt": "Some people argue that governments should spend more on museums and libraries, while others believe healthcare should be the priority. Discuss both views and give your own opinion.", "zh": "有人主张增加博物馆与图书馆投入，也有人认为医疗应优先。讨论双方观点并给出看法。"}, {"id": "o-t1-line", "type": "task1", "label": "动态图｜城镇通勤方式变化", "prompt": "The table below shows the percentage of workers in a town who used three methods of commuting in 2010, 2015 and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.", "zh": "下表给出某城镇2010、2015、2020年使用三种通勤方式的工作者百分比。概括主要特征并作比较。", "figure": "Teaching dataset (invented for IELTS Quest). Units: percentage of workers. By car: 2010 62%, 2015 55%, 2020 46%. By bus: 2010 24%, 2015 28%, 2020 32%. By bicycle: 2010 14%, 2015 17%, 2020 22%. Figures in each year sum to 100%."}, {"id": "o-t1-static", "type": "task1", "label": "静态图｜四类消费支出", "prompt": "The table shows the distribution of monthly household expenditure in two hypothetical cities in one year. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.", "zh": "下表显示同一年两个虚构城市家庭月支出的组成。概括主要特征并比较。", "figure": "Teaching dataset (invented for IELTS Quest). Percent of monthly spending. City A: housing 40%, food 25%, transport 15%, other 20%. City B: housing 30%, food 30%, transport 20%, other 20%. Each city sums to 100%."}, {"id": "o-t1-process", "type": "task1", "label": "流程图｜社区食物垃圾处理", "prompt": "The process below shows how household food waste is converted into compost. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.", "zh": "下面的流程展示家庭厨余如何转化为堆肥。概括主要阶段。", "figure": "Teaching process (invented for IELTS Quest): Households separate food scraps → collection points → organic waste is shredded → material is mixed with dry leaves → material is kept in ventilated containers for 6–8 weeks → mature compost is screened → compost is applied to parks or gardens."}, {"id": "o-t1-map", "type": "task1", "label": "地图｜社区中心改造", "prompt": "The maps below describe the layout of a fictional community centre before and after redevelopment. Summarise the main changes and compare the layouts.", "zh": "两张地图展示虚构社区中心改造前后的布局。概括主要变化并比较。", "figure": "Teaching map details (invented for IELTS Quest). Before: north of site = outdoor car park; west = small library; centre = entrance hall; east = meeting room; south = garden. After: north = indoor sports hall; west = expanded library; centre = entrance hall unchanged; east = two study rooms; south = garden retained with a new footpath."}];
+const ESSAY_GRADING_INSTRUCTION = "你是一名了解雅思写作评分标准、专门帮助中国学习者提升 IELTS Writing 的批改教师。你不是真实参与本次考试的考官，所有分数均须明确标为 AI 参考估分。你必须按 IELTS Writing 官方四项等权重标准评估单篇作文：Task Achievement（Task 1）或 Task Response（Task 2）、Coherence and Cohesion、Lexical Resource、Grammatical Range and Accuracy。先根据题目类型、任务要求和文章内容判断属于 Task 1 还是 Task 2；如果用户指定类型与题目矛盾，说明矛盾且使用实际任务类型。只根据真实给出的题目、图表数值、作文作判断，不得虚构官方试题、图表信息、学生原句或不存在的错误。Task 1 没有图表或足够数据时，应明确 Task Achievement 估分不可靠，必要时暂停总分计算并要求图表；Task 2 没有题目时也需要提示，不能假装评价跑题程度。不要鼓励性虚高，不要靠用词生僻决定7分。明确区分语法错误、搭配偏差、内容论证缺陷和只是可优化的普通表达。每一项评分只能使用0.5档（0-9），四项等权计算单篇估计分并四舍五入到最近0.5，不要把 Task2 在整场 Writing 总分中加倍的规则套用到单篇分。请优先挑影响评分的关键缺陷。正文中文为主；保留必要的英文原句、改写和术语。严格按以下四个带编号结构输出，不可漏项：\n【1. 总分与分项评分】\n预测总分：X.X（AI 参考估分，不是官方成绩）\nTask Achievement 或 Task Response: X.X——附2–4句说明\nCoherence and Cohesion: X.X——附2–4句说明\nLexical Resource: X.X——附2–4句说明\nGrammatical Range and Accuracy: X.X——附2–4句说明\n【2. 逐段精批】逐段选择对分数最有影响的原句，每条写清“原句／问题／为什么有问题／修改建议／更高分版本”；每段没有明显问题也要说明优点及进一步优化。对段落整体观点与证据链作具体分析。不能捏造原句。\n【5. 可直接背诵的高分表达】分为高分词汇、高分短语、高分句型、可替换的普通表达；每条附中文解释和适用场景；不能把不自然的高级表达推荐给学生。\n【6. 下次写作的具体建议】按优先级给出最该练的3件事，每件含具体练习步骤、达标标准以及示例。结尾给出“建议学生自己修改的3处关键位置”，不要直接替学生重写全文。";
+const essayS = {source:'original',item:'o-t2-education',book:'21',test:'1',type:'auto',question:'',figure:'',body:'',zh:'',result:'',status:'',busy:false,history:[],imageUrl:'',firstVisit:true};
+let originalAppRender = render;
+const essayEscape = (v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function essayDetectType(){
+ const s=essayS.question.toLowerCase();
+ if(essayS.type!=='auto')return essayS.type;
+ if(/\b(graph|chart|table|diagram|map|maps|process|figures?|illustrates?|shows the percentage|data|layout)\b/.test(s))return 'task1';
+ if(/\b(discuss both|to what extent|agree or disagree|advantages|disadvantages|problems|solutions|positive or negative|your opinion|outweigh)\b/.test(s))return 'task2';
+ return 'unknown';
+}
+function essayWordCount(text){return (text.trim().match(/\b[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*\b/gu)||[]).length}
+function essayLoadSample(){
+ const q=ESSAY_ORIGINAL_BANK.find(x=>x.id===essayS.item);
+ if(!q)return;
+ essayS.type=q.type;essayS.question=q.prompt;essayS.figure=q.figure||'';essayS.zh=q.zh||'';essayS.status='';
+}
+essayLoadSample();
+function essayBookOptions(){return Array.from({length:14},(_,i)=>8+i).map(i=>`<option value="${i}" ${String(i)===essayS.book?'selected':''}>剑桥雅思 IELTS ${i} · Academic</option>`).join('')}
+function essaySampleList(){return ESSAY_ORIGINAL_BANK.map(x=>`<option value="${essayEscape(x.id)}" ${essayS.item===x.id?'selected':''}>${essayEscape(x.label)} · ${x.type==='task1'?'Task 1':'Task 2'}</option>`).join('')}
+function essayView(){
+ const isCam=essayS.source==='cambridge',isOfficial=essayS.source==='official',isOriginal=essayS.source==='original';
+ const count=essayWordCount(essayS.body);const tp=essayDetectType();const goal=tp==='task1'?150:tp==='task2'?250:0;
+ return `<div class="essay-hero bounce"><div><div class="eyebrow">IELTS QUEST · WRITING ASSESSMENT</div><h2>✍️ AI 作文精批实验室</h2><p>四维参考估分 · 逐段定位问题 · 逐句分析原因 · 给出可执行的下一次训练方案。批改指令按你的教学要求编写，重点优先处理论证与写作任务完成度。</p><span class="essay-chip">Task 1 / Task 2</span><span class="essay-chip">中文诊断 + 英文改写</span><span class="essay-chip">剑桥 8–21 题号索引</span></div><div><div class="essay-icon">🧑‍🏫</div><strong>正式 AI 批改启用条件</strong><p>需要配置腾讯云身份认证、受保护的批改云函数，以及模型 API 密钥。目前尚未接通模型；页面不会伪造分数，也不会把未确认的作文发送给第三方。</p><span class="essay-chip">单篇作文四项等权估分</span></div></div>
+ <section class="panel bounce essay-section"><div class="kicker">STEP 01 · CHOOSE A WRITING TASK</div><h2 class="pageTitle">选择题目来源</h2><div class="essay-grid"><div class="essay-field"><label for="essaySource">题目来源</label><select id="essaySource"><option value="original" ${isOriginal?'selected':''}>IELTS Quest 原创模拟题（直接可用）</option><option value="cambridge" ${isCam?'selected':''}>剑桥雅思 Academic 8–21（需自行提供合法题目）</option><option value="official" ${isOfficial?'selected':''}>IELTS 官方公开练习（通过官方网页获取）</option><option value="manual" ${essayS.source==='manual'?'selected':''}>自行输入／教师授权题目</option></select></div>
+ ${isOriginal?`<div class="essay-field"><label for="essaySample">选择原创练习</label><select id="essaySample">${essaySampleList()}</select></div>`:''}
+ ${isCam?`<div class="essay-field"><label for="essayBook">剑桥册数（核对书籍版本）</label><select id="essayBook">${essayBookOptions()}</select></div><div class="essay-field"><label for="essayTest">试卷编号</label><select id="essayTest">${[1,2,3,4].map(x=>`<option ${String(x)===essayS.test?'selected':''}>${x}</option>`).join('')}</select></div>`:''}
+ <div class="essay-field"><label for="essayType">题型（默认自动识别，可手动修正）</label><select id="essayType"><option value="auto" ${essayS.type==='auto'?'selected':''}>自动判断 Task 1 / Task 2</option><option value="task1" ${essayS.type==='task1'?'selected':''}>Task 1 · 图表/地图/流程图</option><option value="task2" ${essayS.type==='task2'?'selected':''}>Task 2 · 观点/讨论/问题解决</option></select></div>
+ <div class="essay-field full"><label for="essayQuestion">英文作文题目（必填）</label><textarea id="essayQuestion" rows="4" maxlength="5000" placeholder="粘贴完整英文题目。Task 1 还需描述图表或提供图表数据。">${essayEscape(essayS.question)}</textarea></div>
+ <div class="essay-field full"><label for="essayZh">题目中文辅助（可选，仅用于理解）</label><textarea id="essayZh" rows="2" maxlength="1500" placeholder="中文可选；AI 以英文正式题目为准。">${essayEscape(essayS.zh)}</textarea></div>
+ <div class="essay-field full"><label for="essayFigure">Task 1 图表／地图／流程图信息（需要时填写）</label><textarea id="essayFigure" rows="4" maxlength="9000" placeholder="完整列出单位、年份、关键数值、流程阶段或地图前后位置；仅靠作文无法可靠判断 Task Achievement。">${essayEscape(essayS.figure)}</textarea></div>
+ <div class="essay-field full"><label for="essayImage">图表图片（仅本机预览；当前批改接口不读取图片）</label><input id="essayImage" type="file" accept="image/*"><div id="essayImagePreview">${essayS.imageUrl?`<img class="essay-image-preview" alt="图表本机预览" src="${essayS.imageUrl}">`:''}</div></div>
+ </div>
+ <div class="essay-info" style="margin-top:14px">${isCam?`📚 当前选择：剑桥 IELTS ${essayS.book} Academic · Test ${essayS.test}。这里只提供书目和题号索引，<b>不会自动显示未授权的真题</b>。请将你合法持有或获授权使用的题干及 Task 1 图表数据输入上方。`:
+ isOfficial?'📘 IELTS 官方公开练习：请前往官方网页阅读题目后，自行填写题干；本站不复制官方整套题目。':'📝 原创模拟题可直接练习；图表数据和流程说明均为教学创作，不冒充剑桥真题。'}
+ <p style="margin:8px 0 0"><a href="https://ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test" target="_blank" rel="noopener noreferrer" style="color:var(--mint)">查看 IELTS 官方公开示例 ↗</a></p></div>
+ </section>
+ <section class="panel essay-section"><div class="kicker">STEP 02 · WRITE YOUR ESSAY</div><h2 class="pageTitle">提交作文</h2><div class="essay-field"><label for="essayBody">作文英文原文（请保留自然段）</label><textarea id="essayBody" rows="12" maxlength="22000" placeholder="在这里粘贴或输入英文作文。按段落分行，系统才好逐段精批。">${essayEscape(essayS.body)}</textarea></div>
+ <div class="essay-statrow"><span class="essay-count ${goal&&count<goal?'warn':''}" id="essayCount">${count} words · ${tp==='task1'?'Task 1 参考不少于150词':tp==='task2'?'Task 2 参考不少于250词':'等待识别题型'}</span><span class="essay-subnotice">未主动保存的作文不会保存在公共云端；请不要填写姓名、电话或其他敏感信息。</span></div>
+ <div class="essay-submitbar"><button id="essayGrade" class="btn" ${essayS.busy?'disabled':''}>${essayS.busy?'正在生成批改…':'🤖 申请 AI 精批'}</button><button id="essayCopyPrompt" class="btn secondary">📋 复制批改要求与作文</button><button id="essaySaveDraft" class="btn secondary">💾 保存到当前浏览器</button><button id="essayClearDraft" class="btn secondary">清空作文</button></div>
+ <div class="essay-warn" style="margin-top:15px">⚠️ 网站目前未配置 AI 后端，点击“申请 AI 精批”会明确提示未连接，<b>不会显示虚构的成绩</b>。可以先使用“复制批改要求与作文”在自己选择的 AI 工具中练习。正式开放给学生前需要启用身份认证、调用限额、隐私保护和后端密钥管理。</div>
+ <div id="essayStatus" class="essay-status" role="status" aria-live="polite" style="margin-top:14px" ${essayS.status?'':'hidden'}>${essayEscape(essayS.status)}</div></section>
+ <section class="panel essay-section"><div class="essay-resulthead"><div><div class="kicker">STEP 03 · FEEDBACK</div><h2 class="pageTitle">中文深度批改报告</h2></div><button id="essayCopyReport" class="btn secondary" ${essayS.result?'':'disabled'}>📋 复制报告</button></div>
+ ${essayS.result?`<div class="essay-report" id="essayReport">${essayEscape(essayS.result)}</div>`:`<div class="essay-info">AI 接通后这里将显示：<b>【1】四项评分及评分依据；【2】逐段精批；【5】可背诵表达；【6】下次写作前三项可执行建议。</b> 当前不会预填假的分数。</div>`}
+ <div class="essay-footer">AI 参考估分不是 IELTS 官方成绩。模型可能误判，应结合官方描述标准及教师复核；Task 1 缺失原图和数据时尤其不能可靠给出 Task Achievement 分数。若学生在中国大陆学习并且可能未成年，正式存档前还需要完成学生数据权限、隐私告知及适用的监护人同意流程。</div></section>`;
+}
+render = function(){if(page==='essay'){updateHeader();document.getElementById('app').innerHTML=essayView()}else originalAppRender()};
+function essayRefresh(){if(page==='essay')render()}
+function essayGetInput(id){return document.getElementById(id)}
+function essayPersistFields(){for(const [id,key] of [['essayQuestion','question'],['essayZh','zh'],['essayFigure','figure'],['essayBody','body']]){const el=essayGetInput(id);if(el)essayS[key]=el.value}}
+function essayStatus(s){essayS.status=s;let x=essayGetInput('essayStatus');if(x){x.hidden=!s;x.textContent=s}}
+function essayCopyText(text){if(navigator.clipboard?.writeText)return navigator.clipboard.writeText(text);const temp=document.createElement('textarea');temp.value=text;document.body.appendChild(temp);temp.select();let ok=document.execCommand('copy');temp.remove();if(!ok)throw Error('浏览器不允许复制')}
+function essayBuildSubmission(){return `【作文题目来源】${essayS.source==='cambridge'?`Cambridge IELTS ${essayS.book}, Academic Test ${essayS.test}`:essayS.source==='official'?'IELTS官网公开练习':'IELTS Quest 原创/教师题目'}\n【题型选择】${essayS.type==='auto'?'请自行判断':essayS.type}\n【英文题目】\n${essayS.question}\n【中文题目辅助】\n${essayS.zh||'无'}\n【图表/流程/地图数值说明】\n${essayS.figure||'无；如为Task 1，无法据此充分评估Task Achievement'}\n【学生原文】\n${essayS.body}`}
+async function essaySubmit(){essayPersistFields();if(!essayS.question.trim()||essayS.question.trim().length<15){essayStatus('请先提供完整的英文写作题目。');return}if(essayWordCount(essayS.body)<40){essayStatus('作文太短：请至少填写 40 个英文词后再提交，才能进行有意义的逐段精批。');return}
+ if(essayDetectType()==='task1'&&!essayS.figure.trim()){essayStatus('Task 1 需要图表数据/流程/地图说明。只有图片本机预览，AI 不能可靠判断 Task Achievement。请先填写上方图表资料。');return}
+ if(!ESSAY_AI_ENDPOINT){essayStatus('AI 批改尚未开通：缺少已完成鉴权的腾讯云批改接口。没有调用模型，也没有给出任何估分。\n你可以点击「复制批改要求与作文」，复制后粘贴到自己使用的 AI 工具中试批改。');return}
+ if(essayS.busy)return;
+ essayS.busy=true;essayStatus('正在连接受保护的 AI 批改服务…');const btn=essayGetInput('essayGrade');if(btn)btn.disabled=true;
+ try{
+  // Production: MUST send a CloudBase signed-in student access token, not an unauthenticated public API key.
+  let token='';
+  if(window.IELTS_QUEST_AUTH?.getAccessToken)token=await window.IELTS_QUEST_AUTH.getAccessToken();
+  if(!token)throw Error('尚未完成腾讯云学生身份认证；不能调用付费 AI 接口。');
+  const res=await fetch(ESSAY_AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({task:essayS.type,question:essayS.question,zh:essayS.zh,figure:essayS.figure,essay:essayS.body,source:essayS.source,book:essayS.book,test:essayS.test})});
+  const data=await res.json();if(!res.ok||!data.report||typeof data.report!=='string')throw Error(data.error||'服务器没有返回有效报告');
+  essayS.result=data.report;essayStatus('批改已生成。下方为 AI 参考估分与中文逐段精批，不代表官方评分。');essayRefresh();
+ }catch(err){essayStatus('批改未完成：'+(err.message||'网络或服务异常')+'。未生成分数。')}finally{essayS.busy=false;let b=essayGetInput('essayGrade');if(b)b.disabled=false}
+}
+document.addEventListener('input',e=>{
+ if(!['essayQuestion','essayZh','essayFigure','essayBody'].includes(e.target.id))return;
+ essayPersistFields();if(e.target.id==='essayBody'){
+  const el=essayGetInput('essayCount');if(el){const c=essayWordCount(essayS.body),tp=essayDetectType();let min=tp==='task1'?150:tp==='task2'?250:0;el.textContent=c+' words · '+(min?'参考不少于'+min+'词':'题型待识别');el.classList.toggle('warn',!!min&&c<min)}
+ }
+});
+document.addEventListener('change',e=>{
+ if(!['essaySource','essaySample','essayBook','essayTest','essayType','essayImage'].includes(e.target.id))return;
+ essayPersistFields();const id=e.target.id;const v=e.target.value;
+ if(id==='essaySource') {essayS.source=v;essayS.question='';essayS.figure='';essayS.zh='';essayS.type='auto';if(v==='original')essayLoadSample();}
+ if(id==='essaySample'){essayS.item=v;essayLoadSample()}
+ if(id==='essayBook')essayS.book=v;
+ if(id==='essayTest')essayS.test=v;
+ if(id==='essayType')essayS.type=v;
+ if(id==='essayImage'){
+  const f=e.target.files?.[0];if(!f)return;
+  if(!/^image\//.test(f.type)||f.size>3*1024*1024){essayStatus('只支持 3MB 以下的图片本机预览；请在文本框输入准确图表数据。');return}
+  if(essayS.imageUrl)URL.revokeObjectURL(essayS.imageUrl);essayS.imageUrl=URL.createObjectURL(f);
+  const el=essayGetInput('essayImagePreview');if(el){el.textContent='';const img=document.createElement('img');img.className='essay-image-preview';img.alt='图表本机预览';img.src=essayS.imageUrl;el.appendChild(img)}return;
+ }
+ essayS.result='';essayRefresh();
+});
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.id==='essayGrade'){await essaySubmit();return}
+ if(b.id==='essayCopyPrompt'){essayPersistFields();try{await essayCopyText(ESSAY_GRADING_INSTRUCTION+'\n\n'+essayBuildSubmission());essayStatus('已复制完整批改要求、题目与作文。请自行决定是否粘贴到第三方 AI 服务；不要包含学生个人敏感信息。')}catch(err){essayStatus('复制失败：'+err.message)}return}
+ if(b.id==='essaySaveDraft'){essayPersistFields();if(!confirm('确认把作文草稿保存到本机浏览器？共用设备上其他使用者可能看到，请不要保存敏感资料。'))return;try{localStorage.setItem('ielts-essay-v8-draft',JSON.stringify({source:essayS.source,item:essayS.item,book:essayS.book,test:essayS.test,type:essayS.type,question:essayS.question,figure:essayS.figure,zh:essayS.zh,body:essayS.body}));essayStatus('已保存到当前浏览器；不是学生私有云端记录。')}catch(err){essayStatus('本机保存失败：'+err.message)}return}
+ if(b.id==='essayClearDraft'){if(!confirm('确定清空当前作文以及本机保存的作文草稿吗？'))return;essayS.body='';essayS.result='';essayS.status='';try{localStorage.removeItem('ielts-essay-v8-draft')}catch(e){}essayRefresh();return}
+ if(b.id==='essayCopyReport'){try{await essayCopyText(essayS.result||'');essayStatus('批改报告已复制。')}catch(err){essayStatus('复制失败：'+err.message)}return}
+});
+try{let s=localStorage.getItem('ielts-essay-v8-draft');if(s){const d=JSON.parse(s);for(const k of ['source','item','book','test','type','question','figure','zh','body'])if(typeof d[k]==='string'&&d[k].length<24000)essayS[k]=d[k]}}catch(e){}
 </script>
 </body></html>
