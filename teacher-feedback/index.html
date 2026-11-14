@@ -302,6 +302,24 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
  .print-view{color:#111}
 }
 
+
+/* Course-specific diagnostic details. Open only when needed to keep iPhone layouts short. */
+.selection-group.grammar{background:linear-gradient(160deg,#18607c,#1a5674);border:1px solid #84d6e5;padding:0}
+.selection-group.grammar>.group-heading{display:flex;cursor:pointer;list-style:none;padding:14px;margin:0;align-items:center}
+.selection-group.grammar>.group-heading::-webkit-details-marker{display:none}
+.selection-group.grammar>.group-heading:before{content:"▸";display:inline-block;color:#ffe38c;font-size:18px;margin-right:7px}
+.selection-group.grammar[open]>.group-heading:before{content:"▾"}
+.selection-group.grammar .group-heading strong:before{content:"⌘";color:#ffe38c;font-size:18px}
+.selection-group.grammar .group-heading span{color:#e2f6ff}
+.selection-group.grammar .choices{padding:0 12px 14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.detail-chip{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;position:relative;padding-right:29px;text-align:left}
+.detail-chip:after{position:absolute;right:10px;top:14px}
+.chip-label{display:block}
+.chip-example{font-size:11px;font-weight:500;opacity:.88;line-height:1.5;overflow-wrap:anywhere;display:block}
+.selection-group.grammar .detail-chip.selected.good{background:#0a7e7a}
+.selection-group.grammar .detail-chip.selected.bad{background:#9a624d}
+@media(max-width:560px){.selection-group.grammar .choices{grid-template-columns:1fr}.selection-group.grammar>.group-heading{padding:12px 10px}.selection-group.grammar>.group-heading span{font-size:10px}}
+
 </style>
 </head>
 <body>
@@ -370,8 +388,8 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 <section class="panel stage-panel" id="step-two">
 <div class="panel-sig"><span>STAGE 02 / 03</span><span>COLLECT XP & CHALLENGES</span></div>
 <h2 class="section-title"><span class="num">02</span><span>收集学生表现<small>SELECT SKILLS & CHALLENGES</small></span></h2>
-<p class="intro-text" id="courseHint">分别选择通用课堂表现和课程专项能力，所有选项都根据当前课程自动更新。</p>
-<div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">快速查找评价标签</span></label><div class="search-shell"><span aria-hidden="true">⌕</span><input id="optionSearch" type="search" autocomplete="off" placeholder="搜索词汇 / 语法 / 拼写 / 审题 ..."><span class="kbd">⌕</span></div></div>
+<p class="intro-text" id="courseHint">分别选择通用课堂表现、课程专项能力和细分语法问题；点击「语法细节诊断」可查看错句示例。</p>
+<div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">快速查找评价标签</span></label><div class="search-shell"><span aria-hidden="true">⌕</span><input id="optionSearch" type="search" autocomplete="off" placeholder="搜索三单 / 介词搭配 / 从句 / 冠词 ..."><span class="kbd">⌕</span></div></div>
 <div class="subhead good-head"><strong><span aria-hidden="true">✦</span> 优势天赋 <span class="subtitle-en">POWER UPS</span></strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
 <div class="choice-groups" id="goodChoices" role="group" aria-label="优点选项：通用表现和本课程专项"></div>
 <div class="subhead bad-head"><strong><span aria-hidden="true">⚡</span> 需要提升 <span class="subtitle-en">SKILL GAPS</span></strong><span class="limit" id="badCount">已选 0 / 5</span></div>
@@ -616,42 +634,183 @@ w("课堂复盘意识需加强","完成练习后较少总结掌握情况，仍�
 ]
 };
 
+
+// Course-sensitive language accuracy observations. Examples are for teacher reference,
+// not claims that the student made the mistake.
+function gs(label,desc,example){var item=s(label,desc);item.example=example;return item;}
+function gw(label,desc,action,task,example){var item=w(label,desc,action,task);item.example=example;return item;}
+var GRAMMAR={
+basic:{
+ good:[
+ gs("三单形式掌握较稳","一般现在时能够根据第三人称单数主语正确调整动词形式","She studies English. / He does not study."),
+ gs("介词搭配使用准确","能够正确使用常见动词、形容词和名词的固定介词搭配","depend on / interested in / an increase in"),
+ gs("从句主干完整","使用 because、although 或 who 引导结构时，能保留必要的句子成分","Because prices rose, demand fell."),
+ gs("能区分 by、to、from","描述图表变化时能够区分变化幅度、终点和起点","increased by 10% / to 30% / from 20%"),
+ gs("冠词使用有意识","能够根据名词的具体语境较恰当地使用 a、an 和 the","a chart / an increase / the figure"),
+ gs("主谓一致较稳定","能够根据主语的单复数选择正确的 be 动词及实义动词","The number of cars is rising."),
+ gs("简单句结构完整","能够使用完整主语和谓语写出准确的基本句","The figure increased in 2010."),
+ gs("介词后动名词掌握较好","能够注意介词后常接名词或动名词结构","by using / interested in learning"),
+ gs("图表比较句准确","能够使用 than、as...as 等结构进行正确的数据比较","A is higher than B."),
+ gs("能自查基础语法","能够有意识地检查动词、单复数、介词和标点","He goes / students are / depend on")
+ ],
+ bad:[
+ gw("第三人称单数漏加 -s/-es","一般现在时中，he、she、it 或单数名词作主语时，动词第三人称单数形式容易漏写","圈出每句主语，判断是否为第三人称单数，再检查一般现在时实义动词是否需要加 -s/-es","将课堂中的6个句子改成第三人称单数并订正","He go to school → He goes to school"),
+ gw("does 后仍加三单","使用 does、doesn't 后，后面的实义动词仍错误地保留 -s/-es","对比 He studies 和 He doesn't study，练习助动词 does 后动词恢复原形","完成6道 does/doesn't + 动词原形改错题","He doesn't likes it → He doesn't like it"),
+ gw("主谓一致受插入成分干扰","较长主语中出现介词短语时，容易误把离谓语最近的名词当作主语","先划出真正的中心名词，再确定谓语单复数；重点区分 the number of 和 a number of","改写并分析5个含长主语的句子","The number of students are... → The number of students is..."),
+ gw("be 动词遗漏或多余","描述状态、进行时或一般现在时实义动词时，容易漏用或误加 am/is/are","将句子区分为 be + 表语、be + -ing、实义动词三种结构，再检查谓语","整理6个课堂错句并标注三种句型","She is happy / She is studying / She studies"),
+ gw("介词固定搭配混淆","常见词组中的介词容易误选，例如 depend on、interested in、responsible for","按动词+介词和形容词+介词两类整理搭配，每组放进完整例句里记忆","整理8组本节课常见介词搭配并造句","depend of → depend on"),
+ gw("Task 1 的 by/to/from 混用","图表描述中无法稳定区分增长幅度 by、最终达到的数值 to 和起点 from","对照图表数据使用 increase by、increase to、increase from...to...，分别标注幅度与终点","根据同一组图表数据分别写出3种变化表达","from 20 to 30 = increase by 10 / increase to 30"),
+ gw("名词搭配中的介词遗漏","描述数量或变化时容易遗漏名词之后的必要介词","重点对比 an increase in sales、the percentage of people、the number of students","用课堂图表信息仿写6句含名词+介词结构的句子","an increase sales → an increase in sales"),
+ gw("地点和时间介词混用","at、on、in 在具体时间、日期、年份或地点中的使用不够稳定","用时间轴区分 at 具体时刻、on 具体日期、in 月份和年份，再结合地点短语练习","完成10个时间与地点介词填空","in 2010 / on Monday / at 9 am"),
+ gw("介词后动词形式错误","介词后接动作时，容易把动词原形误用于需要动名词的结构","整理 by + V-ing、without + V-ing 等结构，区分介词 to 与不定式 to","完成6组介词后动名词句式改写","by use technology → by using technology"),
+ gw("简单句主语缺失","独立写作时出现句子没有明确主语的问题，尤其在图表描述中","逐句标出主语与谓语；说明描述的是事物、数量还是比例，再补全句子","订正5个主语缺失句并标注中心主语","In 2010 increased. → The figure increased in 2010."),
+ gw("从句缺少必要谓语","以 who、which、because 等引导的有限从句中缺少必要动词，造成句子结构不完整","先识别主句与从句，再给每个有限从句找到必要谓语；注意非谓语短语结构另行判断","补全5个缺少谓语的从句并写出完整句","People who in cities... → People who live in cities..."),
+ gw("从句写成独立残句","只写 Because... 或 Although... 引导的从属部分，却没有构成完整主句","每次写完从属连词引导的部分，确认它是否与完整主句组成一句话","把5个从属残句补写为完整句","Because prices rose. → Because prices rose, demand fell."),
+ gw("although 与 but 叠用","表达让步转折时，在同一结构中同时使用 although 和 but","练习 Although A, B 与 A, but B 两种正确表达，避免双重连接","用两种结构各改写3个转折句","Although it is costly, but it works → Although it is costly, it works"),
+ gw("定语从句关系词选择错误","描述人物或事物时容易混用 who、which、that，影响从句指代准确性","先确定先行词所指，再选择适当关系词；用完整主从句练习","订正5个 who/which/that 从句","The people which work here → The people who work here"),
+ gw("两个完整句用逗号硬连接","将两个可独立成立的英语句子只用逗号连接，产生逗号拼接错误","使用句号、分号或合适的并列连词连接两个完整分句","订正5个逗号拼接句并说明连接方式","It rose, it then fell → It rose, and then it fell"),
+ gw("名词单复数与数量词不匹配","many、several、one of 等结构后名词形式容易写错","检查数量词与名词的搭配，重点练习 many + 复数、one of the + 复数","完成8个名词单复数搭配改错","one of the reason → one of the reasons"),
+ gw("不可数名词误加复数","information、advice、equipment 等不可数名词容易误加 -s 或搭配 many","将常见不可数名词单独整理，改用 much、some 或 a piece of 等表达","整理6组可数与不可数名词用法","many informations → much information"),
+ gw("冠词 a/an/the 不准确","可数名词单数前遗漏限定词，或 a、an、the 的选择不够稳定","先判断名词是否为单数可数，再根据语境决定 a/an、the 或其他限定词","订正8个冠词错误并解释原因","It is useful method → It is a useful method"),
+ gw("情态动词后动词未还原","can、should、may 等情态动词后错误地使用三单或不定式","固定记忆情态动词 + 动词原形，再对照课堂常见句改错","完成6个情态动词搭配改错句","It can improves → It can improve"),
+ gw("主动词与被动语态混淆","图表描述或一般陈述中混淆主动和被动结构，导致动词形式不准确","先判断动作是否有承受对象，再选择主动结构或 be + 过去分词","订正5个主被动误用例句","The price was rose → The price rose"),
+ gw("形容词和副词词性混用","修饰动词和修饰名词时，容易把 rapid/rapidly、sharp/sharply 混用","对比动词 + 副词和形容词 + 名词两种趋势表达","分别用 rose sharply 和 a sharp rise 造句","rose sharp → rose sharply"),
+ gw("过去图表却写现在时","图表有明确过去时间时，仍使用一般现在时描述当时变化","审题圈出时间区间，并将数据发生时间与动词时态逐句对应","订正过去时间图表的5个动词时态","In 2010 sales increase → In 2010 sales increased"),
+ gw("宾语补足信息遗漏","部分及物动词后的必要宾语或补足语遗漏，使表达不完整","识别常见及物动词及其必需成分，并和完整例句对比","补全5个缺少必要成分的句子","It affects. → It affects students."),
+ gw("比较级结构不完整","than 或 as...as 等比较结构缺少比较对象或搭配不正确","判断比较对象是否同类，并按 higher than、as large as 进行完整造句","用课堂图表写5个数据比较句","higher to B → higher than B")
+ ]},
+advanced:{
+ good:[
+ gs("复杂主谓一致稳定","能处理带定语和介词短语的长主语，谓语单复数较准确","The number of applicants has increased."),
+ gs("从句层次清晰","能够使用关系从句、原因状语从句等补充解释且不破坏句子主干","Students who commute often face delays."),
+ gs("论证动词介词搭配准确","能够准确使用 contribute to、result in、depend on 等论证搭配","contribute to growth / result in change"),
+ gs("非谓语结构控制较好","能够区分动名词、不定式和分词结构，并将其合理嵌入写作","suggest reducing / aim to reduce"),
+ gs("比较量化结构准确","能够清楚区分增长幅度、最终值及比较倍数","rose by 15% / was twice as high as"),
+ gs("名词化表达自然","可以利用名词化结构简洁表达因果、比较和变化","a reduction in emissions"),
+ gs("让步与原因从句清晰","能够用 although、because、while 等连接有明确逻辑的完整分句","Although costs rose, demand remained stable"),
+ gs("指代衔接明确","this、these、which 等指代能够清楚回指前文对象","This increase put pressure on services")
+ ],
+ bad:[
+ gw("高频学术介词搭配不准确","学术写作中 contribute to、result in、result from、account for 等容易混淆","分别区分导致结果 result in、源于原因 result from，以及占比 account for 的搭配语义","整理8组论证或数据相关动词介词搭配并仿写","result from poor planning / result in delays"),
+ gw("动词与名词搭配不自然","动词虽然大致表达原意，但 discuss、explain、impact 等结构后错误添加或遗漏介词","将常用论证动词按及物、不及物及固定搭配分类，练习动词所需宾语","改写6个论证搭配问题句","discuss about the issue → discuss the issue"),
+ gw("三单与复杂主语不一致","含定语从句或介词短语的长主语容易误判谓语单复数","圈出主句中心主语，暂时忽略修饰语，再决定动词形式","订正5个含长主语的主谓一致错误","The use of cars increase → The use of cars increases"),
+ gw("the number / a number 混淆","the number of 与 a number of 作主语时，谓语单复数常混淆","对比 the number of + 复数名词 + 单数谓语，a number of + 复数名词 + 复数谓语","完成6组 the number / a number 对比句","A number of people is → A number of people are"),
+ gw("定语从句缺少必要成分","关系从句中可能遗漏限定动词或发生重复主语，破坏从句结构","先找到先行词与关系词所承担的句法作用，再检查从句谓语及宾语是否需要保留","修正6个定语从句结构错误并解释关系词的作用","people who they work → people who work"),
+ gw("名词性从句语序错误","what、why、how 等引导的间接疑问内容仍采用直接疑问句的倒装语序","练习 why the trend changed、how the policy works 等陈述语序","订正5个宾语从句或名词性从句语序错误","explain why did it change → explain why it changed"),
+ gw("让步从句与主句连接不完整","Although、While、Because 等引导部分未与完整主句构成清楚的复合句","先写清主句核心判断，再用从属部分补充让步、对比或原因","补全课堂5个复合句中的缺失主句","Although the measure is costly. → Although the measure is costly, it may help."),
+ gw("状语从句逻辑词叠加","在同一句中机械使用 although...but 或 because...so 等双重连接","用单一从属连词与主句表达逻辑关系，必要时改写为两个并列句","对照范文订正6个连词叠用句","Because costs rose, so demand fell → Because costs rose, demand fell"),
+ gw("非谓语动作发出者不清","句首分词短语与主句主语的动作关系不一致，容易产生悬垂修饰","确认分词短语动作的实际执行者是否为主句主语，不一致时改写成完整从句","修改4个分词短语主语不对应的句子","Using public transport, pollution falls → If people use public transport, pollution falls"),
+ gw("动词后 to do / doing 混用","suggest、avoid、consider、aim、decide 等后面应接的动词形式不够稳定","按动词搭配整理 suggest doing、avoid doing、aim to do、decide to do","为6个高频论证动词写正确搭配和例句","suggest to reduce → suggest reducing"),
+ gw("介词 to 与不定式 to 混淆","在 contribute to、be committed to 等短语后误用动词原形","辨认 to 是否为介词，若为介词则后面通常接名词或动名词","订正6个含介词 to 的错误表达","contribute to reduce → contribute to reducing"),
+ gw("比较对象不同类","Task 1 对比时直接比较某事物的数量与另一事物本身，比较对象缺乏一致性","改写成 the number of A vs the number of B，或 the figure for A vs the figure for B","修改课堂图表中的5个比较句","The number of cars is higher than buses → ... higher than the number of buses"),
+ gw("倍数比较结构有误","twice、three times 与 as...as 或 comparative than 的搭配不够准确","对照 twice as high as 与 three times the figure for 等结构，保证比较对象明确","根据图表写5组倍数比较句","twice as high than → twice as high as"),
+ gw("图表百分比变化表达混淆","增长百分比、百分点和最终比例混用，使数据描述失真","对比 increased by 10% 与 increased by 10 percentage points，核对变化的基数","挑选课堂图表中3组比例变化，分别标注相对增幅与百分点差","20% to 30% = +10 percentage points"),
+ gw("分词与定语修饰位置错误","分词短语或 which 从句修饰对象不明，可能导致句意歧义","把修饰部分靠近明确的先行词，并检查分词逻辑主语","订正5个修饰语位置或先行词不清的句子","The figures for workers, which... （先明确 which 指向何物）"),
+ gw("指代 this / which 不明确","使用 this、it、which 等时缺少清晰先行词，造成论证跳跃","明确代词指向的名词或完整观点，必要时使用 this trend、this policy 等具体表达","改写课堂段落中5个指代不清的句子","This is problematic → This increase in cost is problematic"),
+ gw("多个句子只靠逗号连接","两句完整的论述缺少并列连词或正确标点，形成 comma splice","检查每个有限分句是否有完整主谓，再选句号、分号或合适的连词连接","修改5个逗号拼接及长句错误","Costs rose, demand fell → Costs rose, so demand fell"),
+ gw("名词化结构搭配不完整","a rise in、a reduction in、the impact on 等名词化表达中遗漏必要介词","将常用动词与名词形式配对，留意名词化后介词搭配发生变化","整理6组动词表达与名词化表达","rise in prices / impact on society"),
+ gw("冠词与抽象名词使用不当","将不可数抽象概念和可数单数名词混用，出现冠词或复数错误","区分 education / information 等不可数名词与 a benefit / an effect 等单数可数名词","订正6个可数性与冠词错误","many informations → much information"),
+ gw("并列结构词性不平行","列举原因或措施时出现 reducing 与 to improve 等不对称结构","检查 and/or 两侧成分在语法功能上是否并列一致","改写4组并列不平行句","reducing costs and to improve services → reducing costs and improving services"),
+ gw("条件句时态结构不稳定","讨论可能后果时，if 从句与主句的情态、时态搭配不稳定","区分一般条件与假设场景，按语境练习 if + 现在时 / will 或 if + 过去时 / would","为课堂主题分别写3句一般条件句与假设条件句","If the government invests, services may improve"),
+ gw("被动结构与完成时混用","使用 has been、was、is 等时，容易混淆过去分词与进行形式","按一般被动、现在完成时及完成时被动分别拆解谓语结构","订正6个谓语结构混淆句","has been increased / has increased（需看语境）"),
+ gw("句子嵌套过多导致残句","尝试将多层从句塞进一个句子时，容易丢失主句谓语或关键连接关系","先写清楚主句，再逐层添加从句；检查每个有限分句的结构","将一段过长句拆为2–3句并修正结构","Although..., which... （需检查完整主句）")
+ ]},
+reading:{
+ good:[
+ gs("三单 -s/-es 使用正确","写简单句时能够注意 he/she/it 与动词三单形式","She reads every day."),
+ gs("基本介词搭配准确","能够正确使用常见地点、时间和简单词组介词","at school / on Monday / interested in"),
+ gs("主谓句式较完整","能够稳定写出包含主语和谓语的完整简单句","My brother likes football."),
+ gs("can + 动词原形准确","能够正确使用情态动词 can 与后续动词原形","She can swim."),
+ gs("be 动词搭配准确","能够根据主语选择 am、is、are，并写出完整状态句","I am / He is / They are"),
+ gs("基本从句有意识","能够使用 because、when 等构成带主句的简单复合句","I stayed home because it rained."),
+ gs("冠词与单复数较稳定","能根据单复数名词及语境选择适当限定词","an apple / two apples"),
+ gs("能够自查拼写与句子","完成后能够检查句首大写、动词形式、句末标点","She goes to school.")
+ ],
+ bad:[
+ gw("第三人称单数忘加 -s/-es","主语是 he、she、it 或单数人名时，一般现在时动词常漏加第三人称单数词尾","用 he/she/it 与 I/you/they 对比造句，并逐句检查动词的 -s/-es","完成8道三单动词填空并独立仿写","He play football → He plays football"),
+ gw("三单形式拼写变化出错","动词加 -s、-es 或辅音字母+y 变 -ies 的规则不熟悉","将 watch→watches、study→studies、play→plays 分类练习","整理10个不同形式的三单动词并造句","She study → She studies"),
+ gw("doesn't 后仍写三单","否定句或一般疑问句已经使用 does 时，实义动词仍错误地加 -s","对照 He plays / He doesn't play / Does he play? 三种句型反复练习","完成6个肯定句、否定句、疑问句互换","Does she likes it? → Does she like it?"),
+ gw("am/is/are 与主语不搭配","I、he/she/it、you/we/they 的 be 动词形式容易混淆","先判断主语人称和单复数，再选择 am/is/are，最后补全表语","完成10道 be 动词填空并口头解释","They is happy → They are happy"),
+ gw("句子遗漏 be 动词","写人物特点或状态时容易只写主语加形容词，没有 be 动词","重点练习 S + be + adjective/noun 与 S + action verb 两种结构","把5组主语加形容词改写成完整句","She very happy → She is very happy"),
+ gw("一般现在时与过去时混用","描述昨天或过去发生的事情时，动词仍使用一般现在时","先标出 yesterday、last week 等时间信号，再练过去式规则变化与常见不规则变化","完成8个一般现在时和一般过去时对比句","Yesterday he go → Yesterday he went"),
+ gw("介词 on/in/at 容易混淆","表达日期、月份、时刻以及地点时，on、in、at 的选择不稳定","通过时间表练 at 具体时刻、on 星期或日期、in 月份或年份，再补充常见地点短语","完成12道介词选词填空并造句","at Monday → on Monday"),
+ gw("常见动词介词搭配错误","listen、look、wait 等常用动词后遗漏或误用介词","配套记忆 listen to、look at、wait for 等短语，并用完整句练习","使用8个常见动词介词搭配各造一个短句","listen music → listen to music"),
+ gw("形容词介词搭配错误","good、interested、afraid 等形容词后经常使用错误介词","分类整理 good at、interested in、afraid of，并与具体人物和活动搭配","为6组形容词介词搭配写正确例句","good in maths → good at maths"),
+ gw("介词后错误使用动词原形","by、without、after 等介词之后使用动词原形而非合适的动名词形式","先用介词 + 名词练习，再学习介词 + 动名词的常用结构","改正5个介词后动词形式错句","after finish → after finishing"),
+ gw("代词主宾格混淆","I/me、he/him、she/her 等在主语和宾语位置上容易混用","将句子分为谁做动作和动作指向谁，再选择主格或宾格","完成8个主宾格代词填空","Me like it → I like it"),
+ gw("名词单复数漏 -s","two、many、some 等数量表达后常用单数可数名词","标出名词前的数量词，区分 a/an + 单数与数字/许多 + 复数","完成8个数量词与名词搭配填空","two book → two books"),
+ gw("可数单数名词漏冠词","第一次提到一个可数的单数事物时，经常漏写 a/an 或其他限定词","先检查每个单数可数名词前是否有适当限定词，并练习 a/an 的发音选择","在课堂短文中补全8处冠词","She has cat → She has a cat"),
+ gw("句首大写与句末标点遗漏","句首、专有名词需要大写的位置和句号问号使用不稳定","写完每句话后检查首字母、专有名词、句末标点三项","订正课堂8个句子的大小写和标点","my name is tom → My name is Tom."),
+ gw("简单句遗漏谓语","写句子时只有主语与其他信息，缺少必要的谓语动词","用 Who/What + does/is 的句型提问，逐句圈出主语与谓语","补全6个缺少谓语动词的句子","My sister very nice → My sister is very nice"),
+ gw("because 从句缺少主句","使用 because 表达原因时只留下原因部分，没有完整陈述","用主句 + because + 原因从句练习，每次检查是否表达了完整意思","把5个 because 残句改成完整句","Because I was tired. → I slept because I was tired."),
+ gw("when 引导从句成分缺失","使用 when 表达时间时从句没有完整主语或谓语，句意不完整","将 when 从句与主句分开检查，并先练两个完整简单句的合并","补全5个 when 从句并写成完整句","When I at home → When I am at home"),
+ gw("who/which 引导从句结构不完整","尝试用 who、which 修饰名词时，容易漏掉从句谓语或误加多余主语","先确认 who/which 在从句中承担的作用，再检查句子中是否有主要谓语","完成5个简单关系从句合并练习","The boy who he plays... → The boy who plays..."),
+ gw("and/but/because 使用混乱","并列与原因关系不清，或将两个完整句仅用逗号连接","先判断是补充、转折还是原因，再选择适当连接词与标点","用 and、but、because 各写2个完整句","I like tea, I dislike coffee → I like tea, but I dislike coffee"),
+ gw("can 后错误加三单或 to","使用 can 后仍添加 -s/-es 或 to，导致动词形式错误","掌握 can + 动词原形的基本规则，并转换不同主语造句","完成6组 can 句型改错","He can plays → He can play"),
+ gw("there is / there are 选错","使用 There is/are 时，未根据后面的名词数量决定 be 动词","先定位 there be 后面的名词并判断单复数，再选择 is 或 are","用课堂图片写5个 there is/there are 句子","There is two books → There are two books"),
+ gw("动词与宾语顺序颠倒","简单的主谓宾句中词语顺序不稳定，出现直接套用中文语序的情况","用主语 + 动词 + 宾语的三栏句卡进行排序与扩写","完成8道基础语序重组练习","I English study → I study English"),
+ gw("形容词与副词混用","描述动作时误用形容词，或形容名词时误用副词","区分 a careful student 与 study carefully 的修饰关系","用5组形容词和副词各完成一组对比句","She reads careful → She reads carefully"),
+ gw("主语与物主代词混淆","my/mine、your/yours 及 he/his 等所有格形式使用不稳定","从 my book 与 the book is mine 两种结构入手区别限定词和独立物主代词","完成8个物主代词短句填空","This is mine book → This is my book")
+ ]},
+speaking:{good:[],bad:[]}
+};
+
 var $=function(id){return document.getElementById(id);};
 var goodSel=new Set(),badSel=new Set();
+var grammarExpanded={good:false,bad:false};
 function renderChoices(kind){
- var course=DATA[$("course").value],sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");
+ var courseKey=$("course").value,course=DATA[courseKey],
+     sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");
  var search=cleanText($("optionSearch").value).toLowerCase();
  root.textContent="";
  var groups=[
   {prefix:"shared",title:"通用课堂表现",detail:"适用全部课程",items:COMMON[kind],tone:"shared"},
   {prefix:"course",title:course.name+" · 专项",detail:kind==="good"?"本课程专业优势":"本课程需要提升的能力",items:course[kind],tone:"course"}
  ];
+ if(GRAMMAR[courseKey]&&GRAMMAR[courseKey][kind].length){
+   groups.push({prefix:"grammar",title:"语法细节诊断",detail:"点击展开 · 典型错句对照",items:GRAMMAR[courseKey][kind],tone:"grammar"});
+ }
  var totalVisible=0;
  groups.forEach(function(group){
-   var section=document.createElement("div");
+   var displayed=group.items.map(function(item,i){return {item:item,index:i,key:group.prefix+":"+i};}).filter(function(row){
+     return !search||sel.has(row.key)||((row.item.label+" "+row.item.desc+" "+(row.item.example||"")).toLowerCase().indexOf(search)!==-1);
+   });
+   if(!displayed.length)return;
+   totalVisible+=displayed.length;
+   var isGrammar=group.prefix==="grammar";
+   var section=document.createElement(isGrammar?"details":"div");
    section.className="selection-group "+group.tone;
-   var heading=document.createElement("div");heading.className="group-heading";
+   if(isGrammar){
+     section.open=grammarExpanded[kind]||!!search||displayed.some(function(row){return sel.has(row.key);});
+     section.addEventListener("toggle",function(){
+       if(!search)grammarExpanded[kind]=section.open;
+     });
+   }
+   var heading=document.createElement(isGrammar?"summary":"div");
+   heading.className="group-heading";
    var label=document.createElement("strong");label.textContent=group.title;
-   var detail=document.createElement("span");detail.textContent=group.detail;
+   var detail=document.createElement("span");detail.textContent=group.detail+(isGrammar?" · "+group.items.length+" 项":"");
    heading.appendChild(label);heading.appendChild(detail);
    var list=document.createElement("div");list.className="choices";
-   var visible=0;
-   group.items.forEach(function(item,i){
-     var id=group.prefix+":"+i;
-     if(search&&!sel.has(id)&&((item.label+" "+item.desc).toLowerCase().indexOf(search)===-1))return;
-     visible++;totalVisible++;
+   displayed.forEach(function(row){
+     var item=row.item,id=row.key;
      var btn=document.createElement("button");btn.type="button";
-     btn.className="chip "+kind+(sel.has(id)?" selected":"");
-     btn.textContent=item.label;btn.title=item.desc;
+     btn.className="chip "+kind+(sel.has(id)?" selected":"")+(isGrammar?" detail-chip":"");
      btn.setAttribute("aria-pressed",sel.has(id)?"true":"false");
+     var labelText=document.createElement("span");labelText.className="chip-label";labelText.textContent=item.label;btn.appendChild(labelText);
+     if(isGrammar&&item.example){
+       var hint=document.createElement("small");hint.className="chip-example";
+       hint.textContent=item.example;btn.appendChild(hint);
+     }
+     btn.title=item.desc;
      if(!sel.has(id)&&sel.size>=5)btn.disabled=true;
      btn.addEventListener("click",function(){
        if(sel.has(id))sel.delete(id);else if(sel.size<5)sel.add(id);
+       if(isGrammar)grammarExpanded[kind]=true;
        renderChoices(kind);
      });
      list.appendChild(btn);
    });
-   if(!visible)return;
    section.appendChild(heading);section.appendChild(list);
    root.appendChild(section);
  });
@@ -659,13 +818,13 @@ function renderChoices(kind){
  $(kind+"Count").textContent="已选 "+sel.size+" / 5";
  if(typeof updateHUD==="function")updateHUD();
 }
-function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"下方分为所有课程通用表现与本课程专项表现，两类可混合选择。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";updateHUD();}
+function changeCourse(){goodSel.clear();badSel.clear();grammarExpanded={good:false,bad:false};$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"可混选通用、专项与语法细节；点击语法细节诊断展开典型例句。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";updateHUD();}
 function cleanText(value){return String(value||"").replace(/[\r\n]+/g,"，").replace(/\s+/g," ").trim().replace(/[；;。,.，]+$/,"");}
 function chooseItems(kind){
  var selected=kind==="good"?goodSel:badSel;
  var chosen=Array.from(selected).map(function(key){
    var parts=key.split(":");
-   var group=parts[0]==="shared"?COMMON[kind]:DATA[$("course").value][kind];
+   var group=parts[0]==="shared"?COMMON[kind]:parts[0]==="grammar"?GRAMMAR[$("course").value][kind]:DATA[$("course").value][kind];
    return group[Number(parts[1])];
  }).filter(Boolean);
  var custom=cleanText($(kind==="good"?"customGood":"customBad").value);
