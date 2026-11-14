@@ -324,6 +324,21 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 .grader-nav-link{display:inline-flex;align-items:center;min-height:34px;text-decoration:none;background:#ffdf83;color:#174563;font:900 12px/1.3 ui-monospace,monospace;border:2px solid #fff0b4;padding:7px 11px;box-shadow:3px 3px 0 #10516d}
 .grader-nav-link:hover{filter:brightness(1.07);transform:translate(1px,1px)}
 @media(max-width:560px){.topnav{height:auto;min-height:66px;flex-wrap:wrap;padding:11px 0;row-gap:10px}.top-right{gap:9px}.grader-nav-link{font-size:10px;min-height:32px}.online-badge{font-size:8px}}
+
+/* Progress-focused reporting and previous homework status. */
+.progress-toggle,.advice-toggle{display:flex;align-items:center;gap:11px;padding:12px 13px;border:1px solid #85d0dc;background:#1b5978;color:#f1fdff}
+.progress-toggle{justify-content:space-between;flex-wrap:wrap;margin:11px 0 6px}
+.progress-toggle label,.advice-toggle{cursor:pointer}
+.progress-toggle label{display:flex;gap:9px;align-items:center;font-size:13px;font-weight:800}
+.progress-toggle>span{font-size:11px;color:#d4edf6}
+.progress-toggle input,.advice-toggle input{width:18px;height:18px;accent-color:#49edc3;flex:none}
+.advice-toggle{margin:13px 0 10px}
+.advice-toggle span{display:flex;flex-direction:column;gap:2px}
+.advice-toggle strong{font-size:13px}
+.advice-toggle small{font-size:11px;color:#d3eff3;line-height:1.5}
+.selection-group.writing{background:#1d617d;border-color:#80d7df}
+.selection-group.writing .group-heading strong:before{content:"✎";font-size:15px;color:#ffe28b}
+@media(max-width:560px){.progress-toggle{align-items:flex-start}.progress-toggle>span{padding-left:27px}.advice-toggle{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -382,6 +397,13 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 <div class="fields">
 <label class="field mobile-full"><span class="field-title">学生姓名 <span class="required-star">✱</span></span><input id="student" maxlength="35" autocomplete="off" placeholder="输入学生姓名 / 例如：陈同学"></label>
 <label class="field mobile-full"><span class="field-title">课程类型 <span class="required-star">✱</span></span><select id="course"><option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option><option value="basicSpeaking">雅思基础口语</option></select></label>
+<label class="field"><span class="field-title">上次课作业完成情况</span><select id="homeworkStatus">
+<option value="">未记录 / 不显示</option>
+<option value="课前按时完成">课前按时完成</option>
+<option value="未在上课前按时完成">未在上课前按时完成</option>
+<option value="尚未完成">尚未完成</option>
+<option value="本次无上次课作业">本次无上次课作业</option>
+</select></label>
 <label class="field"><span class="field-title">迟到情况</span><select id="late"><option value="无迟到">未迟到</option><option value="迟到">迟到</option></select></label>
 <label class="field"><span class="field-title">课堂表现</span><select id="participation"><option value="积极">积极互动、课堂专注认真</option><option value="踏实">积极互动、态度踏实上进</option><option value="笔记">认真做笔记、参与课堂练习</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
 <label class="field full" id="partBox" hidden><span class="field-title">自定义课堂表现</span><input id="partOther" placeholder="例如：积极回答问题，听写认真"></label>
@@ -394,6 +416,7 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 <h2 class="section-title"><span class="num">02</span><span>收集学生表现<small>SELECT SKILLS & CHALLENGES</small></span></h2>
 <p class="intro-text" id="courseHint">分别选择通用课堂表现、课程专项能力和细分语法问题；点击「语法细节诊断」可查看错句示例。</p>
 <div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">快速查找评价标签</span></label><div class="search-shell"><span aria-hidden="true">⌕</span><input id="optionSearch" type="search" autocomplete="off" placeholder="搜索三单 / 介词搭配 / 从句 / 冠词 ..."><span class="kbd">⌕</span></div></div>
+<div class="progress-toggle"><label for="progressMode"><input id="progressMode" type="checkbox"> <span>本次重点记录「进步」</span></label><span>复习课 / 阶段性反馈可选；将输出标题改为「进步&不足」</span></div>
 <div class="subhead good-head"><strong><span aria-hidden="true">✦</span> 优势天赋 <span class="subtitle-en">POWER UPS</span></strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
 <div class="choice-groups" id="goodChoices" role="group" aria-label="优点选项：通用表现和本课程专项"></div>
 <div class="subhead bad-head"><strong><span aria-hidden="true">⚡</span> 需要提升 <span class="subtitle-en">SKILL GAPS</span></strong><span class="limit" id="badCount">已选 0 / 5</span></div>
@@ -410,6 +433,7 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 <div class="panel-sig"><span>STAGE 03 / 03</span><span>FINAL BOSS: HOMEWORK</span></div>
 <h2 class="section-title"><span class="num">03</span><span>布置训练任务<small>MAKE IT PERSONAL</small></span></h2>
 <label class="field"><span class="field-title">本节课作业 <span class="muted">（不填则自动安排）</span></span><textarea id="homework" rows="3" placeholder="例如：范文学习 + 例题2主体段1"></textarea></label>
+<label class="advice-toggle" for="externalProofread"><input type="checkbox" id="externalProofread"><span><strong>附加写后自查建议（选填）</strong><small>建议先人工核对语言，再按需使用 Grammarly 等外部校对工具；本站不会连接这些服务</small></span></label>
 <label class="field top-gap"><span class="field-title">课堂观察补充 <span class="muted">（选填）</span></span><textarea id="notes" rows="2" placeholder="例如：独立完成两道练习，最后一题仍需巩固"></textarea></label>
 <div class="actionrow input-actions"><button type="button" class="btn primary" id="generate"><span class="btn-icon" aria-hidden="true">✦</span> 生成课堂反馈 <span class="btn-arrow" aria-hidden="true">↗</span></button><button type="button" class="btn subtle" id="sample">▶ 查看示例</button><button type="button" class="btn ghost" id="clear">↺ 清空</button></div>
 <div class="stage-foot"><span>STEP 03</span><span class="pixel-dots" aria-hidden="true">■■■■</span></div>
@@ -794,6 +818,38 @@ speaking:{good:[],bad:[]},
 basicSpeaking:{good:[],bad:[]}
 };
 
+
+// Progress and targeted writing observations drawn from teacher feedback.
+// Only shown for IELTS writing, not Pre-Starter or speaking courses.
+var WRITING_FOCUS={
+ good:[
+s("动态图综述：趋势+排名+幅度","能够在动态图 Overview 中提炼主要趋势、相对高低关系以及有意义的变化幅度"),
+s("动态图抓住关键变化","能够抓住动态图中最明显的上升、下降或稳定趋势，并识别重要比较节点"),
+s("趋势词灵活替换","对图表升降与波动表达有更多积累，能够在准确的前提下使用同义替换"),
+s("静态图最值比较","能够准确找出静态图中的最高值与最低值，并进行直接比较"),
+s("静态图相似值比较","能够识别数值接近的类别，运用相似性比较组织描述"),
+s("静态图倍数比较","能够准确使用 twice as ... as 等倍数结构进行有意义的数据比较"),
+s("Task 2 审题关键词细化","能够识别大作文题目关键词、限定范围及核心问题，并进一步细化讨论角度"),
+s("大作文分段与论点数量合理","能够根据同意反对、双边讨论等不同题型合理安排段落和论点，行文结构清晰"),
+s("therefore 因果衔接","能够在论证中较恰当地使用 therefore 引出基于前文的结论"),
+s("since 从句用于因果分析","能够用 since 引导原因状语从句，为观点提供原因解释"),
+s("因果论证意识增强","论点之后能够尝试解释产生这一现象的原因和影响"),
+s("举例论证较贴题","所选例子与中心论点相关，能够帮助解释观点"),
+s("拼写准确度进步","课堂独立写作中拼写错误较少，相较此前表现有所改善"),
+s("简单句与从句结合","能够将准确的简单句与适量从句结合使用，句式有变化")
+ ],
+ bad:[
+w("动静图 Overview 思路不足","面对动态图和静态图时，对综述段应概括哪些总体特征仍缺少清晰思路","先区分图表类型：动态图看总体趋势与最明显变化；静态图看类别排名、差距或分布","分别为一幅动态图和一幅静态图写 2 句 Overview，并标记选择依据"),
+w("Task 2 题目回应不完整","大作文仅回应了部分任务要求，部分关键词或限定信息未在文章中得到充分体现","审题时把每个关键词拆为主题、对象、限定条件和任务动作，再逐项检查论点与提纲","整理课堂大作文例题，按细化关键词—确定论点—构建论证链的顺序独立完成 2 份提纲"),
+w("论据与论点联系不紧","部分原因或例证未直接支持段落中心论点，影响论证说服力","写出中心句后逐句追问该论据如何证明它，必要时补充解释句","改写一个主体段，为每个论据增加与论点的明确关联"),
+w("因果论证缺少解释环节","句子之间存在推理跳跃，尚未清晰呈现原因如何导致结果","按照观点—原因—作用机制—影响的顺序逐层解释，必要时用 therefore 总结结论","选取一个 Task 2 观点补写两层原因与影响解释"),
+w("举例论证较薄弱","论证中缺乏与观点相关的具体情境或例子，或例子之后缺少分析","举例时明确对象、行为和结果，再用一句话说明其如何支持观点","为课堂大作文主体段增加一则具体例证及关联分析"),
+w("句间逻辑衔接不足","前后句逻辑关系未清晰表达，因果、让步或举例关系不够连贯","先判断两句的逻辑关系，再使用 because、since、therefore 或例子自然推进，不机械堆叠连接词","在课堂段落中标出 5 处逻辑关系，并改写至少 3 处衔接"),
+w("部分词汇影响理解","部分用词或搭配与原意不符，使读者难以准确理解句子","优先核对高频词的词义与搭配，再进行必要的同义替换；避免为使用高级词而牺牲准确性","订正本节课出现的 5 组词汇搭配并完成语境仿写"),
+w("从句语法错误较明显","虽然尝试使用从句，但部分有限从句缺少必要主谓结构或连接关系不完整","分开圈出主句与从句，检查关系词、主语、谓语和动词形式，再合并成完整复合句","订正 5 个从句错句，分别标记主句与从句的核心结构")
+ ]
+};
+
 var $=function(id){return document.getElementById(id);};
 var goodSel=new Set(),badSel=new Set();
 var grammarExpanded={good:false,bad:false};
@@ -806,6 +862,9 @@ function renderChoices(kind){
   {prefix:"shared",title:"通用课堂表现",detail:"适用全部课程",items:COMMON[kind],tone:"shared"},
   {prefix:"course",title:course.name+" · 专项",detail:kind==="good"?"本课程专业优势":"本课程需要提升的能力",items:course[kind],tone:"course"}
  ];
+ if(courseKey==="basic"||courseKey==="advanced"){
+   groups.push({prefix:"writing",title:"写作进步与备考观察",detail:"动态图 · 静态图 · Task 2 · 逻辑论证",items:WRITING_FOCUS[kind],tone:"writing"});
+ }
  if(GRAMMAR[courseKey]&&GRAMMAR[courseKey][kind].length){
    groups.push({prefix:"grammar",title:"语法细节诊断",detail:"点击展开 · 典型错句对照",items:GRAMMAR[courseKey][kind],tone:"grammar"});
  }
@@ -863,7 +922,7 @@ function chooseItems(kind){
  var selected=kind==="good"?goodSel:badSel;
  var chosen=Array.from(selected).map(function(key){
    var parts=key.split(":");
-   var group=parts[0]==="shared"?COMMON[kind]:parts[0]==="grammar"?GRAMMAR[$("course").value][kind]:DATA[$("course").value][kind];
+   var group=parts[0]==="shared"?COMMON[kind]:parts[0]==="grammar"?GRAMMAR[$("course").value][kind]:parts[0]==="writing"?WRITING_FOCUS[kind]:DATA[$("course").value][kind];
    return group[Number(parts[1])];
  }).filter(Boolean);
  var custom=cleanText($(kind==="good"?"customGood":"customBad").value);
@@ -896,11 +955,17 @@ var late=$("late").value;
 var strengths=good.map(function(g){return g.desc;}).join("；");
 var weaknesses=bad.map(function(g){return g.desc;}).join("；");
 var actions=bad.map(function(g){return g.action;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+if($("externalProofread").checked&&(cls==="雅思基础写作"||cls==="雅思强化写作")){
+ actions.push("写完作文后先独立检查审题回应、主谓一致、从句结构和拼写；如有需要，可另外借助 Grammarly 等外部校对工具复核语言提示，并由教师确认修改是否正确。");
+}
 var hw=String($("homework").value||"").trim();
 if(!hw){hw=bad.slice(0,2).map(function(b){return b.task;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join("；");}
 var str="【学生姓名】："+name+"\n【课程】："+cls+(first?"（首课）":"")+"\n\n";
-str+="【"+(first?"首课表现":"课堂表现")+"】："+perf+"\n【迟到情况】："+late+"\n\n";
-str+="【优点&不足】：\n优点："+strengths+"。\n不足："+weaknesses+"。\n\n";
+str+="【"+(first?"首课表现":"课堂表现")+"】："+perf+"\n【迟到情况】："+late+"\n";
+var hwStatus=$("homeworkStatus").value;
+if(hwStatus)str+="【作业情况】："+hwStatus+"\n";
+str+="\n";
+str+="【"+($("progressMode").checked?"进步&不足":"优点&不足")+"】：\n"+($("progressMode").checked?"进步":"优点")+"："+strengths+"。\n不足："+weaknesses+"。\n\n";
 str+="【提升方法】：\n"+actions.map(function(a,i){return (i+1)+"."+a;}).join("\n")+"\n\n";
 str+="【本节课作业】：\n"+hw;
 return str;
@@ -912,11 +977,11 @@ $("participation").addEventListener("change",function(){$("partBox").hidden=$("p
 $("generate").addEventListener("click",generate);
 $("result").addEventListener("input",function(){$("printView").textContent=$("result").value;});
 $("sample").addEventListener("click",function(){
-$("course").value="basic";changeCourse();$("student").value="示例同学";$("first").checked=true;$("participation").value="积极";$("late").value="无迟到";$("partBox").hidden=true;$("customGood").value="";$("customBad").value="";$("homework").value="范文学习 + 例题2主体段1";$("notes").value="";
+$("course").value="basic";changeCourse();$("student").value="示例同学";$("first").checked=true;$("participation").value="积极";$("late").value="无迟到";$("homeworkStatus").value="";$("progressMode").checked=false;$("externalProofread").checked=false;$("partBox").hidden=true;$("customGood").value="";$("customBad").value="";$("homework").value="范文学习 + 例题2主体段1";$("notes").value="";
 goodSel.add("shared:1");goodSel.add("course:9");badSel.add("course:13");badSel.add("course:14");renderChoices("good");renderChoices("bad");generate();
 });
 $("clear").addEventListener("click",function(){
-$("student").value="";$("course").value="basic";$("late").value="无迟到";$("participation").value="积极";$("first").checked=true;$("partOther").value="";$("customGood").value="";$("customBad").value="";$("homework").value="";$("notes").value="";$("result").value="";$("printView").textContent="";$("partBox").hidden=true;changeCourse();$("toast").textContent="已清空，本页面不会自动保存学生信息。";$("student").focus();
+$("student").value="";$("course").value="basic";$("late").value="无迟到";$("homeworkStatus").value="";$("progressMode").checked=false;$("externalProofread").checked=false;$("participation").value="积极";$("first").checked=true;$("partOther").value="";$("customGood").value="";$("customBad").value="";$("homework").value="";$("notes").value="";$("result").value="";$("printView").textContent="";$("partBox").hidden=true;changeCourse();$("toast").textContent="已清空，本页面不会自动保存学生信息。";$("student").focus();
 });
 $("copy").addEventListener("click",async function(){
 var t=$("result").value;if(!t.trim()){$("toast").textContent="请先生成反馈。";return;}
