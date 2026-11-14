@@ -107,6 +107,14 @@ select{color-scheme:light}
 .issue-label{font-size:10px;font-weight:750;color:#738997;margin-left:8px}
 .review-empty{color:#527084;font-size:12px;background:#edf7f4;padding:13px;border-radius:7px;line-height:1.7}
 @media(max-width:580px){.local-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.local-counter{padding:9px}.local-counter>span{font-size:9px;letter-spacing:0}.local-counter strong{font-size:24px}.review-box{padding:12px}.issue{padding:10px}}
+
+.review-category{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+.review-category-head{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#e9f3f2;padding:10px 12px;border-radius:7px;font-size:12px;color:#24575d}
+.review-category-head strong{font-weight:850}.review-category-head span{font-size:10px;color:#687e84}
+.punctuation-category{display:block;border:1px solid #dbe7e8;padding:0 8px 8px;border-radius:7px}
+.punctuation-category>.review-category-head{cursor:pointer;margin:8px 0;list-style:none;background:#f0f5f6;color:#6e7e86}
+.punctuation-category>.review-category-head::-webkit-details-marker{display:none}
+.punctuation-category .issue{margin-bottom:8px}
 </style></head>
 <body><main class="wrap">
 <nav><div class="identity"><span class="identity-mark">W</span><div class="brandtext"><strong>Writing Assessment Studio</strong><small>IELTS · TEACHER PORTAL</small></div></div><a href="../">← 返回课堂反馈助手</a></nav>
@@ -119,12 +127,12 @@ select{color-scheme:light}
 </div><p class="hint">评分仍由教师判断；下方的本地规则初筛仅提供初步语言检查，不能替代人工阅卷。</p></section>
 <section class="panel auto-check-panel" id="local-review">
 <h2><span class="number">02</span>粘贴作文 · 本地规则初筛</h2>
-<p class="hint">把学生的完整英文作文粘贴进来，点击检查。系统只查找词数、已知拼写错误及部分明确的语法和标点模式；所有结果都需要老师确认。</p>
+<p class="hint">把学生的完整英文作文粘贴进来，点击检查。系统会尝试识别常见主谓一致、三单、情态动词、词形、介词搭配及部分拼写疑点；标点提示自动合并并排在最后。结果仍需教师确认。</p>
 <label class="field essay-field"><span>学生作文原文</span><textarea id="essay" rows="10" spellcheck="true" autocomplete="off" placeholder="Paste the student's IELTS Task 1 or Task 2 essay here..."></textarea></label>
 <div class="local-tools">
  <div class="local-counter"><span>WORD COUNT</span><strong id="wordCount">0</strong><small id="wordStatus">等待粘贴作文</small></div>
  <div class="local-counter"><span>PARAGRAPHS</span><strong id="paragraphCount">0</strong><small>以空行分段估算</small></div>
- <div class="local-counter"><span>RULE FLAGS</span><strong id="issueCount">—</strong><small>仅提示可能问题</small></div>
+ <div class="local-counter"><span>LANGUAGE FLAGS</span><strong id="issueCount">—</strong><small>仅提示可能问题</small></div>
 </div>
 <div class="actions"><button class="btn primary" type="button" id="checkEssay">检查作文（无需 AI）</button><button class="btn" type="button" id="clearEssay">清空作文</button></div>
 <div class="review-box" id="reviewBox" hidden>
@@ -251,89 +259,150 @@ function updateEssayStats(){
  $("wordStatus").textContent=n===0?"等待粘贴作文":n<minimum?"低于 "+minimum+" 词要求（请人工核对）":"已达到 "+minimum+" 词";
 }
 function analyseText(text){
- const list=[],seen=new Set();
- function add(type,label,start,end,suggestion,explain){
-   if(start<0||end<=start)return;
-   const original=text.slice(start,end),key=[start,end,type,label].join("|");
-   if(seen.has(key))return;seen.add(key);
-   const contextStart=Math.max(0,start-42),contextEnd=Math.min(text.length,end+42);
-   list.push({type,label,original,start,end,suggestion,explain,
-     context:text.slice(contextStart,contextEnd).replace(/\s+/g," "),
-     contextStart,contextEnd});
+ const findings=[],punct=[],seen=new Set();
+ function add(type,label,from,to,fix,reason){
+   if(from<0||to<=from)return;
+   const key=from+":"+to+":"+label;if(seen.has(key))return;seen.add(key);
+   const contextStart=Math.max(0,from-48),contextEnd=Math.min(text.length,to+48);
+   const item={type,label,start:from,end:to,original:text.slice(from,to),suggestion:fix,
+     explain:reason,contextStart,contextEnd,
+     context:text.slice(contextStart,contextEnd).replace(/\s+/g," ")};
+   (type==="标点"?punct:findings).push(item);
  }
- let m;
- const dictionary=/\b[A-Za-z]+\b/g;
- while((m=dictionary.exec(text))!==null){
-   const fix=TYPO[m[0].toLowerCase()];
-   if(fix)add("拼写","已知拼写疑点",m.index,m.index+m[0].length,fix,"仅基于内置常见错词表；请结合上下文确认");
- }
- function find(pattern,type,label,create){
-   pattern.lastIndex=0;
-   while((m=pattern.exec(text))!==null){
-     const data=create(m);
-     if(data)add(type,label,m.index,m.index+m[0].length,data[0],data[1]);
-     if(m[0].length===0)pattern.lastIndex++;
+ function find(re,type,label,callback){
+   re.lastIndex=0;let m;
+   while((m=re.exec(text))!==null){
+     const result=callback(m);
+     if(result)add(type,label,m.index,m.index+m[0].length,result[0],result[1]);
+     if(m[0].length===0)re.lastIndex++;
    }
  }
- find(/\b(can|could|may|might|must|shall|should|will|would)\s+([a-z]+)\b/gi,
-   "语法","情态动词后形式疑点",m=>{
-     const fix=MODAL_FORMS[m[2].toLowerCase()];return fix?[m[1]+" "+fix,"情态动词后通常接动词原形；请检查语境"]:null;
-   });
- find(/\b(to)\s+(made|went|goes|likes|makes|improves|increased|choice)\b/gi,
-   "语法","to 后词形疑点",m=>{
-    const fix={made:"make",went:"go",goes:"go",likes:"like",makes:"make",improves:"improve",increased:"increase",choice:"choose"}[m[2].toLowerCase()];
-    return fix?["to "+fix,"仅当这里是 to 不定式时才适用；若为介词 to，请忽略"]:null;
-   });
- find(/\b(he|she|it)\s+(make|go|play|like|study|work|present|increase|decrease|improve|suggest|cause|show|need|want|argue|contribute)\b/gi,
-   "语法","第三人称单数疑点",m=>[m[1]+" "+SIMPLE_THIRD[m[2].toLowerCase()],"一般现在时第三人称单数动词通常需要 -s/-es；虚拟语气等例外请人工判断"]);
- find(/\b(a|an)\s+(constantly|significantly|rapidly|sharply|steadily|dramatically)\s+(increase|rise|decrease|drop)\b/gi,
-   "语法","形容词与副词词性疑点",m=>[m[1]+" "+ADV_ADJ[m[2].toLowerCase()]+" "+m[3],"名词前通常使用形容词：a constant increase，不是 a constantly increase"]);
- find(/\bunderwent\s+a\s+(significant|sharp|dramatic|steady)\s+increasing\b/gi,
-   "语法","名词形式疑点",m=>[m[0].replace(/increasing$/i,"increase"),"underwent a significant increase 中需要名词 increase"]);
- find(/\bthe percentage(?: of [a-z]+(?: [a-z]+){0,2})?\s+(were|are)\b/gi,
-   "语法","百分比短语的主谓一致疑点",m=>[m[0].replace(/\bwere\b/i,"was").replace(/\bare\b/i,"is"),"以 the percentage 为中心主语时通常用单数谓语；先确认句法主语"]);
- find(/\bdepend(?:s|ed|ing)?\s+of\b/gi,"搭配","depend 搭配疑点",
-   m=>[m[0].replace(/\bof$/i,"on"),"depend on 是常见固定搭配"]);
- find(/\binterested\s+on\b/gi,"搭配","形容词介词搭配疑点",
-   m=>[m[0].replace(/\bon$/i,"in"),"interested in 为常用搭配"]);
- find(/\bdiscuss(?:ed|es|ing)?\s+about\b/gi,"搭配","discuss 搭配疑点",
-   m=>[m[0].replace(/\s+about$/i,""),"discuss 通常直接接宾语，不需要 about"]);
- find(/\b([a-z]{3,})[ \t]+\1\b/gi,"表达","重复单词",
-   m=>[m[1],"请确认是否不必要地重复了单词"]);
- find(/[ \t]+(?=[,;:!?])/g,"标点","标点前多余空格",
-   m=>["","英文逗号、分号、冒号、问号等通常不需要前置空格"]);
- find(/[,;:!?\.](?=[A-Za-z])/g,"标点","标点后缺少空格",
-   m=>{
-     const char=m[0],next=text[m.index+1]||"",prev=text.slice(Math.max(0,m.index-4),m.index);
-     if(char==="."&&(/[A-Za-z]\.$/.test(text.slice(Math.max(0,m.index-2),m.index+1))||/\b(?:www|e|i)$/i.test(prev)))return null;
-     if(char==="."&&/\b(?:Mr|Mrs|Ms|Dr|St)$/i.test(prev))return null;
-     return [char+" ","英文标点后开始下一个单词通常需要空格；缩写、域名等情况请忽略"];
-   });
- return list.sort((a,b)=>a.start-b.start||a.end-b.end).slice(0,100);
+ // Exact known misspellings only. Valid but contextually incorrect words need manual review.
+ find(/\b[A-Za-z]+\b/g,"拼写","常见拼写疑点",m=>{
+   const c=TYPO[m[0].toLowerCase()];
+   return c?[c,"内置常见错词表命中，需结合原文确认"]:null;
+ });
+ // Modals, infinitives and basic third-person singular.
+ find(/\b(can|could|may|might|must|shall|should|will|would)\s+([a-z]+)\b/gi,"语法","情态动词后词形疑点",m=>{
+   const x=MODAL_FORMS[m[2].toLowerCase()];
+   return x?[m[1]+" "+x,"情态动词后通常接动词原形"]:null;
+ });
+ find(/\b(can|could|may|might|must|should|will|would)\s+to\s+([a-z]+)\b/gi,"语法","情态动词后多余的 to",m=>[m[1]+" "+m[2],"情态动词后通常直接接动词原形"]);
+ find(/\bto\s+(made|went|goes|likes|makes|improves|increased|choice|choices|studies|studied|works|worked|presented)\b/gi,"语法","to 后动词词形疑点",m=>{
+   const map={made:"make",went:"go",goes:"go",likes:"like",makes:"make",improves:"improve",increased:"increase",choice:"choose",choices:"choose",studies:"study",studied:"study",works:"work",worked:"work",presented:"present"};
+   return ["to "+map[m[1].toLowerCase()],"如果是 to 不定式，应接动词原形；介词 to 的情况请另行判断"];
+ });
+ find(/\b(he|she|it)\s+(make|go|play|like|study|work|present|increase|decrease|improve|suggest|cause|show|need|want|argue|contribute)\b/gi,"语法","第三人称单数漏词尾",m=>[m[1]+" "+SIMPLE_THIRD[m[2].toLowerCase()],"一般现在时 he/she/it 后实义动词通常使用 -s/-es"]);
+ find(/\b(the (?:chart|graph|table|figure|government|company|school|system|policy|percentage|number|trend|population|rate|price|proportion|method))\s+(make|show|indicate|suggest|increase|decrease|change|rise|fall|work|cause|need|contribute|argue|help|provide|present)\b/gi,"语法","单数主语与动词不一致",m=>{
+   const dict={make:"makes",show:"shows",indicate:"indicates",suggest:"suggests",increase:"increases",decrease:"decreases",change:"changes",rise:"rises",fall:"falls",work:"works",cause:"causes",need:"needs",contribute:"contributes",argue:"argues",help:"helps",provide:"provides",present:"presents"};
+   return [m[1]+" "+dict[m[2].toLowerCase()],"判断中心主语后，检查一般现在时的第三人称单数形式"];
+ });
+ // Be-verb and quantifier agreement.
+ find(/\b(he|she|it)\s+(are|were)\b/gi,"语法","be 动词与单数主语不一致",m=>[m[1]+" "+(m[2].toLowerCase()==="were"?"was":"is"),"普通陈述句中应匹配单数主语；特殊虚拟语气另行判断"]);
+ find(/\b(they|we|you)\s+(is|was)\b/gi,"语法","be 动词与人称不一致",m=>[m[1]+" "+(m[2].toLowerCase()==="was"?"were":"are"),"核对主语人称及 be 动词"]);
+ find(/\bI\s+(is|are)\b/g,"语法","I 后 be 动词形式",()=>["I am","一般现在时 I 对应 am"]);
+ find(/\bthere\s+is\s+(two|three|four|five|six|seven|eight|nine|ten|many|several)\s+[a-z]+\b/gi,"语法","there is/are 数量搭配",m=>[m[0].replace(/\bis\b/i,"are"),"表示多个事物时通常用 there are"]);
+ find(/\bthe number of\s+([a-z]+(?:\s+[a-z]+){0,2})\s+(are|were|have)\b/gi,"语法","the number of 主谓搭配",m=>{
+   const fix={are:"is",were:"was",have:"has"}[m[2].toLowerCase()];
+   return [m[0].replace(new RegExp("\\b"+m[2]+"\\b","i"),fix),"the number of 为中心主语时通常使用单数谓语"];
+ });
+ find(/\ba number of\s+([a-z]+(?:\s+[a-z]+){0,2})\s+(is|was|has)\b/gi,"语法","a number of 主谓搭配",m=>{
+   const fix={is:"are",was:"were",has:"have"}[m[2].toLowerCase()];
+   return [m[0].replace(new RegExp("\\b"+m[2]+"\\b","i"),fix),"a number of 通常使用复数谓语"];
+ });
+ find(/\bthe percentage(?: of (?:the )?[a-z]+(?:\s+[a-z]+){0,2})?\s+(were|are)\b/gi,"语法","the percentage 主谓搭配",m=>[m[0].replace(/\bwere\b/i,"was").replace(/\bare\b/i,"is"),"以 the percentage 为中心主语时通常用单数谓语"]);
+ const nouns="student|teacher|child|car|book|country|city|problem|reason|factor|method|school|person|house|advantage|disadvantage|example|idea|benefit|job|skill|question|result|solution|trend|year|day";
+ function plural(noun){const irreg={child:"children",person:"people",city:"cities",country:"countries"};return irreg[noun]||(noun.endsWith("y")?noun.slice(0,-1)+"ies":noun.endsWith("s")?noun+"es":noun+"s");}
+ find(new RegExp("\\b(many|several|few|two|three|four|five|six|ten)\\s+("+nouns+")\\b","gi"),"语法","数量词后名词应为复数",m=>[m[1]+" "+plural(m[2].toLowerCase()),"many、several 或多个数量通常接可数名词复数"]);
+ find(new RegExp("\\bone of (?:the|these|those|my|their|our)\\s+("+nouns+")\\b","gi"),"语法","one of 后名词复数",m=>[m[0].slice(0,-m[1].length)+plural(m[1].toLowerCase()),"one of the ... 通常接复数名词"]);
+ find(/\b(many|a few|two|three)\s+(information|advice|equipment|furniture|homework|research)\b/gi,"语法","不可数名词搭配",m=>["some "+m[2],"这些名词通常不可数，可按语境使用 some 或 a piece of"]);
+ find(/\b(a|an)\s+(information|advice|equipment|furniture|homework|research)\b/gi,"语法","不可数名词冠词疑点",m=>["some "+m[2],"这些名词通常不能直接与 a/an 搭配"]);
+ find(/\bmore\s+(better|worse|higher|lower|easier)\b/gi,"语法","比较级重复修饰",m=>[m[1],"比较级前通常无需再加 more"]);
+ // Common IELTS Task 1 morphology and tense patterns.
+ find(/\b(a|an)\s+(constantly|significantly|rapidly|sharply|steadily|dramatically)\s+(increase|rise|decrease|drop)\b/gi,"语法","形容词／副词形式",m=>[m[1]+" "+ADV_ADJ[m[2].toLowerCase()]+" "+m[3],"名词前通常使用形容词，例如 a constant increase"]);
+ find(/\bunderwent\s+a\s+(significant|sharp|dramatic|steady|rapid)\s+increasing\b/gi,"语法","increase 名词形式",m=>[m[0].replace(/increasing$/i,"increase"),"underwent a significant increase 需要名词形式"]);
+ find(/\b(a|an)\s+(significant|dramatic|constant|rapid|sharp)\s+increasing\b/gi,"语法","名词 increase 与动名词混淆",m=>[m[1]+" "+m[2]+" increase","该结构需要名词 increase"]);
+ find(/\b(in|during)\s+(19\d{2}|20\d{2})[, ]+\s*(the (?:figure|percentage|number|population|rate|price|proportion)|sales|prices)\s+(increase|decrease|rise|fall|drop)\b/gi,"语法","过去时间与动词时态",m=>{
+   const past={increase:"increased",decrease:"decreased",rise:"rose",fall:"fell",drop:"dropped"};
+   return [m[0].replace(new RegExp("\\b"+m[4]+"$","i"),past[m[4].toLowerCase()]),"若数据发生于过去，通常用过去时；请结合题目时间核对"];
+ });
+ // Fixed collocations.
+ find(/\bdepend(?:s|ed|ing)?\s+of\b/gi,"搭配","depend 介词搭配",m=>[m[0].replace(/\bof$/i,"on"),"depend on 是常用搭配"]);
+ find(/\binterested\s+on\b/gi,"搭配","interested 介词搭配",m=>[m[0].replace(/\bon$/i,"in"),"interested in 是常用搭配"]);
+ find(/\bdiscuss(?:ed|es|ing)?\s+about\b/gi,"搭配","discuss about 搭配",m=>[m[0].replace(/\s+about$/i,""),"discuss 通常直接接宾语"]);
+ find(/\bgood\s+in\s+(maths|mathematics|english|sports|science|music)\b/gi,"搭配","good at 搭配",m=>[m[0].replace(/\bin\b/i,"at"),"表达擅长某项技能通常用 good at"]);
+ find(/\blisten(?:s|ed|ing)?\s+(music|songs|podcasts|the radio)\b/gi,"搭配","listen 缺少 to",m=>[m[0].replace(/\s+/," to "),"listen to music 等表达中需要 to"]);
+ find(/\bcontribute(?:s|d|ing)?\s+(for|on)\b/gi,"搭配","contribute to 搭配",m=>[m[0].replace(/\b(for|on)$/i,"to"),"contribute to 是常用搭配"]);
+ find(/\bresult(?:s|ed|ing)?\s+to\b/gi,"搭配","result in 搭配",m=>[m[0].replace(/\bto$/i,"in"),"表示导致结果通常用 result in；源于某原因可用 result from"]);
+ find(/\b(although|though|even though)\b([^.!?]{0,150}?),\s*but\b/gi,"语法","although 与 but 叠用",m=>[m[0].replace(/,\s*but\b/i,","),"通常不在同一让步结构中同时使用 although 和 but"]);
+ find(/\b(students|people|children|workers|individuals)\s+who\s+(interested|happy|responsible|important|aware)\s+(in|at|for|of|to)\b/gi,"语法","关系从句中 be 动词疑点",m=>[m[0].replace(/\bwho\s+/i,"who are "),"描述状态的关系从句通常需要 be 动词"]);
+ find(/\b([a-z]{3,})[ \t]+\1\b/gi,"表达","重复单词",m=>[m[1],"检查是否不必要地重复单词"]);
+ // Punctuation low-priority; never dominate the output.
+ find(/[ \t]+(?=[,;:!?])/g,"标点","标点前多余空格",()=>["","英文标点前通常无空格"]);
+ find(/[,;:!?\.](?=[A-Za-z])/g,"标点","标点后缺少空格疑点",m=>{
+   const pos=m.index,ch=m[0],before=text.slice(Math.max(0,pos-25),pos),after=text.slice(pos+1,pos+26);
+   if(ch==="."&&(/\b(?:Mr|Mrs|Ms|Dr|Prof|St|Jr|Sr|vs)$/i.test(before)
+      || /(?:\be|\bi)\.?g$/i.test(before) || /\bi\.?e$/i.test(before)
+      || /[A-Za-z]\.[A-Za-z]$/i.test(before)
+      || /^[A-Za-z]\./.test(after)
+      || /(?:https?:\/\/|www\.|[A-Za-z0-9]+@)[^\s]*$/i.test(before)))return null;
+   if(ch===":"&&/https?$/i.test(before))return null;
+   return [ch+" ","英文标点后通常要留空格；缩写、URL 和特殊格式可例外"];
+ });
+ // Resolve overlapping grammatical matches by keeping the longer, more specific span.
+ findings.sort((a,b)=>(b.end-b.start)-(a.end-a.start));
+ const deduped=[];
+ for(const issue of findings){
+   if(deduped.some(prev=>prev.type===issue.type&&issue.start<prev.end&&issue.end>prev.start))continue;
+   deduped.push(issue);
+ }
+ deduped.sort((a,b)=>a.start-b.start);
+ punct.sort((a,b)=>a.start-b.start);
+ const displayed=punct.slice(0,3);
+ const result=[...deduped,...displayed];
+ result.hiddenPunctuation=Math.max(0,punct.length-displayed.length);
+ result.totalPunctuation=punct.length;
+ return result;
 }
 function setReviewState(){
- const text=$("essay").value;
- lastIssues=analyseText(text);appliedIssues=new Set();
+ lastIssues=analyseText($("essay").value);appliedIssues=new Set();
  $("issueCount").textContent=String(lastIssues.length);
  $("reviewBox").hidden=false;
- $("reviewSummary").textContent=lastIssues.length+" 条待确认";
+ const groups=["语法","搭配","拼写","表达","标点"],counts={};
+ groups.forEach(type=>counts[type]=lastIssues.filter(issue=>issue.type===type).length);
+ $("reviewSummary").textContent=groups.filter(k=>counts[k]>0).map(k=>k+" "+counts[k]).join(" · ")+(lastIssues.hiddenPunctuation?" · 其他标点 "+lastIssues.hiddenPunctuation+" 条已折叠":"");
  const container=$("reviewIssues");container.textContent="";
  if(!lastIssues.length){
-   let info=document.createElement("div");info.className="review-empty";
-   info.textContent="未发现内置规则可识别的明显问题。这不代表作文没有错误；请继续人工检查词义、语法、论证、图表数据和任务回应。";
-   container.append(info);
- }else lastIssues.forEach((issue,i)=>{
-   let row=document.createElement("label");row.className="issue";
-   let checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.dataset.issue=String(i);
-   let content=document.createElement("span");content.className="issue-content";
-   let title=document.createElement("strong");title.textContent=issue.label;
-   let type=document.createElement("span");type.className="issue-label";type.textContent=issue.type;title.append(type);
-   let quote=document.createElement("span");quote.className="issue-quote";quote.textContent="原文附近："+issue.context;
-   let suggestion=document.createElement("span");suggestion.className="issue-suggestion";suggestion.textContent="建议片段："+issue.suggestion;
-   let note=document.createElement("small");note.textContent=issue.explain;
-   content.append(title,quote,suggestion,note);row.append(checkbox,content);container.append(row);
- });
- $("status").textContent="已完成本地初筛："+lastIssues.length+" 条疑点，请确认后再加入批改记录。";
+   const note=document.createElement("div");note.className="review-empty";
+   note.textContent="现有规则未发现可识别的明显错误。这不代表作文没有语法错误。复杂句、词义、论证逻辑与图表数据仍需人工检查。";
+   container.append(note);
+ }else{
+   groups.forEach(type=>{
+     const indices=lastIssues.map((issue,i)=>({issue,i})).filter(entry=>entry.issue.type===type);
+     if(!indices.length)return;
+     const isPunctuation=type==="标点",section=document.createElement(isPunctuation?"details":"section");
+     section.className="review-category"+(isPunctuation?" punctuation-category":"");
+     const heading=document.createElement(isPunctuation?"summary":"div");
+     heading.className="review-category-head";
+     const title=document.createElement("strong");title.textContent=(type==="语法"?"语法结构":type==="搭配"?"介词与词组搭配":type==="拼写"?"拼写疑点":type==="表达"?"表达重复":"标点与空格")+" · "+indices.length;
+     heading.append(title);
+     if(isPunctuation){const help=document.createElement("span");help.textContent="默认收起，最多显示 3 条";heading.append(help);}
+     section.append(heading);
+     indices.forEach(entry=>{
+       const issue=entry.issue,i=entry.i;
+       const row=document.createElement("label");row.className="issue";
+       const box=document.createElement("input");box.type="checkbox";box.dataset.issue=String(i);
+       const content=document.createElement("span");content.className="issue-content";
+       const label=document.createElement("strong");label.textContent=issue.label;
+       const quote=document.createElement("span");quote.className="issue-quote";quote.textContent="原文附近："+issue.context;
+       const suggestion=document.createElement("span");suggestion.className="issue-suggestion";suggestion.textContent="建议："+(issue.suggestion||"删除多余空格");
+       const explain=document.createElement("small");explain.textContent=issue.explain;
+       content.append(label,quote,suggestion,explain);row.append(box,content);section.append(row);
+     });
+     container.append(section);
+   });
+ }
+ $("status").textContent="检查完成：优先查看语法与搭配，勾选确认后再加入记录。规则无法发现全部语法问题。";
 }
 function applyCheckedIssues(){
  let accepted=0;
@@ -346,11 +415,11 @@ function applyCheckedIssues(){
       if(!lines.includes(line))$("misspellings").value=current?current+"\n"+line:line;
    }else{
       const inputs=addError();
-      const chunk=$("essay").value.slice(issue.contextStart,issue.contextEnd).replace(/\s+/g," ");
+      const raw=$("essay").value.slice(issue.contextStart,issue.contextEnd);
       const offset=issue.start-issue.contextStart;
-      const replacement=chunk.slice(0,offset)+issue.suggestion+chunk.slice(offset+issue.original.length);
-      inputs[0].value=chunk;
-      inputs[1].value=replacement;
+      const corrected=raw.slice(0,offset)+issue.suggestion+raw.slice(offset+issue.original.length);
+      inputs[0].value=raw.replace(/\s+/g," ").trim();
+      inputs[1].value=corrected.replace(/\s+/g," ").trim();
       inputs[2].value=issue.label+"："+issue.explain;
    }
    appliedIssues.add(index);accepted++;
