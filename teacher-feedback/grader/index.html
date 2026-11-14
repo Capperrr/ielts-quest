@@ -1,0 +1,220 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1d7297"><title>IELTS WRITE LAB · 写作批改工作台</title>
+<style>
+:root{--a:#4aefd0;--y:#ffe187;--o:#ffb48e;--line:#8adbea;--white:#f7fdff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--white);font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(ellipse at top left,#3e9fc0 0,#1e7199 42%,#175372 100%);min-height:100vh}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#ffffff0c 1px,transparent 1px),linear-gradient(90deg,#ffffff0c 1px,transparent 1px);background-size:30px 30px}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.wrap{max-width:1260px;margin:auto;padding:21px 22px 60px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;font:900 13px ui-monospace,monospace}nav strong{color:var(--y)}nav a{background:#1a5777;border:1px solid #9cdeec;padding:8px 12px;text-decoration:none;box-shadow:3px 3px #0f4661;font:800 12px sans-serif}
+.hero{padding:27px 31px;background:linear-gradient(120deg,#175675,#308fb0);border:2px solid #b1e5ee;box-shadow:7px 7px #0e455e;margin-bottom:26px;position:relative}
+.hero:before{content:"";position:absolute;left:0;top:0;width:48%;height:5px;background:linear-gradient(90deg,#5af3c9 0 40%,#ffdc87 40% 75%,#ffb087 75%)}
+.eyebrow{font:850 11px ui-monospace,monospace;letter-spacing:2px;color:#b4ffec}
+h1{font:1000 clamp(39px,6vw,70px)/1 Impact,"Arial Black",sans-serif;letter-spacing:2px;margin:12px 0;text-shadow:5px 5px #11435c}h1 span{color:var(--y)}
+.hero p{margin:9px 0 0;max-width:740px;color:#e4f7fd}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:start;gap:22px}
+.panel{background:linear-gradient(160deg,#287c9d,#1e5d7c);padding:22px;margin-bottom:24px;border:1px solid #a1d9e5;box-shadow:5px 5px #0c435e;min-width:0}
+h2{display:flex;align-items:center;gap:12px;font-size:18px;margin:0 0 18px}
+.number{display:grid;place-items:center;background:var(--y);color:#174259;border:2px solid #fff2c3;box-shadow:3px 3px #9d7d40;min-width:37px;height:37px;font:900 17px ui-monospace,monospace}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+.field{display:block;min-width:0}.field span{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
+input,select,textarea{width:100%;background:#12435f;color:#fff;border:1px solid #86c9da;padding:10px 12px;min-height:43px;border-radius:2px}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#afd1dd}select{color-scheme:dark}
+.hint{font-size:12px;color:#e5f5fb;margin:10px 0}
+.crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.criterion{background:#18516d;border:1px solid #8ac9d9;padding:13px;min-width:0}
+.crit-name{font-size:15px;font-weight:900;margin:0 0 9px}.crit-desc{font-size:11px;color:#d4edf4;margin:8px 0}
+.group-title{font-weight:850;font-size:12px;color:var(--y);margin:13px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;max-height:180px;overflow:auto}
+.chip{background:#1a6481;border:1px solid #83c7da;color:#fff;font-size:12px;padding:7px 9px;text-align:left;line-height:1.35}
+.chip[aria-pressed=true]{background:#098777;border-color:#8bffdb}.chip[aria-pressed=true]:before{content:"✓ ";font-weight:900}
+.criterion textarea{min-height:78px;font-size:13px}
+.criterion select{background:#0b3853}
+.count-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.count-card{background:#154b6a;border:1px solid #81c3d5;padding:12px}.count-card strong{display:block;font-size:13px;margin-bottom:9px}
+.count-card select{font-size:13px}.count-card small{display:block;margin-top:7px;font-size:11px;color:#cde9ef}
+.error-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.error-row .wide{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}
+.btn{background:#236f91;color:#fff;border:1px solid #b1e0ee;box-shadow:3px 3px #0b415c;padding:11px 14px;font-weight:800;min-height:44px}
+.btn.primary{background:var(--a);color:#0e494e;border-color:#d7fff1;box-shadow:4px 4px #178e80}.btn:active{transform:translate(2px,2px);box-shadow:1px 1px #0b415c}
+.output{position:sticky;top:14px}
+.scoreboard{background:#123f60;border:2px solid #a8e0e8;display:flex;align-items:center;justify-content:space-between;padding:15px;margin:12px 0}
+.scoreboard strong{display:block;color:var(--y);font:1000 46px ui-monospace,monospace}.scoreboard small{font-size:11px;color:#d7ecf4}
+.scoreparts{color:#b2ffe6;font:800 12px/1.9 ui-monospace,monospace;text-align:right;max-width:145px}
+.terminal{border:2px solid #92d5e1;background:#0d3554}.terminal-header{background:#348bac;color:white;display:flex;justify-content:space-between;padding:8px 12px;font:850 11px ui-monospace,monospace}
+#result{border:0;min-height:545px;background:#0d3554;line-height:1.95;font-size:13px}
+.notice{font-size:12px;color:#e8f8fc;background:#165778;border-left:4px solid var(--y);padding:13px;margin:17px 0 0}
+#status{min-height:24px;color:var(--y);font-weight:800;font-size:13px;margin-top:12px}
+.print-only{display:none}.footer{text-align:center;font-size:11px;color:#d4edf4;margin-top:23px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.output{position:static}}
+@media(max-width:580px){.wrap{padding:13px 12px 42px}.hero{padding:22px}.crit-grid,.count-grid,.grid{grid-template-columns:1fr}.panel{padding:15px}.actions .btn{flex:1 1 auto}.error-row{grid-template-columns:1fr}.error-row .wide{grid-column:auto}#result{min-height:410px}}
+@media print{@page{margin:15mm}body{background:white;color:#111}nav,.hero,.left,.output>h2,.scoreboard,.terminal,.actions,.notice,#status,.footer{display:none!important}.layout{display:block}.output{border:0;background:white;box-shadow:none;padding:0}.print-only{display:block!important;color:#111;white-space:pre-wrap;font:15px/1.9 "PingFang SC","Microsoft YaHei",sans-serif}}
+</style></head>
+<body><main class="wrap">
+<nav><span>✦ EDU<strong>/</strong>ARCADE · WRITE LAB</span><a href="../">← 返回课堂反馈助手</a></nav>
+<header class="hero"><span class="eyebrow">★ TEACHER MARKING STATION / OFFLINE RULE ENGINE</span><h1>IELTS <span>WRITE LAB.</span></h1><p>Task 1 小作文 / Task 2 大作文 · TA/TR、CC、LR、GRA 分项批改 · 老师自主评分 · 错词和错句只填写学生实际出现的内容。</p></header>
+<div class="layout"><div class="left">
+<section class="panel"><h2><span class="number">01</span>学生与作文信息</h2><div class="grid">
+<label class="field"><span>学生姓名</span><input id="name" maxlength="35" placeholder="例如：陈同学"></label>
+<label class="field"><span>作文类型</span><select id="task"><option value="task1">Task 1 · 小作文</option><option value="task2">Task 2 · 大作文</option></select></label>
+<label class="field full"><span>题目、图表类型或备注（选填）</span><textarea id="prompt" rows="2" placeholder="动态图 / 静态图 / 地图 / 流程图，或 Task 2 题目"></textarea></label>
+</div><p class="hint">该工具用于整理教师的真实批改观察，不自动阅读学生作文、不自动检测错误。</p></section>
+<section class="panel"><h2><span class="number">02</span>四项评分与评价</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
+<div class="crit-grid" id="criteria"></div></section>
+<section class="panel"><h2><span class="number">03</span>拼写与语法错误记录</h2>
+<div class="count-grid">
+<label class="count-card"><strong>LR · 拼写错误数量</strong><select id="spelling"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>数次错误并不自动决定 LR 分数。</small></label>
+<label class="count-card"><strong>GRA · 语法错误数量</strong><select id="grammar"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>分数还需考虑句式范围及错误影响。</small></label>
+</div>
+<p class="group-title">实际拼写错误（可选；不会预填其他学生错词）</p>
+<textarea id="misspellings" rows="3" placeholder="请填写本名学生真实出现的拼写：例如 错词 → 正确拼写；一行一组"></textarea>
+<p class="group-title">具体错句订正（可选）</p>
+<div id="errors"></div><button type="button" class="btn" id="add">＋ 增加一条错句</button>
+<p class="group-title">整体评价 / 特别观察（可选）</p><textarea id="overview" rows="3" placeholder="例如：主要趋势抓取得不错，但同组数据仍可增加对比。"></textarea>
+<p class="group-title">课后任务（不填则使用已选不足匹配建议）</p><textarea id="homework" rows="3" placeholder="例如：范文学习 + 重写主体段1 + 复盘错句"></textarea>
+<div class="actions"><button class="btn primary" id="generate" type="button">✦ 生成批改报告</button><button class="btn" id="sample1" type="button">▶ Task 1 示例</button><button class="btn" id="sample2" type="button">▶ Task 2 示例</button><button class="btn" id="clear" type="button">↺ 清空</button></div>
+</section></div>
+<section class="panel output"><h2><span class="number">★</span>教师批改报告终端</h2>
+<div class="scoreboard"><div><small>本篇作文 · 四项等权评分</small><strong id="total">—</strong></div><div class="scoreparts" id="parts">TA — · CC — · LR — · GRA —</div></div>
+<div class="terminal"><div class="terminal-header"><span>● ● ● &nbsp; MARKING_REPORT.TXT</span><span>EDITABLE</span></div>
+<textarea id="result" spellcheck="false" placeholder="> SYSTEM READY_&#10;&#10;请填写姓名、选择四项分数及观察。&#10;点击生成即可获得可复制的报告。"></textarea></div>
+<div class="actions"><button class="btn primary" id="copy" type="button">▣ 复制报告</button><button class="btn" id="download" type="button">⇩ 下载 TXT</button><button class="btn" id="print" type="button">▤ 打印 / PDF</button></div>
+<p class="notice">本篇成绩由 TA/TR、CC、LR、GRA 四项平均并按最近半分显示。整场写作成绩需另外结合 Task 1 与 Task 2，以 1:2 的权重计算。拼写及语法错误次数是教师的事实记录，不构成官方自动评分规则。</p>
+<div id="status" role="status" aria-live="polite"></div><pre class="print-only" id="printout"></pre>
+</section></div><p class="footer">IELTS WRITE LAB · No AI · No login · Browser-only processing</p></main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const BANK={
+task1:{
+ T:{title:"TA · 任务完成",good:[["抓住核心趋势","能抓住两大核心变化趋势，定位关键对比节点"],["分组合理","综述包含主要共性与差异，并能够据此分组"],["对比充分","主体段进行了充分的数据比较，包括最高值和最低值"],["按时间梳理清晰","能够按照时间合理组织数据变化"]],bad:[["少量数据逻辑混乱","个别数据关系或变化顺序的表述还不够准确","重新核对数据起止点及变化顺序"],["相似值比较不足","主体段对相似数值的对比呈现仍可增加","补充两组有意义的相近数值对比"],["分组缺乏依据","段落中数据分组依据不够清晰","按变化模式或相似类别重新组织数据"],["遗漏主要特征","Overview 未充分体现主要趋势或关键差异","先提炼两项主要特征，再写 Overview"]]},
+ C:{title:"CC · 连贯衔接",good:[["总分结构清晰","整体总分结构清晰，段落安排合理"],["连接词恰当","Overall、Additionally、However 等衔接表达使用比较恰当"],["数据顺序自然","数据呈现顺序自然，段落衔接较顺畅"]],bad:[["衔接偶有生硬","个别句子之间的过渡仍略显生硬","按真实比较关系调整连接方式"],["连接词机械重复","固定连接词重复较多，衔接不够灵活","结合数据逻辑使用指代、比较或自然排序"],["分段逻辑不清","主体段分段依据需要进一步明确","用变化类别或时间区间来分组"]]},
+ L:{title:"LR · 词汇资源",good:[["核心图表词汇掌握","能够使用图表核心词汇准确表达趋势"],["主动替换升降表达","有意识地替换 rise、increase、fall 等表达"],["比较词运用较好","比较关系的表达和替换较恰当"]],bad:[["拼写需订正","部分单词拼写有误，影响语言准确性","整理本篇实际错词，进行正确拼写与句中仿写"],["趋势词单一","趋势及幅度词汇选择较单一","练习动词+副词、形容词+名词两种表达"],["介词搭配不稳","increase in、rise by、account for 等搭配使用不够稳定","整理图表中常见介词搭配并造句"]]},
+ G:{title:"GRA · 语法与句式",good:[["敢于尝试复合句","能够尝试从句及较长的复合句"],["句式变化较丰富","能使用多种句子结构描述数据"],["基本句子准确","基础主谓结构和动词形式总体正确"]],bad:[["名词和动名词混淆","在 a significant increase 等结构中误用了动名词或其他词性","对比 a significant increase 与 increasing 等词性"],["副词与形容词混淆","a constant increase 结构中容易误用副词形式","分别练习 a constant increase 与 increased constantly"],["主谓一致错误","the percentage 等中心主语与谓语的单复数搭配不稳定","找准中心主语，再检查 is/was 与 are/were"],["第三人称单数错误","一般现在时的第三人称单数动词形式容易漏写或误加","检查单数主语与 present/presents 等谓语搭配"],["标点后漏空格","英文句号或逗号之后未留必要空格","集中检查标点后空格与句首大写"],["从句结构不完整","使用 which、because 等连接的从句缺少必要成分","分别标出主句和从句的主谓结构"]]}
+},
+task2:{
+ T:{title:"TR · 任务回应",good:[["立场清晰","立场清晰，能够回应题目主要要求"],["让步反驳结构","文章采用让步—反驳的论证思路"],["写作框架合理","能够围绕观点组织主体段"],["论点切题","主要论点与题目讨论方向相关"]],bad:[["论证逻辑跳跃","论点提出后解释不够充分，论证存在跳跃","按观点—原因—机制—例子完善解释"],["举例关联不足","例子和中心论点的联系需要进一步解释","为例子补充如何支持论点的分析"],["论证展开不均","部分主体段的论点展开较弱","为较弱的主体段补足原因与影响"]]},
+ C:{title:"CC · 连贯衔接",good:[["完整四段式结构","具备完整四段式结构，段落划分合理"],["过渡词丰富","过渡词与逻辑词较丰富"],["中心句清晰","段落围绕比较明确的中心句展开"]],bad:[["句间跳跃","相邻句子之间的推理衔接不够连贯","补写关键解释句，理清因果链"],["连接词过度使用","逻辑词使用较多，但部分缺乏真实逻辑关系","根据内容关系选择更自然的连接方式"]]},
+ L:{title:"LR · 词汇资源",good:[["话题词汇有积累","具备一定的话题词汇积累"],["有同义替换意识","有意识地进行同义替换"],["词组搭配丰富","使用了一些与主题相关的表达和固定搭配"]],bad:[["拼写失误","文章中存在需要改正的拼写错误","将本篇实际出现的错词整理为个人拼写清单"],["搭配不自然","部分词汇和介词搭配不够自然","整理实际错搭配并进行仿写"],["词义替换不当","部分词汇替换改变了句子的准确含义","检查替换前后语义及搭配是否一致"]]},
+ G:{title:"GRA · 语法与句式",good:[["尝试复合句式","能够尝试使用复合句式表达原因与观点"],["句式有一定变化","有意识地变化句子结构"],["基本语序清楚","多数句子能够保持清晰的主谓结构"]],bad:[["can 后动词不还原","can、may、should 等情态动词后使用了非原形动词","重点练习 can make、may make 等情态动词+原形"],["不定式后动词形式错误","to do 不定式中使用了错误的动词形式","区分 to make 与 to made，确认 to 是不定式时使用动词原形"],["三单缺失","it/he/she 等单数主语在一般现在时未使用正确谓语形式","完成 it makes、he argues 等三单改错"],["词性选择错误","动词与名词形式混淆，如 choose/choice","按句子成分区分动词 choose 与名词 choice"],["从句不完整","复杂从句中主语或谓语缺失","先保证主句完整，再检查每个有限从句"],["介词搭配不准确","动词及介词固定搭配容易出错","整理本篇实际出现的搭配并造句"]]}
+}
+};
+const KEYS=["T","C","L","G"],SELECTED={};
+const countText={lt:"少于5次（<5）",eq:"恰好5次（=5）",gt:"多于5次（>5）"};
+const scores=["",...Array.from({length:18},(_,i)=>(i+2)/2).filter(n=>n<=9).map(n=>n.toFixed(1))];
+function getScores(){return KEYS.map(k=>{let v=$("score-"+k).value;return v===""?null:Number(v);});}
+function roundHalf(n){return Math.ceil(n*2)/2;}
+function render(){
+ const task=$("task").value,root=$("criteria");root.textContent="";
+ KEYS.forEach(k=>{
+  const data=BANK[task][k],box=document.createElement("div");box.className="criterion";
+  let header=document.createElement("div");header.className="crit-name";header.textContent=data.title;box.append(header);
+  const select=document.createElement("select");select.id="score-"+k;select.setAttribute("aria-label",data.title+" 分数");
+  scores.forEach(v=>{let opt=document.createElement("option");opt.value=v;opt.textContent=v||"请选择该项分数";select.append(opt);});
+  select.addEventListener("change",updateScore);box.append(select);
+  for(const mode of ["good","bad"]){
+   let title=document.createElement("div");title.className="group-title";title.textContent=mode==="good"?"✦ 优点":"⚡ 不足";box.append(title);
+   let chips=document.createElement("div");chips.className="chips";
+   data[mode].forEach((row,i)=>{
+    let button=document.createElement("button");button.type="button";button.className="chip";button.textContent=row[0];button.title=row[1];
+    button.setAttribute("aria-pressed","false");button.dataset.id=k+":"+mode+":"+i;
+    button.addEventListener("click",()=>button.setAttribute("aria-pressed",button.getAttribute("aria-pressed")==="true"?"false":"true"));chips.append(button);
+   });box.append(chips);
+  }
+  let caption=document.createElement("div");caption.className="group-title";caption.textContent="自定义评论（选填）";box.append(caption);
+  let area=document.createElement("textarea");area.id="note-"+k;area.rows=2;area.placeholder="例如：具体的一处表现或需要改进的问题";box.append(area);
+  root.append(box);
+ });
+ updateScore();$("result").value="";$("printout").textContent="";
+}
+function selected(k,mode){
+ return BANK[$("task").value][k][mode].filter((row,i)=>{
+ const el=document.querySelector('[data-id="'+k+":"+mode+":"+i+'"]');return el&&el.getAttribute("aria-pressed")==="true";
+ });
+}
+function updateScore(){
+ let values=getScores(),valid=values.every(v=>v!==null);
+ $("total").textContent=valid?roundHalf(values.reduce((a,b)=>a+b,0)/4).toFixed(1):"—";
+ $("parts").textContent=KEYS.map((k,i)=>(k==="T"?($("task").value==="task1"?"TA":"TR"):k==="C"?"CC":k==="L"?"LR":"GRA")+" "+(values[i]===null?"—":values[i].toFixed(1))).join(" · ");
+ return valid;
+}
+function addError(){
+ let row=document.createElement("div");row.className="error-row";
+ let wrong=document.createElement("input");wrong.placeholder="学生实际错句";wrong.setAttribute("aria-label","错句");
+ let right=document.createElement("input");right.placeholder="正确修改";right.setAttribute("aria-label","修改");
+ let why=document.createElement("input");why.placeholder="错误原因（选填）";why.className="wide";why.setAttribute("aria-label","原因");
+ let remove=document.createElement("button");remove.className="btn";remove.type="button";remove.textContent="× 删除";remove.addEventListener("click",()=>row.remove());
+ row.append(wrong,right,why,remove);$("errors").append(row);return [wrong,right,why];
+}
+function generateReport(){
+ let name=$("name").value.trim();if(!name){$("name").focus();$("status").textContent="请先填写学生姓名";return null;}
+ if(!updateScore()){$("status").textContent="请先选择四项分数";return null;}
+ let task=$("task").value,scores=getScores(),s="【学生姓名】："+name+"\n【作文类型】："+(task==="task1"?"Task 1（小作文）":"Task 2（大作文）");
+ if($("prompt").value.trim())s+="\n【题目/图表】："+$("prompt").value.trim();
+ s+="\n\n";
+ KEYS.forEach((k,i)=>{
+  let label=k==="T"?(task==="task1"?"TA":"TR"):k==="C"?"CC":k==="L"?"LR":"GRA";
+  let text=[...selected(k,"good").map(x=>x[1]),...selected(k,"bad").map(x=>x[1])];
+  let custom=$("note-"+k).value.trim();if(custom)text.push(custom);
+  if(k==="L"&&$("spelling").value)text.push("拼写错误"+countText[$("spelling").value]);
+  if(k==="G"&&$("grammar").value)text.push("语法错误"+countText[$("grammar").value]);
+  s+=(i+1)+". "+label+"-"+scores[i].toFixed(1)+"\n"+(text.length?text.join("；")+"。":"尚未填写该项具体评语。")+"\n";
+ });
+ s+="\n【本篇得分】："+$("total").textContent+"\n";
+ if($("overview").value.trim())s+="\n【整体评价】："+$("overview").value.trim()+"\n";
+ if($("misspellings").value.trim())s+="\n【本篇实际拼写错误】：\n"+$("misspellings").value.trim()+"\n";
+ let errors=[...$("errors").children].map(e=>[...e.querySelectorAll("input")].map(x=>x.value.trim())).filter(x=>x.some(Boolean));
+ if(errors.length){s+="\n【典型语法及词汇错句】：\n";errors.forEach((e,i)=>s+=(i+1)+". "+(e[0]?"原句："+e[0]:"")+(e[1]?"；订正："+e[1]:"")+(e[2]?"；说明："+e[2]:"")+"\n");}
+ let homework=$("homework").value.trim();
+ let advice=KEYS.flatMap(k=>selected(k,"bad").map(row=>row[2])).filter((v,i,a)=>v&&a.indexOf(v)===i).slice(0,4);
+ if(homework)s+="\n【提升方法与作业】：\n"+homework;
+ else if(advice.length)s+="\n【提升方法与作业】：\n"+advice.map((x,i)=>(i+1)+". "+x).join("\n");
+ return s.trim();
+}
+function generate(){
+ let report=generateReport();if(!report)return;
+ $("result").value=report;$("printout").textContent=report;$("status").textContent="批改报告已生成，可编辑并复制";
+}
+function press(id){let b=document.querySelector('[data-id="'+id+'"]');if(b)b.setAttribute("aria-pressed","true");}
+function sample(kind){
+ $("task").value=kind;render();$("name").value="示例学生";$("prompt").value=kind==="task1"?"动态图 · 时间变化对比":"观点类 · 让步反驳";
+ $("misspellings").value="";$("errors").textContent="";$("spelling").value="lt";$("grammar").value="lt";
+ if(kind==="task1"){
+  ["T","C","L","G"].forEach(k=>$("score-"+k).value="6.0");
+  ["T:good:0","T:good:1","T:bad:0","C:good:0","C:good:1","C:bad:0","L:good:0","L:good:1","G:good:0"].forEach(press);
+  $("overview").value="能够抓住核心变化趋势，但部分数据比较关系需要进一步理清。";
+  $("homework").value="补充相似数值的对比；检查名词词性、主谓搭配和标点空格。";
+ }else{
+  $("score-T").value="6.0";$("score-C").value="6.0";$("score-L").value="5.0";$("score-G").value="5.0";$("spelling").value="gt";$("grammar").value="gt";
+  ["T:good:0","T:good:1","T:bad:0","C:good:0","C:good:1","L:good:0","L:good:1","G:good:0","G:bad:0"].forEach(press);
+  $("overview").value="立场和文章结构基本清楚，但需要加强观点与解释之间的推理衔接。";
+  $("homework").value="重写一个主体段的论证链；复习情态动词后动词原形；订正本次实际错词。";
+ }
+ $("note-T").value="";$("note-C").value="";$("note-L").value="";$("note-G").value="";
+ updateScore();generate();
+ $("status").textContent="演示已填入：错词与错句留空，需根据学生真实作文填写。";
+}
+$("task").addEventListener("change",()=>{render();$("status").textContent="已切换作文类型，分项评分已清空";});
+$("add").addEventListener("click",addError);
+$("generate").addEventListener("click",generate);
+$("sample1").addEventListener("click",()=>sample("task1"));
+$("sample2").addEventListener("click",()=>sample("task2"));
+$("clear").addEventListener("click",()=>{
+ ["name","prompt","misspellings","overview","homework","result"].forEach(k=>$(k).value="");
+ $("spelling").value="";$("grammar").value="";$("errors").textContent="";$("task").value="task1";
+ render();$("status").textContent="已清空，不会自动保存学生数据";
+});
+$("result").addEventListener("input",()=>$("printout").textContent=$("result").value);
+$("copy").addEventListener("click",async()=>{
+ let t=$("result").value;if(!t.trim()){$("status").textContent="请先生成报告";return;}
+ try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(t);else throw Error("fallback");$("status").textContent="复制成功";}
+ catch(e){$("result").focus();$("result").select();try{$("status").textContent=document.execCommand("copy")?"复制成功":"已选中报告，请手动复制";}catch(e2){$("status").textContent="请长按选中文字复制";}}
+});
+$("download").addEventListener("click",()=>{
+ let t=$("result").value;if(!t.trim()){$("status").textContent="请先生成报告";return;}
+ let blob=new Blob(["\uFEFF"+t],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=($("name").value.trim().replace(/[\\/:*?"<>|]/g,"_")||"学生")+"_写作批改.txt";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="已创建 TXT 文件";
+});
+$("print").addEventListener("click",()=>{if(!$("result").value.trim()){$("status").textContent="请先生成报告";return;}$("printout").textContent=$("result").value;window.print();});
+render();addError();
+})();
+</script></body></html>
