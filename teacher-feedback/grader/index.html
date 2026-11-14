@@ -102,7 +102,7 @@ const KEYS=["T","C","L","G"],SELECTED={};
 const countText={lt:"少于5次（<5）",eq:"恰好5次（=5）",gt:"多于5次（>5）"};
 const scores=["",...Array.from({length:18},(_,i)=>(i+2)/2).filter(n=>n<=9).map(n=>n.toFixed(1))];
 function getScores(){return KEYS.map(k=>{let v=$("score-"+k).value;return v===""?null:Number(v);});}
-function roundHalf(n){return Math.ceil(n*2)/2;}
+function roundHalf(n){return Math.round((n+Number.EPSILON)*2)/2;}
 function render(){
  const task=$("task").value,root=$("criteria");root.textContent="";
  KEYS.forEach(k=>{
