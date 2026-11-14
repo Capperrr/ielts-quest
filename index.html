@@ -272,7 +272,7 @@ function startCloud(){
   showAuth();accountStatus('正在连接腾讯云账号系统……');
   const script=document.createElement('script');
   // Official CloudBase v3 browser bundle; never use v4 beta for username login.
-  script.src='https://static.cloudbase.net/cloudbase-js-sdk/3.11.0/cloudbase.full.js';
+  script.src='https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js';
   script.onload=async()=>{
     try{
       if(!window.cloudbase?.init)throw Error('腾讯云身份认证脚本未加载');
