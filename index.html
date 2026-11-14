@@ -164,28 +164,26 @@ body[data-theme="cosmos"]>.shell{position:relative;z-index:1}
   <div class="brand"><div class="brandicon">✦</div><div>IELTS Quest<small>雅思写作 · 闯关实验室</small></div></div>
   <div class="topright"><div class="statpill">⭐ <b id="headLevel">Lv.1</b></div><div class="statpill">🪙 <b id="headCoins">0</b></div><div class="statpill">🔥 <b id="headStreak">0</b></div><button class="iconbutton" id="soundBtn" title="音效开关" aria-label="切换音效">🔊</button></div>
 </header>
-<div class="accountline" id="accountLine"><span id="accountIdentity">💾 免登录学习 · 进度仅保存在当前浏览器（不跨设备同步）</span><span id="syncStatus" class="syncStatus"></span><button id="logoutBtn" hidden>退出登录</button></div>
+<div class="accountline" id="accountLine"><span id="accountIdentity">💾 本机试玩版 · 记录只保存在当前浏览器</span><span id="syncStatus" class="syncStatus"></span><button id="logoutBtn" hidden>退出登录</button></div>
 <nav class="tabs" aria-label="主要页面"><button class="tab active" data-tab="home">🏠 训练大厅</button><button class="tab" data-tab="library">📚 我的词库</button><button class="tab" data-tab="corpus">📖 主题语料库</button><button class="tab" data-tab="review">🧠 错题本</button><button class="tab" data-tab="shop">🎁 奖励商店</button><button class="tab" data-tab="essay">✍️ AI 作文精批</button></nav>
 <main id="app"><section class="panel" style="padding:24px;margin:24px 0"><h2>IELTS Quest 雅思写作训练</h2><p>⚠️ 当前页面没有运行游戏脚本。如果你在 iPad 的“文件”预览中打开，请不要在预览里玩：它可能不支持 JavaScript。</p><p>请在 Safari 打开 <a style="color:#47e5bb" href="https://convika.com/tools/html-viewer/">HTML 文件运行器</a>，选择本 HTML 文件，并开启“Run scripts”，就可以运行游戏。</p><p>电脑用户可直接用 Chrome、Safari 或 Edge 打开本文件。</p></section></main>
-<footer>IELTS Quest · 账号密码登录测试版 · 首次注册需邮箱验证；学习记录保存在独立云端档案<br>自主练习辅助工具，非 IELTS 官方产品；示例答案供教学训练使用。</footer>
+<footer>IELTS Quest · 浏览器互动游戏 · 云端账号配置成功后，各学生的学习档案独立保存；尚未配置时为本机试玩版<br>自主练习辅助工具，非 IELTS 官方产品；示例答案供教学训练使用。</footer>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div class="authGate" id="authGate" hidden>
   <div class="authCard" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="eyebrow">IELTS QUEST · STUDENT ACCOUNT</div>
     <h2 id="authTitle">欢迎来到写作冒险岛 ✨</h2>
-    <p>首次使用邮箱验证码注册并设置用户名；之后使用用户名和密码登录。你的词库、错题、金币、等级和训练记录保存在独立云端档案。</p>
-    <div class="authTabs"><button class="active" id="loginTab" type="button">账号密码登录</button><button id="registerTab" type="button">创建账号</button></div>
+    <p>注册或登录自己的学习账号。你的词库、错题、金币、等级和训练记录会保存在自己的云端档案中。</p>
+    <div class="authTabs"><button class="active" id="loginTab" type="button">登录账号</button><button id="registerTab" type="button">创建账号</button></div>
     <form id="studentAuth">
-      <label for="authEmail" id="authLoginLabel">用户名或邮箱</label><input id="authEmail" type="text" autocomplete="username" maxlength="254" placeholder="输入用户名或邮箱" required>
-      <div id="usernameField" hidden><label for="authUsername">设置用户名（5–24 位）</label><input id="authUsername" type="text" autocomplete="off" maxlength="24" minlength="5" placeholder="例如 student_001"></div>
-      <label for="authPassword">密码（8–32 位）</label><input id="authPassword" type="password" minlength="8" maxlength="32" autocomplete="current-password" placeholder="请输入密码" required>
-      <div id="verificationField" hidden><label for="authVerificationCode">邮箱验证码</label><input id="authVerificationCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="输入收到的数字验证码"></div>
+      <label for="authUsername">用户名</label><input id="authUsername" type="text" inputmode="text" autocomplete="username" maxlength="24" minlength="5" pattern="[A-Za-z][A-Za-z0-9._-]{4,23}" placeholder="例如 student_001（5–24 位）" required>
+      <label for="authPassword">密码（8–32 位，至少三类字符）</label><input id="authPassword" type="password" minlength="8" maxlength="32" autocomplete="current-password" placeholder="包含大小写、数字、特殊字符中的至少三类" required>
+      <div id="inviteField" hidden><label for="authInviteCode">班级邀请码（仅注册需要）</label><input id="authInviteCode" type="text" autocomplete="off" maxlength="128" placeholder="请输入老师提供的邀请码"></div>
       <button class="btn" type="submit" id="authSubmit">登录并开始学习 →</button>
-      <button class="btn secondary" type="button" id="restartEmailRegistration" hidden>重新填写 / 重新发送验证码</button>
     </form>
     <div id="authStatus" class="authStatus" aria-live="polite">正在连接学生账号系统……</div>
-    <p>首次注册时需要一次邮箱验证码。日常用户名密码登录不需要验证码；不使用班级邀请码。密码与验证码不会写入学习档案。</p>
+    <p>安全提示：密码由身份验证服务处理，网页不会把你的明文密码存进学习档案。</p>
   </div>
 </div>
 <script>
@@ -196,35 +194,24 @@ const CLOUD_CONFIG = Object.freeze({
   env: 'ielts-quest-d8gzj6qo48301e5d5',
   region: 'ap-shanghai',
   publishableKey: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgxZWVlYjc5LTAxZjAtNDZkOC04NzI3LWE0ODljNWVhYjRiZSJ9.eyJpc3MiOiJodHRwczovL2llbHRzLXF1ZXN0LWQ4Z3pqNnFvNDgzMDFlNWQ1LmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsImV4cCI6NDA5ODMwOTQ4MywiaWF0IjoxNzk0NjI2MjgzLCJub25jZSI6InVhZ2pyLU54VDFTTXNMSTNwZzFrbVEiLCJhdF9oYXNoIjoidWFnanItTnhUMVNNc0xJM3BnMWttUSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJyb2xlIjoiYW5vbiIsImlzX2Fub255bW91cyI6dHJ1ZSwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiYW5vbnltb3VzIiwicHJvdmlkZXJzIjpbImFub255bW91cyJdfSwidXNlcl9tZXRhZGF0YSI6eyJuYW1lIjoiQW5vbnltb3VzIn0sInVzZXJfdHlwZSI6IiIsImNsaWVudF90eXBlIjoiY2xpZW50X3VzZXIiLCJpc19zeXN0ZW1fYWRtaW4iOmZhbHNlfQ.LO7Z7yWV7ja2A7prmzuBn52uwGV2m2eQSd8h5VWeNmSuxVpEK8Sgy4pfpBFutimFxkkhDoHt3Qu3deSFDa1v7CycUjRX-S9zLUP9_zs-Fvf-sSoRGZbd6UvmwNECep19t-7M0Vt9Qm5CZpoWavNOqth9t8d14iHPjWqGoIJ3blMsD28yQuCLw0knnYRkQyml-D9xKwo1_X2xIjaCs3l6SEYytNW2mZEwA5tZVgstjjfm7_9RiLIOFTBoZWjMtmKlpA0pscHV-n7nopYD9OKwDGx42cKSUyW6PKqWGlCa2MB7ZbBzuWV0on67mpRLB2tRLrIFWcTmgx5gFPNNe7mhPQ',
+  registrationUrl: 'https://ielts-quest-d8gzj6qo48301e5d5-1532053589.ap-shanghai.app.tcloudbase.com/api/ielts-student-register/register'
 });
 // Fail closed: until a real Publishable Key is supplied, keep the original offline demo.
-// Use built-in CloudBase student registration instead of the admin CreateUser API; keep secrets server-side.
 const CLOUD_ENABLED = typeof CLOUD_CONFIG.publishableKey === 'string' && CLOUD_CONFIG.publishableKey.length >= 12 && CLOUD_CONFIG.publishableKey !== 'PASTE_CLOUDBASE_PUBLISHABLE_KEY_HERE';
 let cloudClient=null, currentUser=null, pendingUserId=null, cloudSaveTimer=null;
-let saveVersion=0, savingCloud=false, authMode='login', accountEpoch=0, pendingEmailVerification=null;
+let saveVersion=0, savingCloud=false, authMode='login', accountEpoch=0;
 function accountStatus(text,err=false){const el=document.getElementById('authStatus');if(el){el.textContent=text;el.style.color=err?'#ffa5ae':'#f6cc72'}}
 function showAuth(){const g=document.getElementById('authGate');g.hidden=false;document.querySelector('.shell').classList.add('cloudLocked');document.getElementById('logoutBtn').hidden=true}
 function hideAuth(){document.getElementById('authGate').hidden=true;document.querySelector('.shell').classList.remove('cloudLocked');document.getElementById('logoutBtn').hidden=false}
 function authScreen(mode){
-  if(mode!=='verify')pendingEmailVerification=null;
   authMode=mode;
-  const verifying=mode==='verify';
   document.getElementById('loginTab').classList.toggle('active',mode==='login');
-  document.getElementById('registerTab').classList.toggle('active',mode!=='login');
-  document.getElementById('verificationField').hidden=!verifying;
-  document.getElementById('usernameField').hidden=mode==='login';
-  document.getElementById('authUsername').required=mode==='register';
-  document.getElementById('authUsername').readOnly=verifying;
-  document.getElementById('authLoginLabel').textContent=mode==='login'?'用户名或邮箱':'注册邮箱地址';
-  document.getElementById('authEmail').placeholder=mode==='login'?'输入用户名或邮箱':'student@example.com';
-  document.getElementById('authEmail').inputMode=mode==='login'?'text':'email';
-  document.getElementById('authVerificationCode').required=verifying;
-  document.getElementById('authEmail').readOnly=verifying;
-  document.getElementById('authPassword').readOnly=verifying;
-  document.getElementById('restartEmailRegistration').hidden=!verifying;
-  document.getElementById('authSubmit').textContent=mode==='login'?'用户名密码登录 →':mode==='register'?'发送邮箱验证码 →':'验证邮箱并创建账号 →';
+  document.getElementById('registerTab').classList.toggle('active',mode==='register');
+  document.getElementById('inviteField').hidden=mode!=='register';
+  document.getElementById('authInviteCode').required=mode==='register';
+  document.getElementById('authSubmit').textContent=mode==='login'?'登录并开始学习 →':'使用邀请码创建账号 →';
   document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';
-  accountStatus(mode==='login'?'请输入用户名或邮箱，以及密码。':mode==='register'?'设置用户名和密码，填写邮箱接收一次验证码。':'验证码已发送，验证后即可使用用户名和密码登录。');
+  accountStatus(mode==='login'?'请输入用户名和密码。':'请填写用户名、密码和老师发放的班级邀请码。');
 }
 async function activateAccount(user){
   if(!cloudClient||!user||!user.id||currentUser?.id===user.id||pendingUserId===user.id)return;
@@ -271,10 +258,20 @@ async function flushCloud(){
     if(version!==saveVersion&&uid===currentUser?.id)cloudSaveTimer=setTimeout(flushCloud,250);
   }
 }
+async function registerCloudBaseStudent(username,password,inviteCode){
+  const response=await fetch(CLOUD_CONFIG.registrationUrl,{
+    method:'POST',mode:'cors',cache:'no-store',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({username,password,inviteCode})
+  });
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok||!payload.ok)throw Error(payload.error||('注册服务返回 HTTP '+response.status));
+  return payload;
+}
 function startCloud(){
   showAuth();accountStatus('正在连接腾讯云账号系统……');
   const script=document.createElement('script');
-  // Preserve the existing CloudBase web SDK and PostgreSQL access; v3 supports email OTP registration.
+  // Official CloudBase v3 browser bundle; never use v4 beta for username login.
   script.src='https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js';
   script.onload=async()=>{
     try{
@@ -594,7 +591,7 @@ function homeView(){let pct=state.xp%160/160*100;return `<section class="hero bo
 <div class="modeGrid">${modeCard('gap','🧩','中英短语补齐','显示中文提示，在完整英文句子中填入缺失单词。','Task 2')}${modeCard('spell','✍️','单词拼写修复','根据中文意思，补上英文词中缺失的字母。','拼写')}${modeCard('colloc','🎯','精准词汇搭配','按当前分数训练自然搭配、数据表达与语义边界。','搭配')}${modeCard('grammar','🧠','语法精修训练','5.5 夯实准确性，6.0 理顺结构，7.0 强化精准复杂句与指代。','语法')}${modeCard('syn','🔁','同义改写与语义边界','5.5 和 6.0 分新增大量语境化改写题；7 分继续训练语义强度和范围。','改写')}${modeCard('logic','🧩','论证逻辑实验室','不同长度、机制、反驳、证据与限定条件的多路径逻辑训练。','Task 2')}${modeCard('mixed','🚀','综合进阶闯关','5 类能力混合挑战，累积连胜与奖励。','推荐','mix')}</div>
 <div class="bottomGrid"><div class="glass feature"><h3>🧠 错题会回来</h3><p>答错只进入错题本，普通关卡不再出现已做过的题；学生可主动复习。</p><button class="btn secondary" data-tab="review">打开错题本 →</button></div><div class="glass feature"><h3>🎁 学习金币能做什么？</h3><p>换提示券、失误保护、双倍经验，以及可永久使用的主题皮肤；不是只看数字。</p><button class="btn secondary" data-tab="shop">去奖励商店 →</button></div></div>`}
 function modeCard(id,emoji,title,desc,tag,more=''){return `<button class="modeCard ${more}" data-start="${id}"><span class="emoji">${emoji}</span><span class="chip">${tag}</span><span class="mtitle">${title}</span><div class="mdesc">${desc}</div></button>`}
-function libraryView(){return `<section class="panel bounce"><div class="kicker">CREATE YOUR OWN DECK</div><h2 class="pageTitle">📚 我的单词与短语库</h2><p class="muted">不用改代码，直接录入自己的雅思写作词汇。${CLOUD_ENABLED?'登录后每位学生拥有独立云端词库；可跨设备登录查看。':'当前为单机试玩：记录只保存在当前浏览器。'}</p><div class="info"><b>添加单词或短语</b>：英文写 <b>rise dramatically</b>，中文写 <b>急剧上升</b>。系统会自动生成“拼写补齐”题；短语会遮住其中一个重点单词。</div><form id="singleWord" class="formgrid"><div class="field"><label for="newEn">英文单词 / 短语</label><input id="newEn" maxlength="120" placeholder="e.g. rose significantly" required></div><div class="field"><label for="newZh">中文提示</label><input id="newZh" maxlength="120" placeholder="例如：显著上升" required></div><div class="formactions"><button class="btn" type="submit">＋ 加入我的词库</button></div></form></section>
+function libraryView(){return `<section class="panel bounce"><div class="kicker">CREATE YOUR OWN DECK</div><h2 class="pageTitle">📚 我的单词与短语库</h2><p class="muted">不用改代码，直接录入自己的雅思写作词汇。${CLOUD_ENABLED?'登录后每位学生拥有独立云端词库；可跨设备登录查看。':'目前是单机试玩：词库仅存于这个浏览器，尚未启用学生账号。'}</p><div class="info"><b>添加单词或短语</b>：英文写 <b>rise dramatically</b>，中文写 <b>急剧上升</b>。系统会自动生成“拼写补齐”题；短语会遮住其中一个重点单词。</div><form id="singleWord" class="formgrid"><div class="field"><label for="newEn">英文单词 / 短语</label><input id="newEn" maxlength="120" placeholder="e.g. rose significantly" required></div><div class="field"><label for="newZh">中文提示</label><input id="newZh" maxlength="120" placeholder="例如：显著上升" required></div><div class="formactions"><button class="btn" type="submit">＋ 加入我的词库</button></div></form></section>
 <section class="panel"><h3>⚡ 批量导入（支持 TXT / CSV）</h3><p class="tip">每行一个词条，英文与中文之间用 <b>|</b> 或 Tab 分开。例如：</p><textarea id="bulkWords" rows="5" placeholder="rose significantly | 显著上升\na considerable increase | 大幅增长\nin contrast | 相比之下"></textarea><div class="formactions"><button class="btn" id="bulkAdd">导入这些词汇</button><label class="btn secondary" for="filePick">📄 读取 TXT / CSV 文件</label><input id="filePick" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" style="display:none"></div><p class="tip">文件只会在本机读取，不上传到服务器。每行也支持“英文,中文”（英文中不含逗号时）。</p></section>
 <section class="panel"><h3>🧩 自定义句子填空题</h3><p class="tip">适合老师布置专门的雅思写作表达训练。请在英文句子里使用三个下划线 <b>___</b> 表示空缺。</p><form id="customGap" class="formgrid"><div class="field"><label for="gapZh">中文提示</label><input id="gapZh" required placeholder="图表数据显著增长"></div><div class="field"><label for="gapAnswer">正确答案</label><input id="gapAnswer" required placeholder="significantly"></div><div class="field" style="grid-column:1/-1"><label for="gapSentence">英文填空句</label><input id="gapSentence" required placeholder="The figure increased ___."></div><div class="field" style="grid-column:1/-1"><label for="gapExplain">解析（选填）</label><input id="gapExplain" placeholder="副词 significantly 修饰动词 increased"></div><div class="formactions"><button class="btn" type="submit">＋ 添加自定义填空题</button></div></form></section>
 <section class="panel"><div class="sidehead"><h3 style="margin:0">我的自定义题库（${state.custom.length}）</h3>${state.custom.length?'<button class="btn secondary" data-start="custom">只练我的词汇</button>':''}</div>${state.custom.length?`<div class="librarylist">${state.custom.map(x=>`<div class="worditem"><div><div class="term">${esc(x.answer)}</div><div class="zh">${esc(x.zh)} · ${x.type==='gap'?'句子填空':'单词拼写'}</div></div><button aria-label="删除 ${esc(x.answer)}" data-delete="${esc(x.id)}">删除</button></div>`).join('')}</div>`:'<div class="empty" style="margin-top:15px">你还没有添加自己的词。先录入 1 个短语试试吧！</div>'}</section>`}
@@ -797,54 +794,28 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   if(e.target.id==='studentAuth'){
     if(!cloudClient){accountStatus('尚未连上腾讯云账号服务器，请检查网络。',true);return}
-    const loginId=$('authEmail').value.trim(),email=loginId.toLowerCase(),password=$('authPassword').value;
-    const username=$('authUsername').value.trim();
-    if(authMode!=='login'&&(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)){accountStatus('请输入有效的注册邮箱。',true);return}
-    if(authMode==='login'&&!loginId){accountStatus('请输入用户名或邮箱。',true);return}
-    if(authMode==='register'&&!/^[A-Za-z][A-Za-z0-9._-]{4,23}$/.test(username)){accountStatus('用户名需 5–24 位，以字母开头，仅支持字母、数字、点、下划线和短横线。',true);return}
-    if(authMode!=='verify'){
-      const classes=[/[a-z]/,/[A-Z]/,/[0-9]/,/[^A-Za-z0-9]/].filter(re=>re.test(password)).length;
-      if(password.length<8||password.length>32||(authMode==='register'&&classes<3)){
-        accountStatus('密码需要 8–32 位；注册密码至少包含大小写字母、数字、特殊字符中的三类。',true);return;
-      }
+    const username=$('authUsername').value.trim(),password=$('authPassword').value;
+    const inviteCode=$('authInviteCode').value.trim();
+    if(!/^[A-Za-z][A-Za-z0-9._-]{4,23}$/.test(username)){accountStatus('用户名需要 5–24 位，以字母开头，只允许字母、数字、点、下划线和短横线。',true);return}
+    const classes=[/[a-z]/,/[A-Z]/,/[0-9]/,/[^A-Za-z0-9]/].filter(re=>re.test(password)).length;
+    if(password.length<8||password.length>32||(authMode==='register'&&classes<3)){
+      accountStatus('注册密码需要 8–32 位，且至少包含大小写字母、数字、特殊字符中的三类。',true);return
     }
-    $('authSubmit').disabled=true;
-    accountStatus(authMode==='login'?'正在验证邮箱和密码……':authMode==='register'?'正在发送邮箱验证码……':'正在验证邮箱验证码……');
+    if(authMode==='register'&&!inviteCode){accountStatus('请输入班级邀请码。',true);return}
+    $('authSubmit').disabled=true;accountStatus('正在'+(authMode==='register'?'创建账号':'验证账号')+'……');
     (async()=>{
       try{
         if(authMode==='register'){
-          // Registration and verification are performed by CloudBase with no privileged backend key.
-          const {data,error}=await cloudClient.auth.signUp({email,password,username});
-          if(error)throw error;
-          if(typeof data?.verifyOtp!=='function')throw Error('邮箱验证未就绪，请检查 CloudBase 邮箱注册设置');
-          pendingEmailVerification=data;
-          authScreen('verify');
-          $('authVerificationCode').value='';
-          $('authVerificationCode').focus();
-          return;
+          // Invitation code is verified only by the CloudBase server function.
+          await registerCloudBaseStudent(username,password,inviteCode);
+          accountStatus('注册成功，正在首次登录并建立独立学习档案……');
         }
-        let data,error;
-        if(authMode==='verify'){
-          const code=$('authVerificationCode').value.trim();
-          if(!/^\d{4,8}$/.test(code))throw Error('请输入邮件中的数字验证码');
-          if(typeof pendingEmailVerification?.verifyOtp!=='function')throw Error('验证码会话已失效，请重新发送');
-          ({data,error}=await pendingEmailVerification.verifyOtp({token:code}));
-          if(error)throw error;
-          pendingEmailVerification=null;
-        }else{
-          ({data,error}=await cloudClient.auth.signInWithPassword(loginId.includes('@')?{email:email,password}:{username:loginId,password}));
-          if(error)throw error;
-        }
-        let user=data?.user||data?.session?.user;
-        if(!user){
-          const result=await cloudClient.auth.getSession();
-          if(result.error)throw result.error;
-          user=result.data?.user||result.data?.session?.user;
-        }
-        if(!user?.id)throw Error('登录成功但未取得用户信息，请重新登录');
-        await activateAccount(user);
-        $('authPassword').value='';
-        $('authVerificationCode').value='';
+        const {data,error}=await cloudClient.auth.signInWithPassword({username,password});
+        if(error)throw error;
+        if(data?.user)await activateAccount(data.user);
+        else if(data?.session?.user)await activateAccount(data.session.user);
+        else throw Error('登录未返回账号资料，请重新登录');
+        $('authPassword').value='';$('authInviteCode').value='';
       }catch(err){accountStatus('操作失败：'+(err.message||'请稍后再试'),true)}
       finally{$('authSubmit').disabled=false}
     })();
@@ -874,7 +845,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='typeA
 $('soundBtn').addEventListener('click',()=>{unlockAudio();state.sound=!state.sound;save();if(state.sound)beep();toast(state.sound?'轻柔音效已开启':'音效已关闭')});
 $('loginTab').addEventListener('click',()=>authScreen('login'));
 $('registerTab').addEventListener('click',()=>authScreen('register'));
-$('restartEmailRegistration').addEventListener('click',()=>authScreen('register'));
 $('logoutBtn').addEventListener('click',async()=>{
   if(!cloudClient||!currentUser)return;
   if(cloudSaveTimer||saveVersion){await flushCloud()}
