@@ -197,7 +197,7 @@ const CLOUD_CONFIG = Object.freeze({
   registrationUrl: 'https://ielts-quest-d8gzj6qo48301e5d5-1532053589.ap-shanghai.app.tcloudbase.com/api/ielts-student-register/register'
 });
 // Fail closed: until a real Publishable Key is supplied, keep the original offline demo.
-const CLOUD_ENABLED = /^sb_publishable_[A-Za-z0-9_\-]+$/.test(CLOUD_CONFIG.publishableKey);
+const CLOUD_ENABLED = typeof CLOUD_CONFIG.publishableKey === 'string' && CLOUD_CONFIG.publishableKey.length >= 12 && CLOUD_CONFIG.publishableKey !== 'PASTE_CLOUDBASE_PUBLISHABLE_KEY_HERE';
 let cloudClient=null, currentUser=null, pendingUserId=null, cloudSaveTimer=null;
 let saveVersion=0, savingCloud=false, authMode='login', accountEpoch=0;
 function accountStatus(text,err=false){const el=document.getElementById('authStatus');if(el){el.textContent=text;el.style.color=err?'#ffa5ae':'#f6cc72'}}
