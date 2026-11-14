@@ -1,65 +1,103 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1d7297"><title>IELTS WRITE LAB · 写作批改工作台</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f3f6f8"><title>Writing Assessment Studio · IELTS 写作专业批改</title>
 <style>
-:root{--a:#4aefd0;--y:#ffe187;--o:#ffb48e;--line:#8adbea;--white:#f7fdff}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--white);font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(ellipse at top left,#3e9fc0 0,#1e7199 42%,#175372 100%);min-height:100vh}
-body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#ffffff0c 1px,transparent 1px),linear-gradient(90deg,#ffffff0c 1px,transparent 1px);background-size:30px 30px}
-button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--y);outline-offset:2px}
-.wrap{max-width:1260px;margin:auto;padding:21px 22px 60px}
-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;font:900 13px ui-monospace,monospace}nav strong{color:var(--y)}nav a{background:#1a5777;border:1px solid #9cdeec;padding:8px 12px;text-decoration:none;box-shadow:3px 3px #0f4661;font:800 12px sans-serif}
-.hero{padding:27px 31px;background:linear-gradient(120deg,#175675,#308fb0);border:2px solid #b1e5ee;box-shadow:7px 7px #0e455e;margin-bottom:26px;position:relative}
-.hero:before{content:"";position:absolute;left:0;top:0;width:48%;height:5px;background:linear-gradient(90deg,#5af3c9 0 40%,#ffdc87 40% 75%,#ffb087 75%)}
-.eyebrow{font:850 11px ui-monospace,monospace;letter-spacing:2px;color:#b4ffec}
-h1{font:1000 clamp(39px,6vw,70px)/1 Impact,"Arial Black",sans-serif;letter-spacing:2px;margin:12px 0;text-shadow:5px 5px #11435c}h1 span{color:var(--y)}
-.hero p{margin:9px 0 0;max-width:740px;color:#e4f7fd}
-.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:start;gap:22px}
-.panel{background:linear-gradient(160deg,#287c9d,#1e5d7c);padding:22px;margin-bottom:24px;border:1px solid #a1d9e5;box-shadow:5px 5px #0c435e;min-width:0}
-h2{display:flex;align-items:center;gap:12px;font-size:18px;margin:0 0 18px}
-.number{display:grid;place-items:center;background:var(--y);color:#174259;border:2px solid #fff2c3;box-shadow:3px 3px #9d7d40;min-width:37px;height:37px;font:900 17px ui-monospace,monospace}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
-.field{display:block;min-width:0}.field span{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
-input,select,textarea{width:100%;background:#12435f;color:#fff;border:1px solid #86c9da;padding:10px 12px;min-height:43px;border-radius:2px}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#afd1dd}select{color-scheme:dark}
-.hint{font-size:12px;color:#e5f5fb;margin:10px 0}
-.crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.criterion{background:#18516d;border:1px solid #8ac9d9;padding:13px;min-width:0}
-.crit-name{font-size:15px;font-weight:900;margin:0 0 9px}.crit-desc{font-size:11px;color:#d4edf4;margin:8px 0}
-.group-title{font-weight:850;font-size:12px;color:var(--y);margin:13px 0 8px}
-.chips{display:flex;flex-wrap:wrap;gap:7px;max-height:180px;overflow:auto}
-.chip{background:#1a6481;border:1px solid #83c7da;color:#fff;font-size:12px;padding:7px 9px;text-align:left;line-height:1.35}
-.chip[aria-pressed=true]{background:#098777;border-color:#8bffdb}.chip[aria-pressed=true]:before{content:"✓ ";font-weight:900}
-.criterion textarea{min-height:78px;font-size:13px}
-.criterion select{background:#0b3853}
-.count-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.count-card{background:#154b6a;border:1px solid #81c3d5;padding:12px}.count-card strong{display:block;font-size:13px;margin-bottom:9px}
-.count-card select{font-size:13px}.count-card small{display:block;margin-top:7px;font-size:11px;color:#cde9ef}
-.error-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.error-row .wide{grid-column:1/-1}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:17px}
-.btn{background:#236f91;color:#fff;border:1px solid #b1e0ee;box-shadow:3px 3px #0b415c;padding:11px 14px;font-weight:800;min-height:44px}
-.btn.primary{background:var(--a);color:#0e494e;border-color:#d7fff1;box-shadow:4px 4px #178e80}.btn:active{transform:translate(2px,2px);box-shadow:1px 1px #0b415c}
-.output{position:sticky;top:14px}
-.scoreboard{background:#123f60;border:2px solid #a8e0e8;display:flex;align-items:center;justify-content:space-between;padding:15px;margin:12px 0}
-.scoreboard strong{display:block;color:var(--y);font:1000 46px ui-monospace,monospace}.scoreboard small{font-size:11px;color:#d7ecf4}
-.scoreparts{color:#b2ffe6;font:800 12px/1.9 ui-monospace,monospace;text-align:right;max-width:145px}
-.terminal{border:2px solid #92d5e1;background:#0d3554}.terminal-header{background:#348bac;color:white;display:flex;justify-content:space-between;padding:8px 12px;font:850 11px ui-monospace,monospace}
-#result{border:0;min-height:545px;background:#0d3554;line-height:1.95;font-size:13px}
-.notice{font-size:12px;color:#e8f8fc;background:#165778;border-left:4px solid var(--y);padding:13px;margin:17px 0 0}
-#status{min-height:24px;color:var(--y);font-weight:800;font-size:13px;margin-top:12px}
-.print-only{display:none}.footer{text-align:center;font-size:11px;color:#d4edf4;margin-top:23px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.output{position:static}}
-@media(max-width:580px){.wrap{padding:13px 12px 42px}.hero{padding:22px}.crit-grid,.count-grid,.grid{grid-template-columns:1fr}.panel{padding:15px}.actions .btn{flex:1 1 auto}.error-row{grid-template-columns:1fr}.error-row .wide{grid-column:auto}#result{min-height:410px}}
-@media print{@page{margin:15mm}body{background:white;color:#111}nav,.hero,.left,.output>h2,.scoreboard,.terminal,.actions,.notice,#status,.footer{display:none!important}.layout{display:block}.output{border:0;background:white;box-shadow:none;padding:0}.print-only{display:block!important;color:#111;white-space:pre-wrap;font:15px/1.9 "PingFang SC","Microsoft YaHei",sans-serif}}
+
+:root{--ink:#172c3d;--secondary:#607387;--bg:#f3f6f8;--surface:#fff;--navy:#153f54;--navy2:#1d5269;--teal:#0c807a;--aqua:#d9f3f0;--line:#dbe3e9;--gold:#a17a30;--paper:#fbfcfd}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+body:before{display:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #55bdb5;outline-offset:2px}
+.wrap{max-width:1390px;margin:0 auto;padding:0 34px 45px}
+nav{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 -34px 30px;padding:14px 34px;background:#fff;border-bottom:1px solid #dbe5eb;min-height:72px}
+nav .identity{display:flex;align-items:center;gap:12px}
+nav .identity-mark{display:grid;place-items:center;width:36px;height:36px;background:var(--navy);color:#fff;border-radius:8px;font:bold 20px Georgia,serif}
+nav .brandtext{display:flex;flex-direction:column;gap:2px}
+nav .brandtext strong{font-size:14px;letter-spacing:.3px;color:#20374b}
+nav .brandtext small{font-size:10px;color:#758696;letter-spacing:1.1px;font-weight:800}
+nav a{text-decoration:none;color:#356274;border:1px solid #dae5e9;border-radius:7px;background:#fff;padding:9px 13px;font-size:12px;font-weight:750;white-space:nowrap}
+nav a:hover{background:#f3f9f9}
+.hero{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;background:transparent;border:none;box-shadow:none;padding:0 0 22px;margin-bottom:21px;border-bottom:1px solid #dbe4ea}
+.hero:before{display:none}
+.eyebrow{display:block;font:800 10px/1.4 ui-monospace,monospace;letter-spacing:2px;color:var(--teal);margin:0 0 8px}
+.hero h1{font:760 clamp(27px,3.5vw,38px)/1.2 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:-.8px;margin:0;text-shadow:none;color:#172d3d}
+.hero h1 span{color:var(--teal)}
+.hero p{max-width:790px;margin:8px 0 0;font-size:13px;line-height:1.8;color:#647889}
+.hero-label{display:flex;gap:8px;align-items:center;color:#446577;font:750 11px ui-monospace,monospace;letter-spacing:.4px;background:#eaf2f4;border:1px solid #d5e5e8;border-radius:30px;padding:9px 12px}
+.hero-label:before{content:"";height:7px;width:7px;background:#199b84;border-radius:50%}
+.layout{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(390px,.93fr);align-items:start;gap:24px}
+.panel{background:var(--surface);padding:24px;border:1px solid #dce5ea;box-shadow:0 2px 12px #1d46590b;border-radius:12px;margin-bottom:21px;min-width:0}
+h2{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:800;margin:0 0 18px;letter-spacing:-.1px}
+.number{display:grid;place-items:center;width:29px;min-width:29px;height:29px;background:#e7f3f1;color:#137c72;border:1px solid #cce7e1;border-radius:8px;font:800 12px ui-monospace,monospace;box-shadow:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}
+.field{display:block;min-width:0}.field span{display:block;font-size:12px;font-weight:800;color:#385267;margin-bottom:7px}
+input,select,textarea{width:100%;min-width:0;background:#fff;color:#253f4d;border:1px solid #ccd9e1;padding:11px 12px;min-height:44px;border-radius:7px;outline:none}
+textarea{resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:#23a399;box-shadow:0 0 0 3px #0e9c8d1c}
+input::placeholder,textarea::placeholder{color:#93a1ad}
+select{color-scheme:light}
+.hint{font-size:12px;color:#758899;margin:12px 0;line-height:1.7}
+.crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.criterion{background:#fcfdfe;border:1px solid #d9e5e9;border-radius:10px;padding:15px;min-width:0;transition:border-color .1s}
+.criterion:focus-within{border-color:#74bab4}
+.crit-name{font-size:14px;font-weight:850;color:#1a4251;margin:0 0 11px}
+.crit-desc{font-size:11px;color:#718898;margin:7px 0}
+.criterion select{background:#fff;color:#184b59;border:1px solid #c9d9df;font-weight:800;font-variant-numeric:tabular-nums}
+.group-title{font-weight:800;font-size:12px;color:#536b7e;margin:16px 0 9px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;max-height:190px;overflow:auto;padding:1px 2px 3px 1px}
+.chip{display:inline-flex;align-items:center;background:#f6f9fa;color:#416073;border:1px solid #d7e2e8;border-radius:7px;font-size:12px;padding:7px 10px;min-height:33px;text-align:left;line-height:1.4;font-weight:650}
+.chip:hover{border-color:#82beb8;background:#f0f8f7}
+.chip[aria-pressed=true]{background:#e0f3ee;color:#086b63;border-color:#4ca99c}
+.chip[aria-pressed=true]:before{content:"✓ ";font-weight:900}
+.criterion textarea{min-height:80px;font-size:13px}
+.count-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.count-card{display:block;background:#f8fafb;border:1px solid #dbe5e9;border-radius:9px;padding:14px}
+.count-card strong{display:block;color:#254558;font-size:13px;margin:0 0 9px}
+.count-card select{font-size:12px}
+.count-card small{display:block;color:#728798;font-size:11px;margin-top:9px;line-height:1.5}
+.error-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0;padding:11px;background:#f7fafb;border:1px dashed #d4e1e7;border-radius:9px}
+.error-row .wide{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{min-height:42px;background:#fff;color:#36586b;border:1px solid #c8d9df;box-shadow:none;border-radius:7px;padding:10px 15px;font-weight:800;font-size:12px}
+.btn:hover{background:#f6f9f9}
+.btn.primary{background:#136a77;color:white;border-color:#136a77;box-shadow:none}
+.btn.primary:hover{background:#0c5663}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.output{position:sticky;top:18px;background:#fff}
+.scoreboard{background:linear-gradient(115deg,#173e51,#1b5362);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:19px 20px;margin:13px 0 19px;border:0;border-radius:9px}
+.scoreboard strong{display:block;color:#fff;font:760 48px/1.15 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
+.scoreboard small{font-size:11px;color:#c4dfdf;letter-spacing:.3px}
+.scoreparts{color:#d3f1ee;font:800 12px/1.95 ui-monospace,monospace;text-align:right;max-width:190px;overflow-wrap:anywhere}
+.terminal{background:#fdfefe;border:1px solid #d8e3e8;border-radius:9px;overflow:hidden}
+.terminal-header{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;background:#f0f5f6;color:#547180;border-bottom:1px solid #dce5e8;font:800 11px ui-monospace,monospace;letter-spacing:.25px}
+#result{display:block;width:100%;border:0!important;background:#fff!important;min-height:555px;padding:17px!important;font-size:13px;line-height:1.95;box-shadow:none;resize:vertical;border-radius:0}
+#result:focus{outline:2px solid #9fcfca;outline-offset:-2px}
+.notice{font-size:12px;color:#596f80;background:#f4f8f8;border:1px solid #dbe8e6;border-left:3px solid #318f86;border-radius:6px;padding:13px;margin:19px 0 0;line-height:1.75}
+#status{min-height:23px;color:#0b796e;font-weight:750;font-size:13px;margin-top:11px}
+.print-only{display:none}.footer{color:#8697a3;text-align:center;font-size:11px;margin-top:26px;letter-spacing:.15px}
+.score-note{font-size:11px;margin-top:4px;color:#cfe5e4}
+.report-label{display:flex;align-items:center;gap:6px;color:#667e8a;font-size:11px}
+.report-label:before{content:"●";color:#14a084;font-size:10px}
+@media(max-width:1090px){.layout{grid-template-columns:minmax(0,1fr) minmax(350px,.95fr)}.crit-grid{grid-template-columns:1fr}}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.output{position:static}.crit-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.wrap{padding:0 12px 35px}nav{margin:0 -12px 20px;padding:12px;gap:7px}nav .brandtext strong{font-size:12px}nav a{font-size:11px;padding:9px}.hero{padding:3px 0 17px;grid-template-columns:1fr}.hero h1{font-size:29px}.hero-label{width:max-content;font-size:10px}.panel{padding:16px}.crit-grid,.count-grid,.grid{grid-template-columns:1fr}.error-row{grid-template-columns:1fr}.error-row .wide,.full{grid-column:auto}.actions .btn{flex:1 1 auto}#result{min-height:400px}.scoreboard strong{font-size:40px}}
+@media print{@page{margin:15mm}body{background:#fff;color:#111}nav,.hero,.left,.output>h2,.scoreboard,.terminal,.actions,.notice,#status,.footer{display:none!important}.layout{display:block}.output{border:0;background:#fff;box-shadow:none;padding:0}.print-only{display:block!important;color:#111;white-space:pre-wrap;font:15px/1.9 "PingFang SC","Microsoft YaHei",sans-serif}}
+
 </style></head>
 <body><main class="wrap">
-<nav><span>✦ EDU<strong>/</strong>ARCADE · WRITE LAB</span><a href="../">← 返回课堂反馈助手</a></nav>
-<header class="hero"><span class="eyebrow">★ TEACHER MARKING STATION / OFFLINE RULE ENGINE</span><h1>IELTS <span>WRITE LAB.</span></h1><p>Task 1 小作文 / Task 2 大作文 · TA/TR、CC、LR、GRA 分项批改 · 老师自主评分 · 错词和错句只填写学生实际出现的内容。</p></header>
+<nav><div class="identity"><span class="identity-mark">W</span><div class="brandtext"><strong>Writing Assessment Studio</strong><small>IELTS · TEACHER PORTAL</small></div></div><a href="../">← 返回课堂反馈助手</a></nav>
+<header class="hero"><div><span class="eyebrow">ASSESSMENT / WRITING / REVIEW</span><h1>雅思写作 <span>专业批改工作台</span></h1><p>面向教师的结构化写作评估：独立记录 Task 1 / Task 2 的四项成绩、语言问题、典型错句和个性化教学建议。报告可以编辑、复制和打印。</p></div><div class="hero-label">PRIVATE · BROWSER ONLY</div></header>
 <div class="layout"><div class="left">
-<section class="panel"><h2><span class="number">01</span>学生与作文信息</h2><div class="grid">
+<section class="panel"><h2><span class="number">01</span>考生与任务信息</h2><div class="grid">
 <label class="field"><span>学生姓名</span><input id="name" maxlength="35" placeholder="例如：陈同学"></label>
 <label class="field"><span>作文类型</span><select id="task"><option value="task1">Task 1 · 小作文</option><option value="task2">Task 2 · 大作文</option></select></label>
 <label class="field full"><span>题目、图表类型或备注（选填）</span><textarea id="prompt" rows="2" placeholder="动态图 / 静态图 / 地图 / 流程图，或 Task 2 题目"></textarea></label>
 </div><p class="hint">该工具用于整理教师的真实批改观察，不自动阅读学生作文、不自动检测错误。</p></section>
-<section class="panel"><h2><span class="number">02</span>四项评分与评价</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
+<section class="panel"><h2><span class="number">02</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
 <div class="crit-grid" id="criteria"></div></section>
-<section class="panel"><h2><span class="number">03</span>拼写与语法错误记录</h2>
+<section class="panel"><h2><span class="number">03</span>语言错误与修改记录</h2>
 <div class="count-grid">
 <label class="count-card"><strong>LR · 拼写错误数量</strong><select id="spelling"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>数次错误并不自动决定 LR 分数。</small></label>
 <label class="count-card"><strong>GRA · 语法错误数量</strong><select id="grammar"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>分数还需考虑句式范围及错误影响。</small></label>
@@ -72,14 +110,14 @@ input,select,textarea{width:100%;background:#12435f;color:#fff;border:1px solid 
 <p class="group-title">课后任务（不填则使用已选不足匹配建议）</p><textarea id="homework" rows="3" placeholder="例如：范文学习 + 重写主体段1 + 复盘错句"></textarea>
 <div class="actions"><button class="btn primary" id="generate" type="button">✦ 生成批改报告</button><button class="btn" id="sample1" type="button">▶ Task 1 示例</button><button class="btn" id="sample2" type="button">▶ Task 2 示例</button><button class="btn" id="clear" type="button">↺ 清空</button></div>
 </section></div>
-<section class="panel output"><h2><span class="number">★</span>教师批改报告终端</h2>
-<div class="scoreboard"><div><small>本篇作文 · 四项等权评分</small><strong id="total">—</strong></div><div class="scoreparts" id="parts">TA — · CC — · LR — · GRA —</div></div>
-<div class="terminal"><div class="terminal-header"><span>● ● ● &nbsp; MARKING_REPORT.TXT</span><span>EDITABLE</span></div>
+<section class="panel output"><h2><span class="number">04</span>批改报告预览</h2>
+<div class="scoreboard"><div><small>本篇作文 · 四项等权评分</small><strong id="total">—</strong><div class="score-note">教学模式 · 0.5 分档向下保留</div></div><div class="scoreparts" id="parts">TA — · CC — · LR — · GRA —</div></div>
+<div class="terminal"><div class="terminal-header"><span>ASSESSMENT REPORT / 学生批改摘要</span><span class="report-label">可编辑</span></div>
 <textarea id="result" spellcheck="false" placeholder="> SYSTEM READY_&#10;&#10;请填写姓名、选择四项分数及观察。&#10;点击生成即可获得可复制的报告。"></textarea></div>
 <div class="actions"><button class="btn primary" id="copy" type="button">▣ 复制报告</button><button class="btn" id="download" type="button">⇩ 下载 TXT</button><button class="btn" id="print" type="button">▤ 打印 / PDF</button></div>
 <p class="notice">本工具按教师指定的课堂评分规则：四项等权平均后，向下保留到 0.5 分档；例如 6/6/6/5 → 5.5。此为教学批改规则，不代表雅思官方对分项均分的统一取整规定。整场 Writing 需另按 Task 1 : Task 2 = 1 : 2 加权。错误次数仅作事实记录，不能直接决定某项成绩。</p>
 <div id="status" role="status" aria-live="polite"></div><pre class="print-only" id="printout"></pre>
-</section></div><p class="footer">IELTS WRITE LAB · No AI · No login · Browser-only processing</p></main>
+</section></div><p class="footer">WRITING ASSESSMENT STUDIO · 教师自主判断 · 本地生成与导出 · 无需 AI 或登录</p></main>
 <script>
 (function(){
 "use strict";
