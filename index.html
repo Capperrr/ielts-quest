@@ -791,7 +791,7 @@ document.addEventListener('submit', e => {
   if(e.target.id==='studentAuth'){
     if(!cloudClient){accountStatus('尚未连上腾讯云账号服务器，请检查网络。',true);return}
     const email=$('authEmail').value.trim().toLowerCase(),password=$('authPassword').value;
-    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)||email.length>254){accountStatus('请输入有效的邮箱地址。',true);return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254){accountStatus('请输入有效的邮箱地址。',true);return}
     if(authMode!=='verify'){
       const classes=[/[a-z]/,/[A-Z]/,/[0-9]/,/[^A-Za-z0-9]/].filter(re=>re.test(password)).length;
       if(password.length<8||password.length>32||(authMode==='register'&&classes<3)){
@@ -816,7 +816,7 @@ document.addEventListener('submit', e => {
         let data,error;
         if(authMode==='verify'){
           const code=$('authVerificationCode').value.trim();
-          if(!/^\\d{4,8}$/.test(code))throw Error('请输入邮件中的数字验证码');
+          if(!/^\d{4,8}$/.test(code))throw Error('请输入邮件中的数字验证码');
           if(typeof pendingEmailVerification?.verifyOtp!=='function')throw Error('验证码会话已失效，请重新发送');
           ({data,error}=await pendingEmailVerification.verifyOtp({token:code}));
           if(error)throw error;
