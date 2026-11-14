@@ -3,29 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#4338ca">
+<meta name="theme-color" content="#0b1029">
 <title>课堂反馈助手 · IELTS & Pre-Starter</title>
 <style>
-:root{--bg:#f5f6fc;--surface:#fff;--ink:#1a2035;--muted:#69728a;--line:#e5e8f0;--brand:#5144cd;--light:#eeedff;--good:#0d8b70;--bad:#b0525d;--shadow:0 8px 32px rgba(36,37,82,.06)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.6}
-[hidden]{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #a6a0ff;outline-offset:2px}
-.wrap{max-width:1080px;margin:auto;padding:24px 18px 56px}.head{background:linear-gradient(120deg,#29216b,#5144cd 65%,#8c72eb);color:#fff;padding:33px 30px;border-radius:23px;box-shadow:0 12px 32px #4036a629;margin-bottom:23px}.eyebrow{font-size:12px;letter-spacing:1.5px;opacity:.85;font-weight:750}.head h1{font-size:30px;letter-spacing:-.7px;line-height:1.25;margin:12px 0 9px}.head p{margin:0;color:#e1dfff;max-width:610px}.header-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.header-tags span{font-size:12px;background:#ffffff25;border:1px solid #ffffff29;padding:4px 11px;border-radius:50px}
-.layout{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}.panel{background:var(--surface);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);padding:23px;margin-bottom:18px}.section-title{display:flex;gap:10px;align-items:center;font-size:17px;font-weight:800;margin:0 0 17px}.num{display:grid;place-items:center;border-radius:10px;width:29px;height:29px;background:var(--light);color:var(--brand);font-size:14px}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block}.field.full{grid-column:1/-1}.field-title{display:block;font-size:13px;font-weight:720;margin:0 0 7px}input:not([type=checkbox]),select,textarea{width:100%;border:1px solid #dfe2eb;border-radius:11px;padding:11px 12px;background:#fff;color:var(--ink);min-height:44px}input::placeholder,textarea::placeholder{color:#9aa1b2}textarea{resize:vertical}
-.hint{font-size:12px;color:var(--muted);margin:8px 0 0}.toggle-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 0;background:#f8f8fd;border-radius:12px;padding:11px 12px}.toggle-row input{accent-color:var(--brand);width:18px;height:18px}.toggle-row label{font-weight:650}.muted{color:var(--muted)}.small{font-size:12px}
-.subhead{display:flex;justify-content:space-between;gap:9px;align-items:center;margin:18px 0 10px}.subhead strong{font-size:14px}.limit{font-size:12px;color:var(--muted)}.choices{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid #e0e4ee;background:#fff;color:#414b65;border-radius:11px;padding:8px 11px;font-size:13px;text-align:left;max-width:100%;line-height:1.4;transition:.15s}.chip.selected.good{background:#e6f7f2;border-color:#7ad4b5;color:#08745d}.chip.selected.bad{background:#fff0f2;border-color:#efadb7;color:#9b3445}.chip:disabled{opacity:.47;cursor:not-allowed}.choice-help{color:#7a8196;font-size:12px;margin-top:10px}.top-gap{margin-top:18px}.actionrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px}.btn{border-radius:11px;border:1px solid transparent;padding:11px 16px;font-weight:700;background:#f1f1fa;color:#40396b}.btn.primary{background:var(--brand);color:#fff}.btn.subtle{background:#fff;border-color:#dfe2ec;color:#4b556d}.btn:active{transform:translateY(1px)}.result-panel{position:sticky;top:16px}.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.live{display:inline-flex;gap:5px;align-items:center;font-size:12px;color:#0d8b70}.dot{width:7px;height:7px;border-radius:50%;background:#1ca67e}.result{min-height:485px;padding:16px;background:#fafbff;border-color:#dee1ee;font-size:14px;line-height:1.95;color:#202843;white-space:pre-wrap;letter-spacing:.1px}.note{font-size:12px;color:var(--muted);margin-top:14px;background:#f8f9fc;padding:11px;border-radius:10px}.footer{text-align:center;color:#7b8296;font-size:12px;margin-top:5px}.toast{color:var(--good);font-size:13px;min-height:21px;margin-top:8px}.sep{height:1px;background:var(--line);margin:17px 0}
-@media(max-width:760px){.wrap{padding:13px 11px 32px}.head{padding:25px 20px;border-radius:18px}.head h1{font-size:25px}.layout{grid-template-columns:1fr;gap:0}.panel{padding:18px;border-radius:17px}.result-panel{position:static}.result{min-height:425px}.fields{grid-template-columns:1fr 1fr}.field.mobile-full{grid-column:1/-1}.btn{flex:1 1 auto}}
-@media print{body{background:#fff}.head,.left,.actionrow,.note,.footer,.result-head .live,.hint,.toast{display:none!important}.wrap{padding:0}.layout{display:block}.result-panel{border:0;box-shadow:none;padding:0}.result-panel .section-title{display:none}.result{display:none}.print-view{display:block!important;white-space:pre-wrap;font:15px/1.95 "PingFang SC","Microsoft YaHei",sans-serif}}
+
+:root{
+  --bg:#0b1029;--surface:#1a2449;--ink:#f4f7ff;--muted:#b7c1e3;--line:#606da7;
+  --brand:#bba0ff;--light:#313468;--good:#65f4d0;--bad:#ff91b2;--shadow:6px 6px 0 #070b21;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+ margin:0;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+ font-size:15px;line-height:1.65;
+ background-color:var(--bg);
+ background-image:radial-gradient(ellipse at 7% 7%,#38206477,transparent 30%),radial-gradient(ellipse at 95% 23%,#07646655,transparent 25%),linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff07 1px,transparent 1px);
+ background-size:auto,auto,28px 28px,28px 28px;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #f7df7d;outline-offset:3px}
+.wrap{max-width:1160px;margin:auto;padding:26px 20px 56px}
+.head{
+ position:relative;overflow:hidden;isolation:isolate;
+ padding:37px 38px 34px;margin-bottom:25px;
+ background:linear-gradient(115deg,#302c76 5%,#52359b 60%,#2e5b9f 105%);
+ border:3px solid #bda9ff;border-radius:4px;
+ box-shadow:8px 8px 0 #080b21,inset 0 0 0 3px #6f67b5;
+}
+.head:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.22;background-image:linear-gradient(90deg,transparent 94%,#fff 94%),linear-gradient(transparent 94%,#fff 94%);background-size:26px 26px;pointer-events:none}
+.head:after{
+ content:"";position:absolute;right:42px;top:46px;width:13px;height:13px;background:#f9dd85;
+ box-shadow:13px 0 #f9dd85,26px 0 #f9dd85,39px 0 #f9dd85,13px -13px #f9dd85,26px -13px #f9dd85,13px 13px #f9dd85,26px 13px #f9dd85,13px 26px #f9dd85,26px 26px #f9dd85,0 39px #f9dd85,13px 39px #f9dd85,26px 39px #f9dd85,39px 39px #f9dd85;
+ transform:rotate(-12deg);opacity:.85;pointer-events:none
+}
+.eyebrow{font-family:ui-monospace,"Courier New",monospace;font-size:12px;letter-spacing:1.8px;font-weight:800;color:#88ffdc}
+.head h1{position:relative;z-index:1;font-size:clamp(27px,4vw,40px);line-height:1.3;margin:11px 0 9px;letter-spacing:1px;font-weight:900;text-shadow:3px 3px 0 #192155}
+.head h1 span{color:#ffd97c}
+.head p{margin:0;color:#edeaff;max-width:620px;font-weight:500}
+.header-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;max-width:720px}
+.header-tags span{display:inline-flex;background:#121845a6;border:1px solid #c0b8f5;padding:5px 10px;border-radius:2px;color:#fff;font-size:12px;box-shadow:3px 3px 0 #111440}
+.layout{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:23px;align-items:start}
+.panel{position:relative;min-width:0;background:linear-gradient(175deg,#1d2951,#161e3d);border:2px solid #5b6aa7;border-radius:4px;box-shadow:var(--shadow);padding:23px;margin-bottom:21px}
+.panel:before{content:"";position:absolute;left:0;top:0;height:6px;width:68px;background:repeating-linear-gradient(90deg,#61e9d1 0 9px,transparent 9px 13px);pointer-events:none}
+.section-title{display:flex;gap:12px;align-items:center;font-size:17px;font-weight:850;margin:3px 0 19px;letter-spacing:.25px}
+.num{display:grid;place-items:center;border-radius:2px;width:30px;height:30px;flex:none;background:#c4a8ff;color:#17143c;box-shadow:3px 3px 0 #090f2a;font-weight:900;font-family:ui-monospace,monospace;font-size:14px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:block;min-width:0}.field.full{grid-column:1/-1}
+.field-title{display:block;font-size:13px;font-weight:750;margin:0 0 7px;color:#e1e6ff}
+input:not([type=checkbox]),select,textarea{
+ width:100%;min-height:45px;appearance:auto;padding:11px 12px;
+ background:#0f1835;border:2px solid #52618b;border-radius:3px;color:#f7f7ff;
+ box-shadow:inset 2px 2px 0 #0b122a;
+}
+input::placeholder,textarea::placeholder{color:#97a3c2}
+select{color-scheme:dark}
+textarea{resize:vertical}
+input:not([type=checkbox]):focus,select:focus,textarea:focus{border-color:#d8b2ff}
+.hint{font-size:12px;color:var(--muted);margin:8px 0 0}
+.toggle-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:17px 0 0;background:#111b3c;border:1px dashed #596cb1;border-radius:3px;padding:11px 12px}
+.toggle-row input{accent-color:#a58dff;width:20px;height:20px}
+.toggle-row label{font-weight:700}.muted{color:var(--muted)}.small{font-size:12px}
+.subhead{display:flex;justify-content:space-between;gap:9px;align-items:center;margin:20px 0 10px}
+.subhead strong{font-size:15px}.limit{font-size:12px;color:#9dfde1;font-family:ui-monospace,monospace}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.chip{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;
+ background:#111b3e;color:#e2e9ff;border:2px solid #495984;border-radius:3px;
+ text-align:left;padding:10px 10px 10px 11px;line-height:1.45;font-size:13px;font-weight:650;
+ box-shadow:3px 3px 0 #080e23;transition:background .12s,border-color .12s,transform .12s
+}
+.chip:after{content:"+";font:800 17px/1 ui-monospace,monospace;color:#8ba1d4;flex:none}
+.chip.selected.good{background:#143d47;border-color:#6beed1;color:#acffe9}
+.chip.selected.bad{background:#442943;border-color:#ffa2bf;color:#ffe1eb}
+.chip.selected:after{content:"✓";color:currentColor}
+.chip:not(:disabled):active{transform:translate(2px,2px);box-shadow:1px 1px 0 #080e23}
+.chip:disabled{opacity:.44;cursor:not-allowed}
+.choice-help{color:#9aaad1;font-size:12px;margin-top:12px}
+.top-gap{margin-top:18px}
+.actionrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border-radius:3px;border:2px solid #8092c8;box-shadow:4px 4px 0 #080c23;padding:11px 15px;font-weight:800;background:#26345e;color:#e8edff;min-height:45px}
+.btn.primary{background:#bba5ff;color:#17113b;border-color:#e2d8ff}
+.btn.subtle{background:#1a2750;border-color:#7083b8;color:#e5ebff}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #080c23}
+.btn:hover:not(:active){filter:brightness(1.12)}
+.result-panel{position:sticky;top:16px}
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.live{display:inline-flex;gap:7px;align-items:center;font-family:ui-monospace,monospace;font-size:12px;color:#8cffde}
+.dot{width:8px;height:8px;background:#6bffcd;box-shadow:2px 2px #07534d}
+.result{min-height:495px;padding:16px;background:#0c1631;border-color:#6877a8;font-size:14px;line-height:1.98;color:#e8edff;white-space:pre-wrap;letter-spacing:.1px}
+.note{font-size:12px;color:#b5c1e2;margin-top:16px;background:#101a37;border-left:4px solid #8a86d8;padding:13px}
+.toast{color:#88ffdc;font-size:13px;min-height:24px;margin-top:12px}
+.sep{height:2px;background:repeating-linear-gradient(90deg,#52628f 0 13px,transparent 13px 20px);margin:18px 0}
+.footer{text-align:center;color:#9da9ca;font-family:ui-monospace,monospace;font-size:12px;margin-top:11px}
+.searchbox{margin:15px 0 5px}
+.searchbox input{background:#111b3e}
+.search-hint{font-size:12px;color:#9caad0;margin:6px 0 0}
+@media(hover:hover){.chip:hover:not(:disabled){border-color:#d0bcff;background:#233365}}
+@media(max-width:820px){
+ .wrap{padding:14px 12px 36px}.head{padding:26px 20px;border-radius:3px}
+ .head:after{opacity:.24;right:25px}
+ .layout{grid-template-columns:1fr;gap:0}
+ .result-panel{position:static}
+ .panel{padding:20px}.result{min-height:380px}
+}
+@media(max-width:510px){
+ .head h1{font-size:27px}.eyebrow{font-size:10px;letter-spacing:1px}
+ .fields{grid-template-columns:1fr 1fr}
+ .field.mobile-full{grid-column:1/-1}
+ .choices{grid-template-columns:1fr}
+ .chip{min-height:46px}
+ .btn{flex:1 1 auto}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chip{transition:none}}
 .print-view{display:none}
+@media print{
+ @page{margin:16mm}
+ body{background:#fff;color:#111}
+ .head,.left,.actionrow,.note,.footer,.result-head,.hint,.toast,.result{display:none!important}
+ .wrap{max-width:none;padding:0}
+ .layout{display:block}
+ .result-panel{display:block;border:0;background:#fff;box-shadow:none;padding:0}
+ .result-panel:before{display:none}
+ .print-view{display:block!important;white-space:pre-wrap;color:#111;font:15px/1.95 "PingFang SC","Microsoft YaHei",sans-serif}
+}
+
 </style>
 </head>
 <body>
 <main class="wrap">
 <header class="head">
-<div class="eyebrow">TEACHER'S WORKSPACE · 无需 AI</div>
-<h1>课堂反馈助手 <span aria-hidden="true">✦</span></h1>
-<p>根据课程和学生的实际表现，快速组合自然、具体的课堂反馈。只需填写姓名，选择一至两项优点和不足。</p>
-<div class="header-tags"><span>雅思基础 / 强化写作</span><span>Pre-Starter 读写 / 听说</span><span>首课 & 日常课</span><span>手机 / iPad 适用</span></div>
+<div class="eyebrow">✦ TEACHER / QUEST MODE / LEVEL UP ✦</div>
+<h1>课堂反馈助手 <span aria-hidden="true">▣</span></h1>
+<p>选课程 · 点选学生表现 · 一键生成个性化反馈。无需 AI，专为日常授课设计。</p>
+<div class="header-tags"><span>雅思基础 / 强化写作</span><span>Pre-Starter 读写 / 听说</span><span>首课 & 日常课</span><span>PIXEL EDITION</span><span>手机 / iPad 适用</span></div>
 </header>
 <div class="layout">
 <div class="left">
@@ -36,17 +147,17 @@
 <label class="field mobile-full"><span class="field-title">课程类型</span><select id="course">
 <option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option>
 </select></label>
-<label class="field"><span class="field-title">迟到情况</span><select id="late"><option value="无迟到">无迟到</option><option value="迟到约5分钟">迟到约5分钟</option><option value="迟到约10分钟">迟到约10分钟</option><option value="迟到约15分钟">迟到约15分钟</option><option value="请手动补充">自定义</option></select></label>
-<label class="field"><span class="field-title">课堂参与情况</span><select id="participation"><option value="积极">积极互动、认真做笔记</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
-<label class="field full" id="lateBox" hidden><span class="field-title">迟到情况补充</span><input id="lateOther" placeholder="例如：迟到8分钟，已提前说明"></label>
+<label class="field"><span class="field-title">迟到情况</span><select id="late"><option value="无迟到">未迟到</option><option value="迟到">迟到</option></select></label>
+<label class="field"><span class="field-title">课堂参与情况</span><select id="participation"><option value="积极">积极互动、课堂专注认真</option><option value="踏实">积极互动、态度踏实上进</option><option value="笔记">认真做笔记、参与课堂练习</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
+
 <label class="field full" id="partBox" hidden><span class="field-title">课堂表现补充</span><input id="partOther" placeholder="例如：积极回答问题，听写认真"></label>
 </div>
 <div class="toggle-row"><input type="checkbox" id="first" checked><label for="first">这是首课</label><span class="muted small">自动切换为【首课表现】</span></div>
 </section>
 <section class="panel">
 <h2 class="section-title"><span class="num">2</span>选择学生的优点和不足</h2>
-<p class="hint" id="courseHint">选项会随课程自动切换。建议各选 1–2 项，反馈更具体。</p>
-<div class="subhead"><strong>✨ 优点</strong><span class="limit" id="goodCount">已选 0 / 3</span></div>
+<p class="hint" id="courseHint">选项会随课程切换，可搜索词汇、语法、审题、课堂表现等关键词。建议各选 1–2 项。</p>
+<div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">🔎 快速筛选优点 / 不足</span></label><input id="optionSearch" type="search" autocomplete="off" placeholder="例如：词汇、语法、拼写、审题、逻辑"><p class="search-hint">输入关键词仅筛选选项，不影响已经选中的内容。</p></div><div class="subhead"><strong>✨ 优点</strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
 <div class="choices" id="goodChoices" role="group" aria-label="优点选项"></div>
 <div class="subhead top-gap"><strong>🎯 需要提升</strong><span class="limit" id="badCount">已选 0 / 3</span></div>
 <div class="choices" id="badChoices" role="group" aria-label="不足选项"></div>
@@ -89,7 +200,19 @@ s("能够使用简单逻辑词","能够用 however、overall 等词初步衔接�
 s("具备基本审题意识","能够识别题目要求，并围绕所给信息作答"),
 s("理解主谓结构","能够写出主语和动词基本完整的简单句"),
 s("练习配合度较高","能够根据教师提示修正句子，并尝试独立完成练习"),
-s("能够提出基本观点","对 Task 2 话题能提出与题目相关的初步观点")
+s("能够提出基本观点","对 Task 2 话题能提出与题目相关的初步观点"),
+ s("词汇基础不错","具备不错的词汇基础，能够理解并尝试使用课堂核心表达"),
+ s("审题精准","审题较为精准，能够抓住题目要求和关键限制信息"),
+ s("课堂提问正确率高","课堂提问反馈准确，对题目内容的理解比较到位"),
+ s("口头回答有思路","口头回答时思路较清晰，能够表达与题目相关的内容"),
+ s("学习态度踏实上进","学习态度认真踏实，愿意主动吸收新的词句素材"),
+ s("主动套用新词句","能够主动将课堂给出的词汇与句式运用到练习中"),
+ s("修改调整能力较好","能够积极根据反馈修改句子，调整学习方法"),
+ s("整体逻辑不错","思路比较灵活，能够梳理内容之间的基本逻辑关系"),
+ s("课堂专注度高","课堂专注认真，能够跟随讲解完成练习"),
+ s("图表比较意识较好","能够发现图表中的差异，并尝试进行有意义的数据比较"),
+ s("功能词使用有基础","认识常见功能词，并了解其在句子中的基本作用"),
+ s("独立造句有基础","能够尝试用基本句式完成独立写作")
 ],bad:[
 w("小作文分段依据不足","小作文段落划分还不够清晰，需要根据图表特征组织主体段","先找出总体特征与可比较的数据组，再按清晰的比较依据完成两段主体段","重写课堂小作文的两个主体段，并标注每段的分组依据"),
 w("趋势与幅度词有限","描述变化时词汇较单一，需要扩充趋势和幅度表达","整理快速上升、缓慢下降、波动等表达，每类各写动词加副词及形容词加名词两种形式","整理6组变化表达，并用课堂图表写6个例句"),
@@ -99,7 +222,19 @@ w("时态使用不稳定","图表时间与动词时态之间的对应关系需�
 w("逻辑衔接较简单","写作时较依赖 and、but 等基础连接词，句间关系不够清晰","根据对比、转折、因果关系分别积累常用连接方式并用完整句练习","用三组不同逻辑关系改写课堂例句"),
 w("Task 2 观点展开不足","提出观点后缺少进一步解释和具体例证","用观点—原因—解释—例子的顺序完成一个完整主体段","选择课上大作文一个观点，补充原因、解释与例子写成完整段落"),
 w("Task 1 总览不够明确","容易逐项罗列数据，未能优先概括最重要的整体特征","写作前先圈出最高最低值及最显著的变化，练习用1–2句写 Overview","为课堂两道图表题各写一个 Overview"),
-w("大小作文任务要求混淆","对 Task 1 客观描述和 Task 2 论证观点的区别需进一步熟悉","对比两类写作任务要求，分别练习图表描述句和观点论证句","为 Task 1 和 Task 2 各完成一个符合任务要求的短段落")
+w("大小作文任务要求混淆","对 Task 1 客观描述和 Task 2 论证观点的区别需进一步熟悉","对比两类写作任务要求，分别练习图表描述句和观点论证句","为 Task 1 和 Task 2 各完成一个符合任务要求的短段落"),
+ w("口头会答但落笔易错","口头回答尚可，但独立落笔时容易出现语法和句式错误","写完句子后回查时态、主谓一致和名词单复数；对照范文标记错误句式，再摘抄正确版本仿写","对照范文订正课堂错句并仿写5句"),
+ w("词汇储备偏弱","词汇积累仍比较有限，影响自主表达的准确性和丰富度","整理课堂核心趋势词和功能词，结合读音、拼写与例句每天复习","复习课堂核心词汇并完成例句仿写"),
+ w("语法基础薄弱","对简单句语法规则掌握尚不稳定，需要优先提高句子准确性","先练好完整简单句，重点检查主谓、时态和名词单复数，再逐步增加修饰成分","订正课堂5个语法错句并仿写"),
+ w("拼写错误较多","独立书写时拼写问题较频繁，影响表达准确性","每天跟读、抄写课堂核心词汇，采用遮盖默写方式检查拼写","完成课堂重点词汇听写和错词订正"),
+ w("范文迁移能力需加强","能够理解范文，但独立写作时尚不能稳定运用学过的表达","将范文中的目标句式与自己的错句逐一对照，摘抄正确结构后替换信息进行仿写","精读课堂范文并完成5个句式替换练习"),
+ w("名词单复数易错","名词单复数及相关动词形式仍容易出现不一致","句子写完后逐一检查可数名词、数量表达和对应动词形式","订正5个名词单复数及主谓搭配错误"),
+ w("主谓一致不稳定","句子主语与谓语动词的单复数搭配不够稳定","先划出句子真正的主语，再根据人称与单复数选择正确动词形式","完成6个主谓一致专项改错句"),
+ w("懂题但写不准确","理解题目和图表信息较准确，但书面输出的语言准确度有待提高","先将读到的信息写成完整简单句，再逐项检查结构和时态","将课堂图表信息改写成5句准确的简单句"),
+ w("课堂词句独立应用较弱","课堂示范时能跟上，但脱离提示后词句运用不够熟练","用课堂句型进行替换练习，逐步从看范文写过渡到不看范文独立写","使用课堂句型完成6句无提示仿写"),
+ w("主语指代不够清晰","描写时容易把事物与它的数量、比例混为同一主语","每写一句先确认表达的是对象本身，还是对象的数量或比例，再选择动词","针对课堂图表写5组不同主语的对比句"),
+ w("动词形式不稳定","独立写作时动词形式容易受时态及主语变化影响","写完句子后先找谓语，再检查时态、第三人称单数和被动形式","完成课堂动词形式专项订正"),
+ w("句式容易重复","书面表达依赖少数简单句型，缺少适当变化","先确保基础句正确，再尝试用状语、对比结构或简单从句扩展","选3句课堂例句各完成1种改写")
 ]},
 advanced:{name:"雅思强化写作",hint:"侧重 Task 1 高质量总览与比较，Task 2 论证深度、任务回应和语言准确度。",good:[
 s("审题定位准确","能够识别题目中的核心争议与答题范围"),
@@ -110,7 +245,17 @@ s("段落结构完整","能够围绕中心句组织解释和例子"),
 s("逻辑关系明确","能够使用因果、让步和对比推进论证"),
 s("语言表达有变化","能够尝试使用不同句式避免机械重复"),
 s("能够自我订正","能识别并修正部分语法或表达问题"),
-s("时间分配较合理","能够在限定时间内推进写作任务")
+s("时间分配较合理","能够在限定时间内推进写作任务"),
+ s("观点分析有深度","能进一步解释观点背后的原因及影响，论证具有一定深度"),
+ s("课堂互动积极","积极回应课堂提问，能结合反馈完善分析"),
+ s("反馈吸收快","能够较快理解改进建议，并在后续练习中尝试应用"),
+ s("词汇使用比较准确","能够根据上下文选用较合适的词汇和搭配"),
+ s("范文学习主动","能够主动分析范文表达，并提炼可迁移的写作方法"),
+ s("论据选择贴题","能够提供与中心观点相关的例证"),
+ s("语法错误较少","常见语法结构使用较稳定，句子准确度较好"),
+ s("信息筛选较合理","能够选取最有代表性的图表信息开展描述"),
+ s("思路组织灵活","能够根据题目调整段落顺序和论证角度"),
+ s("自我纠错能力较强","能主动发现部分不准确表达并进行修改")
 ],bad:[
 w("观点论证深度不足","主体段有观点但解释链条偏短，论证说服力需要提升","依照观点—机制—影响—例子的逻辑解释为什么观点成立","重写课堂 Task 2 一个主体段，补充至少两层因果解释"),
 w("例子与论点关联较弱","部分例子无法直接解释段落的核心观点","在例子后补写一两句分析，说明例子如何证明观点","修改课堂例子，并补充与中心句的明确关联"),
@@ -120,7 +265,17 @@ w("Overview 过于笼统","总览能指出趋势，但未概括最有区分度�
 w("衔接过于机械","过度依赖固定连接词，句意间过渡不够自然","先明确句子逻辑关系，再通过代词、关键词复现及句式连接","删改课堂段落中不必要的逻辑词，并说明调整理由"),
 w("语法准确度不稳定","复杂句中容易出现主谓一致、从句或标点问题","根据错句建立个人检查清单，先保证句子结构清楚再提升复杂度","从课堂作文中选5句错句改正，并说明修改依据"),
 w("词汇搭配不够地道","部分词汇虽然高级，但与句意或固定搭配不够匹配","优先积累与主题相关的常见搭配，通过语境而非孤立词汇记忆","整理8组与课堂主题相关的词组并各造句"),
-w("写作时间管理有待加强","审题、规划、写作与检查的时间分配还需要调整","按任务设定审题、提纲、成文及检查的时间上限并计时训练","计时完成一个 Task 2 提纲和一个主体段，并记录用时")
+w("写作时间管理有待加强","审题、规划、写作与检查的时间分配还需要调整","按任务设定审题、提纲、成文及检查的时间上限并计时训练","计时完成一个 Task 2 提纲和一个主体段，并记录用时"),
+ w("口头思路好但落笔不稳","口头分析基本到位，但成文后仍会出现语法、搭配或句式错误","成文后分两轮回查：先检查时态、主谓一致及单复数，再对照范文检查搭配和句型","订正课堂作文错句并完成一轮仿写"),
+ w("课堂分析难迁移到写作","课堂讨论时能理解方法，独立成文时难以稳定应用","整理课堂的高质量段落结构，完成看提纲写作再到独立成文的递进练习","仿写一个课堂示范主体段，再独立完成一个同类段落"),
+ w("论证容易停留在表面","观点与例子之间缺少机制分析，论证说服力仍显不足","围绕每个观点追问为什么、如何产生影响，再用具体情境支撑","补充课堂 Task 2 主体段的两层解释"),
+ w("反方观点处理单薄","双边讨论或让步段对另一种观点的解释不够完整","先准确说明另一观点成立的条件，再解释其适用范围与局限","完善一段讨论反方观点的主体段"),
+ w("结论与论点不够一致","结尾概括与前文的论证重点偶尔不一致","写完后核对开头立场、各主体段中心句与结论是否互相支撑","修改一篇课堂作文的引言和结论"),
+ w("高阶搭配使用不稳","试图使用复杂词汇时偶尔发生词义或搭配偏差","对照范文和词典例句整理固定搭配，优先保证表达自然准确","订正8组词汇搭配并各造一句"),
+ w("语法细节遗漏较多","写作较流畅，但复核时常遗漏冠词、单复数或主谓一致","用个人错题清单进行最后一轮分项检查","在课堂作文中标记并订正5处语法细节"),
+ w("举例偏空泛","例子较笼统，缺少场景、对象或具体过程","为例子补充参与者、行为和结果，使论据与观点直接关联","把课堂一段抽象例子改写成具体情境"),
+ w("改写能力有待加强","对题目关键词和同类表达的合理替换不够熟练","优先理解原词含义，再通过短语转换和句型变化完成改写","将课堂题目中的3组核心表达进行准确改写"),
+ w("大作文提纲不够清楚","开始写作前对各段论点与解释的安排不够清晰","限时列出立场、两段中心句与对应的解释链后再动笔","完成2道 Task 2 真题的简要提纲")
 ]},
 reading:{name:"Pre-Starter 读写",hint:"侧重基础词汇、句子结构、阅读理解、拼写与短段落表达。",good:[
 s("能够识别常见词汇","对课堂主题中的常见英文词汇有一定积累"),
@@ -130,7 +285,15 @@ s("阅读信息定位较准确","能够根据题目寻找文本中的关键词�
 s("掌握基本主谓结构","能用简单主谓结构表达完整意思"),
 s("愿意尝试独立造句","能够尝试把课堂词汇运用到自己的句子中"),
 s("课堂任务完成认真","能够按要求参与阅读与写作练习"),
-s("能够利用上下文理解词义","在提示下能够从句子语境推测词义")
+s("能够利用上下文理解词义","在提示下能够从句子语境推测词义"),
+ s("审题理解准确","能够准确把握阅读和写作任务的主要要求"),
+ s("课堂问题正确率较高","课堂提问反馈较准确，对阅读内容的理解比较到位"),
+ s("学习态度端正","课堂专注认真，愿意跟随示范完成任务"),
+ s("词汇记忆积极","愿意主动记忆课堂新词并尝试使用"),
+ s("修改意识较好","能够根据提示订正拼写或句子中的问题"),
+ s("句子仿写积极","愿意模仿课上句式完成新的表达"),
+ s("书面表达有想法","面对简单话题能够提出与主题相关的信息"),
+ s("阅读细节提取较好","能够抓住文本中的人物、动作及细节")
 ],bad:[
 w("基础词汇量需提升","对课堂高频词汇的识别和运用还不够熟练","按主题积累词汇，将单词、中文含义与短句一起记忆","复习课堂10个核心词汇，并任选5个造句"),
 w("单词拼写不够稳定","书写单词时有漏字母或字母顺序错误的情况","运用看—遮—写—核对的方法进行短时多轮拼写训练","完成课堂词汇的听写与错词订正"),
@@ -139,7 +302,15 @@ w("句子成分不完整","独立写句子时有时缺少主语或谓语动词",
 w("基本时态易混淆","一般现在时与一般过去时等基础时态使用不够稳定","先识别时间提示词，再选取对应动词形式","完成课堂时态改错练习并订正5句"),
 w("理解长句较困难","遇到稍长的句子时容易忽略核心信息","先找主语和主要动词，再逐步识别地点、时间等修饰部分","拆解课堂阅读中的5个句子，标注主语与谓语"),
 w("短文组织不够清晰","写短段落时句子之间的顺序和联系需要加强","先确定一句主题句，再按顺序补充两至三句细节","根据课堂话题完成一个4–5句的短段落"),
-w("审题遗漏细节","回答阅读或写作练习时偶尔忽略题目的具体要求","划出问题中的动作、数量及限制词，完成后逐项核对","完成课堂练习的审题标注，并订正遗漏的题目")
+w("审题遗漏细节","回答阅读或写作练习时偶尔忽略题目的具体要求","划出问题中的动作、数量及限制词，完成后逐项核对","完成课堂练习的审题标注，并订正遗漏的题目"),
+ w("口头会答但写作易错","口头理解和回答尚可，但独立书写时容易出现拼写与基础语法错误","每写完一句检查完整主谓、动词形式和拼写，再对照课堂范句仿写","订正课堂错句并仿写5句"),
+ w("词汇储备较弱","常用基础词汇积累不足，阅读理解与书面表达容易受影响","按主题整理高频词汇，结合中文含义、发音、拼写和短句循环复习","复习课堂词汇并完成听写与造句"),
+ w("句型迁移不足","看范句能理解，换一种情境时却不能稳定独立造句","用同一个句型反复替换人物、动作和时间，逐渐撤掉提示","围绕课堂句型完成6句替换练习"),
+ w("大小写和标点问题","句首大写、专有名词和句末标点使用不够稳定","逐句使用大小写、句号及问号检查表订正","修正课堂写作中的标点及大小写问题"),
+ w("阅读速度较慢","阅读基础材料时逐词停顿较多，影响整体理解","先快速找关键词和句子主干，再回到细节精读","重新阅读课堂短文并计时完成信息定位"),
+ w("句子连贯性较弱","简单句可以写出，但短段落句子之间联系较少","围绕一个中心主题组织句子，按时间或原因顺序补足内容","将课堂4–5个短句整理成一个连贯段落"),
+ w("拼写自检习惯不足","写完单词后不太主动回查，重复拼写错误较多","每次完成书写后遮住正确答案默写一遍，并核对易错字母","完成课堂错词的二次默写"),
+ w("常见功能词易遗漏","介词、冠词或连词等功能词使用不够稳定","结合完整句理解功能词的位置和作用，不单独死记单词","找出并改正课堂句子中的5处功能词错误")
 ]},
 speaking:{name:"Pre-Starter 听说",hint:"侧重语音辨识、基本听力信息、日常交流、回答完整性和表达流畅度。",good:[
 s("愿意开口表达","能够积极尝试使用英语回答课堂问题"),
@@ -149,7 +320,15 @@ s("关键词捕捉较准确","能听出对话中较明显的人物、时间或�
 s("发音清晰度较好","常见词汇的发音总体能够让听者理解"),
 s("能够使用完整短句","回答问题时能够尝试使用完整的简单句"),
 s("跟读与模仿认真","能够根据示范调整语音和表达方式"),
-s("参与对话积极","能够与老师进行基本轮流问答")
+s("参与对话积极","能够与老师进行基本轮流问答"),
+ s("课堂反应较快","能够较快理解课堂提问并作出回应"),
+ s("词汇听辨有基础","能识别不少课堂已学词汇的发音和基本含义"),
+ s("学习态度认真","愿意跟读并积极吸收课堂中的新表达"),
+ s("回答内容切题","大多能够围绕问题内容作答，没有明显偏题"),
+ s("口头表达有自信","愿意主动开口尝试，不怕出现小错误"),
+ s("记笔记较认真","能够记录新单词、发音和常见问答表达"),
+ s("自我纠音意识不错","听到示范后愿意主动调整发音"),
+ s("交流互动自然","能参与课堂的基本问答和情景交流")
 ],bad:[
 w("发音准确度需提升","部分常见词汇的元音或辅音发音不够准确","对照课堂示范进行分音节跟读，并录音与范读比较","复习课堂10个重点词汇的发音并录制跟读"),
 w("听力关键词易遗漏","听短对话时容易错过数字、时间或人物等信息","先预测所需信息类型，听时重点记录关键词","重听课堂对话材料，完成数字、时间和地点信息整理"),
@@ -158,27 +337,50 @@ w("表达流畅度有待提升","表达时停顿较多，组织简单句仍需�
 w("基础听力词汇量不足","熟悉的词汇在听力语境中仍不容易及时识别","将课堂词汇的发音、含义与常见语块结合练习","复习课堂词汇并完成一次听辨或听写练习"),
 w("疑问句结构不稳","提问或回答时容易混淆疑问词与基本句序","集中练习 who、what、where、when 等疑问句的结构","围绕课堂话题编写5组问答并朗读"),
 w("语音语调较单一","句子重音和一般问答的语调还不够自然","跟读完整语句，标记关键词重音并模仿升降调","选择课堂5句对话进行跟读录音"),
-w("对话回应不够主动","可以听懂部分问题，但接话和追问仍不够自然","练习回答后补充一个相关问题，形成双向交流","围绕课堂话题准备3组回答加追问")
+w("对话回应不够主动","可以听懂部分问题，但接话和追问仍不够自然","练习回答后补充一个相关问题，形成双向交流","围绕课堂话题准备3组回答加追问"),
+ w("听懂但开口不稳定","能大致理解提问，但独立组织英文回答仍需较多时间","整理课堂高频问答框架，先练完整短句再逐步提高速度","针对课堂5个问题录制两轮回答"),
+ w("词汇记忆不够牢固","新学词汇在听说情境中仍容易遗忘","将词汇的读音、中文含义与固定语块结合记忆，并进行跟读复述","复习课堂10个词汇并录音朗读"),
+ w("时态或主谓口误较多","口头表达时经常遗漏动词形式或主谓搭配","练习常见的 I am / I like / He likes 等句型，回答后进行简短自检","录制6句含基本时态和主谓搭配的问答"),
+ w("回答缺乏具体信息","能够回答问题但内容较短，缺少一两个补充细节","用答案加原因或小例子的结构扩展每个回答","为5个课堂问题各补充一句解释"),
+ w("连读与语流不够自然","单词可以辨认，但整句停顿和语流衔接仍偏生硬","按意群标记停顿位置，逐句模仿示范音频","模仿课堂对话并录制一段30秒回答"),
+ w("易混淆相近发音","对部分发音相近的单词辨识不够稳定","使用最小对立词进行听辨和跟读，结合口型区别发音","完成课堂相近音词汇辨音练习"),
+ w("听力做题易漏条件","听问题时容易遗漏否定、数量或时间等限制信息","听前预测信息类型，听时圈出否定、数字和时间信息","重听课堂对话并整理重点限制词"),
+ w("自我纠错还不主动","表达有误后需要老师提示才能意识到问题","听自己录音，重点核对发音、语法和内容完整性","听回课堂录音并纠正3个表达问题")
 ]}
 };
 var $=function(id){return document.getElementById(id);};
 var goodSel=new Set(),badSel=new Set();
 function renderChoices(kind){
-var course=DATA[$("course").value],arr=course[kind==="good"?"good":"bad"],sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");root.textContent="";
-arr.forEach(function(item,i){
-var btn=document.createElement("button");btn.type="button";btn.className="chip "+kind+(sel.has(i)?" selected":"");btn.textContent=item.label;btn.setAttribute("aria-pressed",sel.has(i)?"true":"false");
-if(!sel.has(i)&&sel.size>=3)btn.disabled=true;
-btn.addEventListener("click",function(){if(sel.has(i))sel.delete(i);else if(sel.size<3)sel.add(i);renderChoices(kind);});
-root.appendChild(btn);
-});
-$(kind+"Count").textContent="已选 "+sel.size+" / 3";
+ var arr=DATA[$("course").value][kind],sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");
+ var search=cleanText($("optionSearch").value).toLowerCase();
+ root.textContent="";
+ var visible=0;
+ arr.forEach(function(item,i){
+   if(search&&!sel.has(i)&&((item.label+" "+item.desc).toLowerCase().indexOf(search)===-1))return;
+   visible++;
+   var btn=document.createElement("button");btn.type="button";
+   btn.className="chip "+kind+(sel.has(i)?" selected":"");
+   btn.textContent=item.label;
+   btn.title=item.desc;
+   btn.setAttribute("aria-pressed",sel.has(i)?"true":"false");
+   if(!sel.has(i)&&sel.size>=5)btn.disabled=true;
+   btn.addEventListener("click",function(){
+     if(sel.has(i))sel.delete(i);else if(sel.size<5)sel.add(i);
+     renderChoices(kind);
+   });
+   root.appendChild(btn);
+ });
+ if(!visible){var label=document.createElement("span");label.className="hint";label.textContent="没有匹配项，可以尝试其他关键词或使用自定义输入。";root.appendChild(label);}
+ $(kind+"Count").textContent="已选 "+sel.size+" / 5";
 }
-function changeCourse(){goodSel.clear();badSel.clear();$("courseHint").textContent=DATA[$("course").value].hint+"建议每类选 1–2 项。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";}
+function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"建议每类选 1–2 项，可多选。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";}
 function cleanText(value){return String(value||"").replace(/[\r\n]+/g,"，").replace(/\s+/g," ").trim().replace(/[；;。,.，]+$/,"");}
 function chooseItems(kind){var arr=DATA[$("course").value][kind];var chosen=Array.from(kind==="good"?goodSel:badSel).sort(function(a,b){return a-b;}).map(function(i){return arr[i];});var custom=cleanText($(kind==="good"?"customGood":"customBad").value);if(custom)chosen.push(kind==="good"?s("自定义",custom):w("自定义",custom,"针对“"+custom+"”进行专项练习，完成后依据课堂示例检查和订正","围绕“"+custom+"”完成一项课堂相关巩固练习"));return chosen;}
 function participation(){
 var v=$("participation").value,p={
-"积极":"积极互动，认真做笔记，能够参与课堂练习",
+"积极":"积极互动，课堂专注认真",
+"踏实":"积极互动，态度踏实上进",
+"笔记":"积极互动，认真做笔记，参与课堂练习",
 "认真":"听讲认真，能够按照要求完成课堂练习",
 "一般":"能够跟随课堂进度，参与相应课堂练习",
 "安静":"课堂表现较为安静，主动互动频率可以进一步提高"
@@ -196,7 +398,7 @@ var perf=participation();
 var notes=cleanText($("notes").value);
 if(notes)perf+="；"+notes;
 if(!/[。！？]$/.test(perf))perf+="。";
-var late=$("late").value==="请手动补充"?(cleanText($("lateOther").value)||"待教师补充"):$("late").value;
+var late=$("late").value;
 var strengths=good.map(function(g){return g.desc;}).join("；");
 var weaknesses=bad.map(function(g){return g.desc;}).join("；");
 var actions=bad.map(function(g){return g.action;}).filter(function(v,i,a){return a.indexOf(v)===i;});
@@ -211,16 +413,16 @@ return str;
 }
 function generate(){var output=makeText();if(output!==null){$("result").value=output;$("printView").textContent=output;$("toast").textContent="已生成，可在结果框内直接修改文字。";}}
 $("course").addEventListener("change",changeCourse);
-$("late").addEventListener("change",function(){$("lateBox").hidden=$("late").value!=="请手动补充";});
+$("optionSearch").addEventListener("input",function(){renderChoices("good");renderChoices("bad");});
 $("participation").addEventListener("change",function(){$("partBox").hidden=$("participation").value!=="自定";});
 $("generate").addEventListener("click",generate);
 $("result").addEventListener("input",function(){$("printView").textContent=$("result").value;});
 $("sample").addEventListener("click",function(){
-$("course").value="basic";changeCourse();$("student").value="陈同学";$("first").checked=true;$("participation").value="积极";$("late").value="无迟到";$("lateBox").hidden=true;$("partBox").hidden=true;$("customGood").value="";$("customBad").value="";$("homework").value="例题2主体段写作";$("notes").value="";
-goodSel.add(0);goodSel.add(2);badSel.add(0);badSel.add(4);renderChoices("good");renderChoices("bad");generate();
+$("course").value="basic";changeCourse();$("student").value="示例同学";$("first").checked=true;$("participation").value="积极";$("late").value="无迟到";$("partBox").hidden=true;$("customGood").value="";$("customBad").value="";$("homework").value="范文学习 + 例题2主体段1";$("notes").value="";
+goodSel.add(0);goodSel.add(9);badSel.add(13);badSel.add(14);renderChoices("good");renderChoices("bad");generate();
 });
 $("clear").addEventListener("click",function(){
-$("student").value="";$("course").value="basic";$("late").value="无迟到";$("participation").value="积极";$("first").checked=true;$("lateOther").value="";$("partOther").value="";$("customGood").value="";$("customBad").value="";$("homework").value="";$("notes").value="";$("result").value="";$("printView").textContent="";$("lateBox").hidden=true;$("partBox").hidden=true;changeCourse();$("toast").textContent="已清空，本页面不会自动保存学生信息。";$("student").focus();
+$("student").value="";$("course").value="basic";$("late").value="无迟到";$("participation").value="积极";$("first").checked=true;$("partOther").value="";$("customGood").value="";$("customBad").value="";$("homework").value="";$("notes").value="";$("result").value="";$("printView").textContent="";$("partBox").hidden=true;changeCourse();$("toast").textContent="已清空，本页面不会自动保存学生信息。";$("student").focus();
 });
 $("copy").addEventListener("click",async function(){
 var t=$("result").value;if(!t.trim()){$("toast").textContent="请先生成反馈。";return;}
