@@ -85,19 +85,58 @@ select{color-scheme:light}
 @media(max-width:580px){.wrap{padding:0 12px 35px}nav{margin:0 -12px 20px;padding:12px;gap:7px}nav .brandtext strong{font-size:12px}nav a{font-size:11px;padding:9px}.hero{padding:3px 0 17px;grid-template-columns:1fr}.hero h1{font-size:29px}.hero-label{width:max-content;font-size:10px}.panel{padding:16px}.crit-grid,.count-grid,.grid{grid-template-columns:1fr}.error-row{grid-template-columns:1fr}.error-row .wide,.full{grid-column:auto}.actions .btn{flex:1 1 auto}#result{min-height:400px}.scoreboard strong{font-size:40px}}
 @media print{@page{margin:15mm}body{background:#fff;color:#111}nav,.hero,.left,.output>h2,.scoreboard,.terminal,.actions,.notice,#status,.footer{display:none!important}.layout{display:block}.output{border:0;background:#fff;box-shadow:none;padding:0}.print-only{display:block!important;color:#111;white-space:pre-wrap;font:15px/1.9 "PingFang SC","Microsoft YaHei",sans-serif}}
 
+
+.auto-check-panel{border-color:#bedbdc}
+.essay-field textarea{background:#fbfcfd;min-height:220px;line-height:1.82;font-size:14px}
+.local-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:13px}
+.local-counter{display:flex;flex-direction:column;gap:4px;background:#f4f8f9;border:1px solid #dce8e8;border-radius:9px;padding:12px}
+.local-counter>span{font:850 10px/1.3 ui-monospace,monospace;letter-spacing:1px;color:#65808d}
+.local-counter strong{font:850 27px/1.2 -apple-system,sans-serif;color:#1a5c62;font-variant-numeric:tabular-nums}
+.local-counter small{font-size:11px;color:#6e8390;line-height:1.5}
+.review-box{margin-top:19px;border:1px solid #cfe3e2;background:#f8fbfa;padding:16px;border-radius:9px}
+.review-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #dceae8;padding-bottom:11px}
+.review-head strong{font-size:14px;color:#254b55}.review-head span{color:#157770;font-size:12px;font-weight:750}
+.review-issues{display:flex;flex-direction:column;gap:10px;max-height:500px;overflow-y:auto;margin:14px 0;padding-right:3px}
+.issue{display:flex;gap:11px;align-items:flex-start;border:1px solid #d8e6e4;padding:12px;border-radius:8px;background:white;cursor:pointer}
+.issue:has(input:checked){border-color:#67b1a7;background:#f0faf7}
+.issue>input{width:18px;min-width:18px;height:18px;min-height:18px;accent-color:#087c73;margin:2px 0 0;cursor:pointer}
+.issue-content{display:flex;flex-direction:column;gap:5px;min-width:0}
+.issue-content strong{font-size:13px;color:#274957}.issue-content small{color:#687f8b;font-size:12px;line-height:1.6}
+.issue-quote{font-size:12px;color:#354d5a;padding:6px 9px;background:#f3f7f7;border-left:2px solid #b8d8d4;white-space:pre-wrap;overflow-wrap:anywhere}
+.issue-suggestion{color:#0b7469;font-size:12px;overflow-wrap:anywhere}
+.issue-label{font-size:10px;font-weight:750;color:#738997;margin-left:8px}
+.review-empty{color:#527084;font-size:12px;background:#edf7f4;padding:13px;border-radius:7px;line-height:1.7}
+@media(max-width:580px){.local-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.local-counter{padding:9px}.local-counter>span{font-size:9px;letter-spacing:0}.local-counter strong{font-size:24px}.review-box{padding:12px}.issue{padding:10px}}
 </style></head>
 <body><main class="wrap">
 <nav><div class="identity"><span class="identity-mark">W</span><div class="brandtext"><strong>Writing Assessment Studio</strong><small>IELTS · TEACHER PORTAL</small></div></div><a href="../">← 返回课堂反馈助手</a></nav>
-<header class="hero"><div><span class="eyebrow">ASSESSMENT / WRITING / REVIEW</span><h1>雅思写作 <span>专业批改工作台</span></h1><p>面向教师的结构化写作评估：独立记录 Task 1 / Task 2 的四项成绩、语言问题、典型错句和个性化教学建议。报告可以编辑、复制和打印。</p></div><div class="hero-label">PRIVATE · BROWSER ONLY</div></header>
+<header class="hero"><div><span class="eyebrow">ASSESSMENT / WRITING / REVIEW</span><h1>雅思写作 <span>专业批改工作台</span></h1><p>面向教师的结构化写作评估：粘贴作文进行非 AI 规则初筛，人工确认语言问题，再记录四项成绩、典型错句与教学建议。报告可编辑、复制及打印。</p></div><div class="hero-label">PRIVATE · BROWSER ONLY</div></header>
 <div class="layout"><div class="left">
 <section class="panel"><h2><span class="number">01</span>考生与任务信息</h2><div class="grid">
 <label class="field"><span>学生姓名</span><input id="name" maxlength="35" placeholder="例如：陈同学"></label>
 <label class="field"><span>作文类型</span><select id="task"><option value="task1">Task 1 · 小作文</option><option value="task2">Task 2 · 大作文</option></select></label>
 <label class="field full"><span>题目、图表类型或备注（选填）</span><textarea id="prompt" rows="2" placeholder="动态图 / 静态图 / 地图 / 流程图，或 Task 2 题目"></textarea></label>
-</div><p class="hint">该工具用于整理教师的真实批改观察，不自动阅读学生作文、不自动检测错误。</p></section>
-<section class="panel"><h2><span class="number">02</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
+</div><p class="hint">评分仍由教师判断；下方的本地规则初筛仅提供初步语言检查，不能替代人工阅卷。</p></section>
+<section class="panel auto-check-panel" id="local-review">
+<h2><span class="number">02</span>粘贴作文 · 本地规则初筛</h2>
+<p class="hint">把学生的完整英文作文粘贴进来，点击检查。系统只查找词数、已知拼写错误及部分明确的语法和标点模式；所有结果都需要老师确认。</p>
+<label class="field essay-field"><span>学生作文原文</span><textarea id="essay" rows="10" spellcheck="true" autocomplete="off" placeholder="Paste the student's IELTS Task 1 or Task 2 essay here..."></textarea></label>
+<div class="local-tools">
+ <div class="local-counter"><span>WORD COUNT</span><strong id="wordCount">0</strong><small id="wordStatus">等待粘贴作文</small></div>
+ <div class="local-counter"><span>PARAGRAPHS</span><strong id="paragraphCount">0</strong><small>以空行分段估算</small></div>
+ <div class="local-counter"><span>RULE FLAGS</span><strong id="issueCount">—</strong><small>仅提示可能问题</small></div>
+</div>
+<div class="actions"><button class="btn primary" type="button" id="checkEssay">检查作文（无需 AI）</button><button class="btn" type="button" id="clearEssay">清空作文</button></div>
+<div class="review-box" id="reviewBox" hidden>
+ <div class="review-head"><strong>待老师确认的检查结果</strong><span id="reviewSummary"></span></div>
+ <p class="hint">勾选你核对后确认的项目，点击「加入批改记录」；未勾选的提示不会进入报告。系统不自动调整分数或 LR/GRA 错误次数。</p>
+ <div class="review-issues" id="reviewIssues"></div>
+ <button class="btn primary" type="button" id="applyIssues">加入批改记录（已确认项目）</button>
+</div>
+</section>
+<section class="panel"><h2><span class="number">03</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
 <div class="crit-grid" id="criteria"></div></section>
-<section class="panel"><h2><span class="number">03</span>语言错误与修改记录</h2>
+<section class="panel"><h2><span class="number">04</span>语言错误与修改记录</h2>
 <div class="count-grid">
 <label class="count-card"><strong>LR · 拼写错误数量</strong><select id="spelling"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>数次错误并不自动决定 LR 分数。</small></label>
 <label class="count-card"><strong>GRA · 语法错误数量</strong><select id="grammar"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>分数还需考虑句式范围及错误影响。</small></label>
@@ -110,12 +149,12 @@ select{color-scheme:light}
 <p class="group-title">课后任务（不填则使用已选不足匹配建议）</p><textarea id="homework" rows="3" placeholder="例如：范文学习 + 重写主体段1 + 复盘错句"></textarea>
 <div class="actions"><button class="btn primary" id="generate" type="button">✦ 生成批改报告</button><button class="btn" id="sample1" type="button">▶ Task 1 示例</button><button class="btn" id="sample2" type="button">▶ Task 2 示例</button><button class="btn" id="clear" type="button">↺ 清空</button></div>
 </section></div>
-<section class="panel output"><h2><span class="number">04</span>批改报告预览</h2>
+<section class="panel output"><h2><span class="number">05</span>批改报告预览</h2>
 <div class="scoreboard"><div><small>本篇作文 · 四项等权评分</small><strong id="total">—</strong><div class="score-note">教学模式 · 0.5 分档向下保留</div></div><div class="scoreparts" id="parts">TA — · CC — · LR — · GRA —</div></div>
 <div class="terminal"><div class="terminal-header"><span>ASSESSMENT REPORT / 学生批改摘要</span><span class="report-label">可编辑</span></div>
 <textarea id="result" spellcheck="false" placeholder="> SYSTEM READY_&#10;&#10;请填写姓名、选择四项分数及观察。&#10;点击生成即可获得可复制的报告。"></textarea></div>
 <div class="actions"><button class="btn primary" id="copy" type="button">▣ 复制报告</button><button class="btn" id="download" type="button">⇩ 下载 TXT</button><button class="btn" id="print" type="button">▤ 打印 / PDF</button></div>
-<p class="notice">本工具按教师指定的课堂评分规则：四项等权平均后，向下保留到 0.5 分档；例如 6/6/6/5 → 5.5。此为教学批改规则，不代表雅思官方对分项均分的统一取整规定。整场 Writing 需另按 Task 1 : Task 2 = 1 : 2 加权。错误次数仅作事实记录，不能直接决定某项成绩。</p>
+<p class="notice">本工具按教师指定的课堂评分规则：四项等权平均后向下保留到 0.5 分档（6/6/6/5 → 5.5），不代表雅思官方统一取整规定。Task 1 与 Task 2 整场成绩另按 1:2 加权。规则初筛只能识别少量明确语言模式，不能自动评价任务完成、逻辑或图表内容，也不能根据错误次数直接判定分数。</p>
 <div id="status" role="status" aria-live="polite"></div><pre class="print-only" id="printout"></pre>
 </section></div><p class="footer">WRITING ASSESSMENT STUDIO · 教师自主判断 · 本地生成与导出 · 无需 AI 或登录</p></main>
 <script>
@@ -175,6 +214,164 @@ function updateScore(){
  $("parts").textContent=KEYS.map((k,i)=>(k==="T"?($("task").value==="task1"?"TA":"TR"):k==="C"?"CC":k==="L"?"LR":"GRA")+" "+(values[i]===null?"—":values[i].toFixed(1))).join(" · ");
  return valid;
 }
+
+// Conservative browser-only checks: finite rules and a short known-typo dictionary.
+// No API calls, AI inference, or silent modification of student work.
+const TYPO={
+ agrue:"argue",eassy:"essay",demostates:"demonstrates",caculation:"calculation",
+ storng:"strong",expereance:"experience",mekes:"makes",becuase:"because",
+ enviroment:"environment",enviromental:"environmental",goverment:"government",
+ recieve:"receive",recieved:"received",definately:"definitely",seperate:"separate",
+ neccessary:"necessary",occurence:"occurrence",occured:"occurred",adress:"address",
+ acheive:"achieve",achievedd:"achieved",studing:"studying",studys:"studies",
+ improove:"improve",addedd:"added",saturatted:"saturated",
+ contribte:"contribute",contributting:"contributing",langauge:"language",
+ knowlege:"knowledge",arguement:"argument",becouse:"because",wichh:"which",
+ comparision:"comparison",probaly:"probably",existance:"existence"
+};
+// A real word used incorrectly (for example "witch" when "which" is intended)
+// is intentionally not auto-flagged by this limited typo dictionary.
+const MODAL_FORMS={made:"make",went:"go",gone:"go",goes:"go",likes:"like",
+ makes:"make",plays:"play",studies:"study",improves:"improve",increases:"increase",
+ decreases:"decrease",causes:"cause",shows:"show",suggests:"suggest",
+ contributes:"contribute",works:"work",argues:"argue",presents:"present",
+ presented:"present",changed:"change",reduces:"reduce",choices:"choose"};
+const SIMPLE_THIRD={make:"makes",go:"goes",play:"plays",like:"likes",
+ study:"studies",work:"works",present:"presents",increase:"increases",
+ decrease:"decreases",improve:"improves",suggest:"suggests",cause:"causes",
+ show:"shows",need:"needs",want:"wants",argue:"argues",contribute:"contributes"};
+const ADV_ADJ={constantly:"constant",significantly:"significant",rapidly:"rapid",
+ sharply:"sharp",steadily:"steady",dramatically:"dramatic"};
+let lastIssues=[],appliedIssues=new Set();
+function words(text){return (text.match(/[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*/g)||[]).length;}
+function updateEssayStats(){
+ const t=$("essay").value,n=words(t),minimum=$("task").value==="task1"?150:250;
+ $("wordCount").textContent=String(n);
+ $("paragraphCount").textContent=String(t.trim()?t.trim().split(/\n\s*\n+/).filter(Boolean).length:0);
+ $("wordStatus").textContent=n===0?"等待粘贴作文":n<minimum?"低于 "+minimum+" 词要求（请人工核对）":"已达到 "+minimum+" 词";
+}
+function analyseText(text){
+ const list=[],seen=new Set();
+ function add(type,label,start,end,suggestion,explain){
+   if(start<0||end<=start)return;
+   const original=text.slice(start,end),key=[start,end,type,label].join("|");
+   if(seen.has(key))return;seen.add(key);
+   const contextStart=Math.max(0,start-42),contextEnd=Math.min(text.length,end+42);
+   list.push({type,label,original,start,end,suggestion,explain,
+     context:text.slice(contextStart,contextEnd).replace(/\s+/g," "),
+     contextStart,contextEnd});
+ }
+ let m;
+ const dictionary=/\b[A-Za-z]+\b/g;
+ while((m=dictionary.exec(text))!==null){
+   const fix=TYPO[m[0].toLowerCase()];
+   if(fix)add("拼写","已知拼写疑点",m.index,m.index+m[0].length,fix,"仅基于内置常见错词表；请结合上下文确认");
+ }
+ function find(pattern,type,label,create){
+   pattern.lastIndex=0;
+   while((m=pattern.exec(text))!==null){
+     const data=create(m);
+     if(data)add(type,label,m.index,m.index+m[0].length,data[0],data[1]);
+     if(m[0].length===0)pattern.lastIndex++;
+   }
+ }
+ find(/\b(can|could|may|might|must|shall|should|will|would)\s+([a-z]+)\b/gi,
+   "语法","情态动词后形式疑点",m=>{
+     const fix=MODAL_FORMS[m[2].toLowerCase()];return fix?[m[1]+" "+fix,"情态动词后通常接动词原形；请检查语境"]:null;
+   });
+ find(/\b(to)\s+(made|went|goes|likes|makes|improves|increased|choice)\b/gi,
+   "语法","to 后词形疑点",m=>{
+    const fix={made:"make",went:"go",goes:"go",likes:"like",makes:"make",improves:"improve",increased:"increase",choice:"choose"}[m[2].toLowerCase()];
+    return fix?["to "+fix,"仅当这里是 to 不定式时才适用；若为介词 to，请忽略"]:null;
+   });
+ find(/\b(he|she|it)\s+(make|go|play|like|study|work|present|increase|decrease|improve|suggest|cause|show|need|want|argue|contribute)\b/gi,
+   "语法","第三人称单数疑点",m=>[m[1]+" "+SIMPLE_THIRD[m[2].toLowerCase()],"一般现在时第三人称单数动词通常需要 -s/-es；虚拟语气等例外请人工判断"]);
+ find(/\b(a|an)\s+(constantly|significantly|rapidly|sharply|steadily|dramatically)\s+(increase|rise|decrease|drop)\b/gi,
+   "语法","形容词与副词词性疑点",m=>[m[1]+" "+ADV_ADJ[m[2].toLowerCase()]+" "+m[3],"名词前通常使用形容词：a constant increase，不是 a constantly increase"]);
+ find(/\bunderwent\s+a\s+(significant|sharp|dramatic|steady)\s+increasing\b/gi,
+   "语法","名词形式疑点",m=>[m[0].replace(/increasing$/i,"increase"),"underwent a significant increase 中需要名词 increase"]);
+ find(/\bthe percentage(?: of [a-z]+(?: [a-z]+){0,2})?\s+(were|are)\b/gi,
+   "语法","百分比短语的主谓一致疑点",m=>[m[0].replace(/\bwere\b/i,"was").replace(/\bare\b/i,"is"),"以 the percentage 为中心主语时通常用单数谓语；先确认句法主语"]);
+ find(/\bdepend(?:s|ed|ing)?\s+of\b/gi,"搭配","depend 搭配疑点",
+   m=>[m[0].replace(/\bof$/i,"on"),"depend on 是常见固定搭配"]);
+ find(/\binterested\s+on\b/gi,"搭配","形容词介词搭配疑点",
+   m=>[m[0].replace(/\bon$/i,"in"),"interested in 为常用搭配"]);
+ find(/\bdiscuss(?:ed|es|ing)?\s+about\b/gi,"搭配","discuss 搭配疑点",
+   m=>[m[0].replace(/\s+about$/i,""),"discuss 通常直接接宾语，不需要 about"]);
+ find(/\b([a-z]{3,})[ \t]+\1\b/gi,"表达","重复单词",
+   m=>[m[1],"请确认是否不必要地重复了单词"]);
+ find(/[ \t]+(?=[,;:!?])/g,"标点","标点前多余空格",
+   m=>["","英文逗号、分号、冒号、问号等通常不需要前置空格"]);
+ find(/[,;:!?\.](?=[A-Za-z])/g,"标点","标点后缺少空格",
+   m=>{
+     const char=m[0],next=text[m.index+1]||"",prev=text.slice(Math.max(0,m.index-4),m.index);
+     if(char==="."&&(/[A-Za-z]\.$/.test(text.slice(Math.max(0,m.index-2),m.index+1))||/\b(?:www|e|i)$/i.test(prev)))return null;
+     if(char==="."&&/\b(?:Mr|Mrs|Ms|Dr|St)$/i.test(prev))return null;
+     return [char+" ","英文标点后开始下一个单词通常需要空格；缩写、域名等情况请忽略"];
+   });
+ return list.sort((a,b)=>a.start-b.start||a.end-b.end).slice(0,100);
+}
+function setReviewState(){
+ const text=$("essay").value;
+ lastIssues=analyseText(text);appliedIssues=new Set();
+ $("issueCount").textContent=String(lastIssues.length);
+ $("reviewBox").hidden=false;
+ $("reviewSummary").textContent=lastIssues.length+" 条待确认";
+ const container=$("reviewIssues");container.textContent="";
+ if(!lastIssues.length){
+   let info=document.createElement("div");info.className="review-empty";
+   info.textContent="未发现内置规则可识别的明显问题。这不代表作文没有错误；请继续人工检查词义、语法、论证、图表数据和任务回应。";
+   container.append(info);
+ }else lastIssues.forEach((issue,i)=>{
+   let row=document.createElement("label");row.className="issue";
+   let checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.dataset.issue=String(i);
+   let content=document.createElement("span");content.className="issue-content";
+   let title=document.createElement("strong");title.textContent=issue.label;
+   let type=document.createElement("span");type.className="issue-label";type.textContent=issue.type;title.append(type);
+   let quote=document.createElement("span");quote.className="issue-quote";quote.textContent="原文附近："+issue.context;
+   let suggestion=document.createElement("span");suggestion.className="issue-suggestion";suggestion.textContent="建议片段："+issue.suggestion;
+   let note=document.createElement("small");note.textContent=issue.explain;
+   content.append(title,quote,suggestion,note);row.append(checkbox,content);container.append(row);
+ });
+ $("status").textContent="已完成本地初筛："+lastIssues.length+" 条疑点，请确认后再加入批改记录。";
+}
+function applyCheckedIssues(){
+ let accepted=0;
+ for(const check of $("reviewIssues").querySelectorAll('input[type="checkbox"]:checked')){
+   const index=Number(check.dataset.issue),issue=lastIssues[index];
+   if(!issue||appliedIssues.has(index))continue;
+   if(issue.type==="拼写"){
+      const line=issue.original+" → "+issue.suggestion;
+      const current=$("misspellings").value.trim(),lines=current.split(/\n/);
+      if(!lines.includes(line))$("misspellings").value=current?current+"\n"+line:line;
+   }else{
+      const inputs=addError();
+      const chunk=$("essay").value.slice(issue.contextStart,issue.contextEnd).replace(/\s+/g," ");
+      const offset=issue.start-issue.contextStart;
+      const replacement=chunk.slice(0,offset)+issue.suggestion+chunk.slice(offset+issue.original.length);
+      inputs[0].value=chunk;
+      inputs[1].value=replacement;
+      inputs[2].value=issue.label+"："+issue.explain;
+   }
+   appliedIssues.add(index);accepted++;
+ }
+ $("status").textContent=accepted?("已将 "+accepted+" 条老师确认的问题加入记录。请核实订正是否符合语境。"):"没有新的已确认项目可加入。";
+}
+$("essay").addEventListener("input",()=>{
+ updateEssayStats();
+ if(!$("reviewBox").hidden){$("reviewBox").hidden=true;$("issueCount").textContent="—";lastIssues=[];appliedIssues.clear();}
+});
+$("checkEssay").addEventListener("click",()=>{
+ if(!$("essay").value.trim()){$("status").textContent="请先粘贴作文原文。";$("essay").focus();return;}
+ updateEssayStats();setReviewState();
+});
+$("applyIssues").addEventListener("click",applyCheckedIssues);
+$("clearEssay").addEventListener("click",()=>{
+ $("essay").value="";$("reviewIssues").textContent="";$("reviewBox").hidden=true;
+ lastIssues=[];appliedIssues.clear();$("issueCount").textContent="—";updateEssayStats();
+ $("status").textContent="作文输入框已清空，手动批改记录仍保留。";
+});
+
 function addError(){
  let row=document.createElement("div");row.className="error-row";
  let wrong=document.createElement("input");wrong.placeholder="学生实际错句";wrong.setAttribute("aria-label","错句");
@@ -231,13 +428,13 @@ function sample(kind){
  updateScore();generate();
  $("status").textContent="演示已填入：错词与错句留空，需根据学生真实作文填写。";
 }
-$("task").addEventListener("change",()=>{render();$("status").textContent="已切换作文类型，分项评分已清空";});
+$("task").addEventListener("change",()=>{updateEssayStats();lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";render();$("status").textContent="已切换作文类型，分项评分已清空";});
 $("add").addEventListener("click",addError);
 $("generate").addEventListener("click",generate);
 $("sample1").addEventListener("click",()=>sample("task1"));
 $("sample2").addEventListener("click",()=>sample("task2"));
 $("clear").addEventListener("click",()=>{
- ["name","prompt","misspellings","overview","homework","result"].forEach(k=>$(k).value="");
+ ["name","prompt","misspellings","overview","homework","result","essay"].forEach(k=>$(k).value="");lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";updateEssayStats();
  $("spelling").value="";$("grammar").value="";$("errors").textContent="";$("task").value="task1";
  render();$("status").textContent="已清空，不会自动保存学生数据";
 });
@@ -253,6 +450,6 @@ $("download").addEventListener("click",()=>{
  a.href=url;a.download=($("name").value.trim().replace(/[\\/:*?"<>|]/g,"_")||"学生")+"_写作批改.txt";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="已创建 TXT 文件";
 });
 $("print").addEventListener("click",()=>{if(!$("result").value.trim()){$("status").textContent="请先生成报告";return;}$("printout").textContent=$("result").value;window.print();});
-render();addError();
+render();addError();updateEssayStats();
 })();
 </script></body></html>
