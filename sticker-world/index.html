@@ -7,6 +7,39 @@
 <title>浮梦造景社 · 立体贴纸店铺</title>
 <style>
 :root{--ink:#59475b;--sub:#998596;--cream:#fffbf5;--rose:#e79ba9;--gold:#e0b47f;--line:#eddde2;--shadow:0 20px 60px #4d3c5a14}*{box-sizing:border-box}html{min-height:100%;background:#f8eef0}body{margin:0;min-height:100vh;color:var(--ink);font-family:"Hiragino Sans GB","PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:radial-gradient(ellipse at 2% 12%,#ffe3e7 0,transparent 32%),radial-gradient(ellipse at 94% 80%,#e4e8f5 0,transparent 39%),linear-gradient(130deg,#fffaf6,#f8edf3 62%,#f7eaf0);padding:19px 17px 44px}button{font:inherit}button:focus-visible,[role=button]:focus-visible{outline:3px solid #b17a96;outline-offset:2px}.app{max-width:1370px;margin:auto}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}.brand{display:flex;gap:12px;align-items:center}.seal{width:57px;height:57px;border:2px solid #ebbeca;background:#fff7f4;border-radius:50%;display:grid;place-items:center;box-shadow:0 5px 0 #f2d9de,0 10px 25px #bb8ca422;font-size:27px}.kicker{font-size:10px;letter-spacing:2.5px;color:#ae8294;font-weight:900}.brand h1{margin:1px 0 0;font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-weight:900;font-size:clamp(22px,3.3vw,33px);letter-spacing:2px}.header-side{font-size:12px;color:#9b7c8b;background:#ffffffbf;border:1px solid white;border-radius:30px;padding:10px 15px;box-shadow:0 5px 20px #7e678212}.theme-row{display:flex;align-items:center;gap:11px;margin-bottom:15px;overflow:auto;padding:3px 2px 10px;scrollbar-width:none}.theme{position:relative;min-width:202px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid #ead5dd;background:#fffcf9;border-radius:17px;padding:9px 15px;box-shadow:0 6px 13px #8f6c8011;color:#644f5d;text-align:left;transition:.2s}.theme.active{border-color:#cc8fa7;background:#fff8f9;box-shadow:0 4px 0 #efc6d4,0 9px 17px #a567831c}.theme:hover{transform:translateY(-2px)}.theme-emoji{width:46px;height:46px;display:grid;place-items:center;font-size:25px;border-radius:12px;background:var(--tone)}.theme strong{display:block;font-size:13px;white-space:nowrap}.theme small{display:block;color:#ac929e;font-size:10px;white-space:nowrap;margin-top:5px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(298px,360px);gap:17px;align-items:start}.panel{background:var(--cream);border:1px solid white;border-radius:24px;padding:17px;box-shadow:var(--shadow)}.board-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.label-small{font-size:10px;font-weight:900;letter-spacing:2px;color:#b18b9b}.board-head h2{font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-size:19px;margin:4px 0}.board-head p{color:var(--sub);font-size:11px;margin:0}.number{border-radius:99px;background:#f9e5e3;padding:9px 12px;font-size:11px;color:#b78088;font-weight:900;white-space:nowrap}.canvas-shell{position:relative;border:10px solid #fff;border-radius:19px;box-shadow:0 10px 35px #84707c27,0 0 0 1px #eddbdb;overflow:hidden;background:#7b648d}.canvas-shell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px #fff6;pointer-events:none}#scene{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}.board-tag{position:absolute;top:12px;left:13px;padding:7px 11px;border-radius:5px;background:#fff5e5dd;color:#775d68;font:900 11px Georgia,serif;letter-spacing:2px;box-shadow:2px 2px 0 #cab8b59f;pointer-events:none}.ribbon{position:absolute;bottom:13px;right:15px;color:#fffbf5;opacity:.8;font-size:11px;letter-spacing:2px;font-weight:900;pointer-events:none}.board-foot{display:flex;justify-content:space-between;gap:9px;color:#a58c9a;font-size:11px;padding:14px 1px 0}.controls{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.btn{border:1px solid #e8d5dd;background:#fff8f7;border-radius:10px;padding:10px 12px;color:#8f7583;min-height:37px;cursor:pointer;font-size:12px;font-weight:900;box-shadow:0 3px 0 #f0e2e6}.btn:hover{background:#fff0f2}.btn:active{transform:translateY(2px);box-shadow:none}.btn:disabled{opacity:.35;cursor:not-allowed}.btn.solid{background:#db8ca2;border-color:#db8ca2;color:white;box-shadow:0 3px 0 #c6758d}.btn.mint{background:#eaf5e9;color:#719376;border-color:#cee8da}.btn.soft{color:#a97890}.spacer{flex:1}.item-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:#f7eeed;border:1px solid #f1e1e2;border-radius:12px;padding:8px;margin-top:12px}.item-tools.hidden{display:none}.item-tools span{font-size:11px;font-weight:900;margin-right:auto;color:#907481}.item-tools .btn{padding:7px 9px;min-height:31px}.prog{background:linear-gradient(135deg,#fff2ed,#fff9ed);border:1px solid #f3dbd7;border-radius:17px;padding:14px;margin-bottom:16px}.prog-top{display:flex;justify-content:space-between;align-items:center;gap:7px}.prog-top strong{font-size:19px;color:#d5859a;font-weight:900}.prog-top .left{font-size:12px;font-weight:900}.progress-bar{height:9px;background:#f3d9dc;border-radius:20px;overflow:hidden;margin:11px 0}.progress-value{height:100%;width:0;background:linear-gradient(90deg,#f7bca1,#d88ba7);border-radius:20px;transition:width .25s}.prog p{font-size:11px;color:#ae8893;line-height:1.5;margin:0}.tray-head{display:flex;justify-content:space-between;align-items:end}.tray-head h2{font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-size:19px;margin:3px 0}.tray-head span{font-size:11px;color:#ad949f}.tabs{display:flex;gap:5px;overflow-x:auto;margin:11px 0}.tab{background:#fff;border:1px solid #eddee2;color:#ac8c9b;border-radius:9px;padding:8px 10px;cursor:pointer;font-size:11px;font-weight:900;white-space:nowrap}.tab.active{color:#ad6b88;background:#fbe0e7;border-color:#e8b5c3}.sticker-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:620px;overflow-y:auto;padding:2px;scrollbar-color:#e9cbd6 transparent}.sticker{border:1px dashed #e4cfd7;background:#fff9f6;border-radius:13px;position:relative;cursor:grab;padding:5px 4px 8px;text-align:center;min-width:0;touch-action:none;-webkit-user-select:none;user-select:none;transition:background .2s}.sticker:hover{background:#fff0f3;border-color:#d891a6}.sticker:active{cursor:grabbing}.sticker.done{opacity:.39;cursor:default;filter:grayscale(.35)}.sticker.done::after{content:"已贴 ✓";position:absolute;bottom:5px;left:7px;right:7px;border-radius:8px;background:#fffdf5e8;color:#7d9b81;font-size:10px;font-weight:900}.sticker .index{position:absolute;top:7px;left:8px;color:#cbb0bb;font-size:9px;font-weight:900}.sticker .art{height:86px;display:flex;align-items:center;justify-content:center;pointer-events:none}.sticker svg{width:100%;height:90px;overflow:visible;filter:drop-shadow(0 2px 1px #8b6f7c28)}.sticker .name{font-size:10px;font-weight:900;color:#896f7d;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px}.guide-note{font-size:11px;line-height:1.8;color:#ab9199;background:#fff8f7;border-top:1px dashed #f1e2e3;padding-top:13px;margin-top:14px}.guide-note b{color:#c27f97}.sticker-layer{cursor:grab}.sticker-layer:active{cursor:grabbing}.sticker-layer.selected .selection-box{display:block}.selection-box{pointer-events:none}.guide-piece{opacity:.44;pointer-events:none}.is-new{animation:pop .35s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{from{opacity:.1;transform:scale(.78)}to{opacity:1;transform:scale(1)}}.float-ghost{position:fixed;z-index:999;pointer-events:none;width:110px;height:105px;display:none;filter:drop-shadow(0 7px 6px #48354466);opacity:.95}.toast{position:fixed;z-index:100;bottom:26px;left:50%;transform:translate(-50%,25px);opacity:0;pointer-events:none;background:#504356;color:#fff9f5;padding:13px 19px;font-size:12px;font-weight:800;border-radius:99px;box-shadow:0 10px 30px #5142584d;transition:.25s;max-width:calc(100% - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#35263994;backdrop-filter:blur(5px);z-index:80;padding:20px}.overlay.show{display:flex}.modal{max-width:430px;width:100%;border:7px solid #fffaf2;border-radius:27px;padding:27px 20px;background:linear-gradient(#fff8f6,#fae8ef);box-shadow:0 20px 60px #1d193f44;text-align:center}.modal h2{font-size:26px;color:#c4778e;margin:4px}.modal p{color:#a0808e;font-size:13px;line-height:2}.modal button{border:0;border-radius:11px;background:#da8da5;color:white;font-weight:900;padding:12px 19px;cursor:pointer;margin:4px}.modal button.alt{background:#f2d6df;color:#a47285}.progress-side{font-size:10px;color:#ac93a0}.mode-switch{display:flex;border:1px solid #e6d6d8;border-radius:11px;overflow:hidden}.mode-switch button{background:#fff7f6;color:#ae96a0;border:0;padding:9px 10px;font-size:11px;cursor:pointer;font-weight:900}.mode-switch button.active{background:#ecc6d1;color:#995c75}.flying-petal{position:absolute;pointer-events:none;z-index:5;animation:petal .7s ease-out forwards;font-size:25px}@keyframes petal{to{transform:translateY(-65px) rotate(35deg) scale(.6);opacity:0}}.attribution{text-align:center;font-size:10px;color:#b59fa8;margin-top:15px;letter-spacing:1px}@media(max-width:970px){.workspace{grid-template-columns:1fr}.panel{max-width:760px;width:100%;margin:auto}.sticker-grid{grid-template-columns:repeat(5,minmax(0,1fr));max-height:380px}.sticker .art{height:76px}.sticker svg{height:80px}}@media(max-width:560px){body{padding:10px 8px 22px}.header-side{font-size:10px;padding:8px 9px}.seal{width:45px;height:45px;font-size:23px}.brand h1{font-size:21px}.kicker{font-size:8px}.theme{min-width:164px;padding:8px 10px}.theme-emoji{width:39px;height:39px}.theme strong{font-size:12px}.theme small{font-size:9px}.panel{padding:11px;border-radius:18px}.board-head h2{font-size:16px}.number{font-size:9px;padding:7px}.canvas-shell{border-width:5px;border-radius:12px}.board-tag,.ribbon{font-size:8px;letter-spacing:1px}.controls{gap:5px}.btn{font-size:10px;padding:8px}.sticker-grid{grid-template-columns:repeat(3,minmax(0,1fr));max-height:440px}.sticker .art{height:85px}.sticker svg{height:88px}.prog{padding:11px}.board-foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* V3 · immersive workbench; make the world the primary focus on an iPad */
+#scene{aspect-ratio:910/760;display:block;width:100%;height:auto}
+.workspace{grid-template-columns:minmax(0,1fr) minmax(285px,328px);gap:13px}
+.canvas-shell{background:radial-gradient(circle at 48% 38%,#a68b9e,#625572);border-width:6px}
+#boardPanel{min-width:0}
+.zoom-hud{position:absolute;z-index:5;top:11px;right:12px;display:flex;align-items:center;gap:4px;padding:5px;border-radius:12px;background:#fff9f2e9;box-shadow:0 4px 20px #48344355;user-select:none}
+.zoom-btn{width:31px;height:31px;background:#fffaf7;color:#765a70;border:1px solid #e5cad7;border-radius:8px;cursor:pointer;font-size:19px;font-weight:800;display:grid;place-items:center;touch-action:manipulation}
+.zoom-btn:active{background:#f6dce6}
+#zoomValue{font-size:11px;font-weight:900;color:#ad8397;min-width:43px;text-align:center}
+#trayToggle{display:none}
+body.focus-mode{padding:0;overflow:hidden}
+body.focus-mode .header,body.focus-mode .theme-row,body.focus-mode .attribution{display:none}
+body.focus-mode .workspace{position:fixed;inset:0;display:block;z-index:50;background:#43374c}
+body.focus-mode #boardPanel{position:absolute;inset:0;display:flex;flex-direction:column;max-width:none;width:100%;height:100dvh;overflow:hidden;border:0;border-radius:0;background:linear-gradient(160deg,#fcf4ed,#f6e7ee);padding:8px 12px}
+body.focus-mode .board-head{flex:0 0 auto;margin:3px 3px 7px}
+body.focus-mode .canvas-shell{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-width:3px;border-radius:12px}
+body.focus-mode #scene{display:block;width:100%;height:100%;aspect-ratio:auto}
+body.focus-mode .board-foot{padding:6px 1px 0;flex:0 0 auto}
+body.focus-mode .item-tools{flex:0 0 auto;margin-top:5px;padding:5px}
+body.focus-mode .controls{flex:0 0 auto;margin-top:7px;padding:0 0 3px}
+body.focus-mode #focusToggle{background:#865b76;border-color:#865b76;color:#fff}
+body.focus-mode #trayToggle{display:inline-block;background:#f3d7df;color:#945c78}
+body.focus-mode #trayPanel{display:none}
+body.focus-mode.tray-open #trayPanel{display:block;position:fixed;bottom:5px;left:1%;width:98%;max-width:none;z-index:85;height:min(46dvh,450px);overflow-y:auto;border:2px solid #edc6d4;box-shadow:0 -12px 42px #46304b70;background:#fff8f4;border-radius:22px 22px 10px 10px;padding:10px 14px}
+body.focus-mode.tray-open #trayPanel .guide-note{display:none}
+body.focus-mode.tray-open #trayPanel .sticker-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));max-height:none;overflow:visible}
+body.focus-mode.tray-open #trayPanel .sticker .art{height:72px}
+body.focus-mode.tray-open #trayPanel .sticker svg{height:75px}
+body.focus-mode.tray-open #trayPanel .prog{display:none}
+body.focus-mode.tray-open #trayToggle{background:#925d7c;color:#fff}
+@media(max-width:970px){.workspace{grid-template-columns:1fr}.panel{max-width:unset;width:100%;margin:auto}#boardPanel{max-width:100%}#trayPanel{max-width:100%}.sticker-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:560px){.zoom-hud{top:7px;right:7px;padding:3px;gap:2px}.zoom-btn{width:27px;height:27px;font-size:16px}#zoomValue{font-size:9px;min-width:36px}.board-head p{font-size:10px}.board-foot{font-size:9px}body.focus-mode #boardPanel{padding:4px}body.focus-mode .board-head{margin:0 1px 5px}body.focus-mode .board-foot{display:none}body.focus-mode .controls{gap:4px}body.focus-mode .controls .btn{font-size:10px;padding:7px}body.focus-mode.tray-open #trayPanel .sticker-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -14,13 +47,20 @@
 <header class="header"><div class="brand"><div class="seal">🏮</div><div><div class="kicker">MINIATURE STICKER ATELIER</div><h1>浮梦造景社 <span style="font-size:13px;color:#d4a4b7">✦</span></h1></div></div><span class="header-side">一片贴纸 · 一个有故事的小世界 ✧</span></header>
 <nav class="theme-row" id="themes" aria-label="场景选择"></nav>
 <div class="workspace">
-<section class="panel">
+<section class="panel" id="boardPanel">
 <div class="board-head"><div><div class="label-small">YOUR LITTLE WORLD / 造景画布</div><h2 id="sceneTitle">深夜甜品便利店</h2><p id="sceneDesc">城市睡着后，这里依然为你亮着灯</p></div><span class="number" id="sceneBadge">SCENE 01</span></div>
-<div class="canvas-shell" id="canvasShell"><svg id="scene" viewBox="0 0 1060 800" aria-label="贴纸立体造景互动画布" xmlns="http://www.w3.org/2000/svg"><g id="base"></g><g id="guides"></g><g id="placed"></g></svg><span class="board-tag">✦ MINIATURE WORLD / NO. 01</span><span class="ribbon">MADE WITH ♡</span></div>
-<div class="board-foot"><span>✧ 轻点贴纸自动贴好 / 按住拖动来自由布置</span><span>DIY · STICKER ART</span></div>
+<div class="canvas-shell" id="canvasShell"><svg id="scene" viewBox="75 15 910 760" aria-label="贴纸立体造景互动画布" xmlns="http://www.w3.org/2000/svg"><g id="base"></g><g id="guides"></g><g id="placed"></g></svg><span class="board-tag">✦ MINIATURE WORLD / NO. 01</span><span class="ribbon">MADE WITH ♡</span>
+<div class="zoom-hud" aria-label="画布缩放">
+<button class="zoom-btn" id="zoomOut" aria-label="缩小场景">−</button>
+<span id="zoomValue">100%</span>
+<button class="zoom-btn" id="zoomIn" aria-label="放大场景">＋</button>
+<button class="zoom-btn" id="zoomHome" aria-label="还原场景">⌂</button>
+</div></div>
+<div class="board-foot"><span>✧ 手指双指放大 / 拖动画布看细节 / 点击贴纸放入</span><span>DIY · STICKER ART</span></div>
 <div class="item-tools hidden" id="selectedControls"><span id="selectedName">正在调整</span><button class="btn" id="smaller">－</button><button class="btn" id="bigger">＋</button><button class="btn" id="rot">↻ 旋转</button><button class="btn" id="top">↑ 置顶</button><button class="btn soft" id="remove">✕ 收回</button></div>
 <div class="controls">
  <div class="mode-switch" aria-label="摆放方式"><button id="guided" class="active">✧ 引导摆放</button><button id="free">♡ 自由造景</button></div>
+ <button class="btn solid" id="focusToggle">⛶ 全屏造景</button><button class="btn" id="trayToggle">✂️ 打开贴纸板</button>
  <button class="btn mint" id="preview">◉ 看成品</button>
  <button class="btn" id="undo">↶ 撤销</button><button class="btn" id="redo">↷ 重做</button>
  <span class="spacer"></span>
@@ -28,7 +68,7 @@
  <button class="btn solid" id="save">↓ 保存作品</button>
 </div>
 </section>
-<aside class="panel">
+<aside class="panel" id="trayPanel">
 <div class="prog"><div class="prog-top"><span class="left">✿ 今日造景进度</span><span><strong id="count">0 / 48</strong> <span class="progress-side">已完成</span></span></div><div class="progress-bar"><div class="progress-value" id="bar"></div></div><p id="quote">先铺好地毯，再添上一点点生活气息吧。</p></div>
 <div class="tray-head"><div><div class="label-small">CUT & STICK · 贴纸合集</div><h2>✂️ 分层贴纸板</h2></div><span id="remaining">共 48 枚</span></div>
 <div class="tabs" id="tabs"><button class="tab active" data-tab="all">全部</button><button class="tab" data-tab="wall">① 店铺墙面</button><button class="tab" data-tab="furniture">② 家具陈列</button><button class="tab" data-tab="goods">③ 商品食物</button><button class="tab" data-tab="detail">④ 生活装饰</button></div>
@@ -144,6 +184,76 @@ function persist(){try{storage.theme=theme.id;storage.scenes=storage.scenes||{};
 function note(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2100)}
 function snapshot(){history.push(JSON.stringify(placed));if(history.length>75)history.shift();future=[]}
 function scenePos(ev){let pt=$('scene').createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;let m=$('scene').getScreenCTM();return m?pt.matrixTransform(m.inverse()):{x:500,y:500}}
+
+const viewBase={x:75,y:15,w:910,h:760};
+const camera={cx:530,cy:395,zoom:1};
+const contacts=new Map();
+let pinch=null;
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+function applyCamera(){
+ let w=viewBase.w/camera.zoom,h=viewBase.h/camera.zoom;
+ camera.cx=clamp(camera.cx,viewBase.x+w/2,viewBase.x+viewBase.w-w/2);
+ camera.cy=clamp(camera.cy,viewBase.y+h/2,viewBase.y+viewBase.h-h/2);
+ $('scene').setAttribute('viewBox',(camera.cx-w/2).toFixed(3)+' '+(camera.cy-h/2).toFixed(3)+' '+w.toFixed(3)+' '+h.toFixed(3));
+ $('zoomValue').textContent=Math.round(camera.zoom*100)+'%';
+}
+function zoomBy(factor){
+ camera.zoom=clamp(camera.zoom*factor,1,3.4);applyCamera();
+}
+function resetCamera(){camera.zoom=1;camera.cx=530;camera.cy=395;applyCamera()}
+function registerBoardContact(e){
+ if(e.pointerType!=='touch')return false;
+ contacts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(contacts.size<2)return false;
+ const pos=[...contacts.values()],a=pos[0],b=pos[1];
+ const midX=(a.x+b.x)/2,midY=(a.y+b.y)/2;
+ const world=scenePos({clientX:midX,clientY:midY});
+ pinch={startDistance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),startZoom:camera.zoom,worldX:world.x,worldY:world.y};
+ activeDrag=null;$('ghost').style.display='none';
+ try{$('scene').setPointerCapture(e.pointerId)}catch(err){}
+ return true;
+}
+function cameraMove(e){
+ if(contacts.has(e.pointerId))contacts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pinch&&contacts.size>=2){
+  if(e.cancelable)e.preventDefault();
+  const p=[...contacts.values()],a=p[0],b=p[1],mX=(a.x+b.x)/2,mY=(a.y+b.y)/2;
+  let distance=Math.max(1,Math.hypot(a.x-b.x,a.y-b.y));
+  camera.zoom=clamp(pinch.startZoom*distance/pinch.startDistance,1,3.4);
+  applyCamera();
+  const at=scenePos({clientX:mX,clientY:mY});
+  camera.cx+=pinch.worldX-at.x;camera.cy+=pinch.worldY-at.y;applyCamera();
+  return true;
+ }
+ return false;
+}
+function cameraRelease(e){
+ if(!contacts.has(e.pointerId))return false;
+ contacts.delete(e.pointerId);
+ if(pinch){
+  if(contacts.size<2){pinch=null;activeDrag=null}
+  return true;
+ }
+ return false;
+}
+function panMove(e,d){
+ if(e.cancelable)e.preventDefault();
+ let svg=$('scene'),matrix=svg.getScreenCTM();
+ let pxPerUnit=matrix?Math.abs(matrix.a):svg.getBoundingClientRect().width/(viewBase.w/camera.zoom);
+ pxPerUnit=Math.max(pxPerUnit,.01);
+ camera.cx=d.originX-(e.clientX-d.startX)/pxPerUnit;
+ camera.cy=d.originY-(e.clientY-d.startY)/pxPerUnit;
+ applyCamera();
+}
+function toggleFocus(){
+ document.body.classList.toggle('focus-mode');
+ document.body.classList.remove('tray-open');
+ let on=document.body.classList.contains('focus-mode');
+ $('focusToggle').textContent=on?'⤢ 退出全屏':'⛶ 全屏造景';
+ $('trayToggle').textContent='✂️ 打开贴纸板';
+ if(!on)resetCamera();
+}
+
 function renderThemes(){$('themes').innerHTML=SCENES.map((s,i)=>'<button class="theme '+(s.id===theme.id?'active':'')+'" data-scene="'+s.id+'" style="--tone:'+s.tone+'"><span class="theme-emoji">'+s.icon+'</span><span><strong>'+s.title+'</strong><small>VOL. 0'+(i+1)+' · '+s.tag+'</small></span></button>').join('');$('themes').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.scene===theme.id)return;theme=SCENES.find(s=>s.id===b.dataset.scene);load();note('✧ 翻开了新的贴纸世界')}))}
 function sortedPieces(pieces){return [...pieces].sort((a,b)=>{let wa=getPiece(a.id),wb=getPiece(b.id);let c={wall:0,furniture:1,goods:2,detail:3};return c[wa.cat]-c[wb.cat]||a.y-b.y})}
 function renderStickers(){let html='',source=preview?list().map(p=>placed.find(x=>x.id===p.id)||{id:p.id,x:p.targetX,y:p.targetY,s:p.scale,r:0}):sortedPieces(placed);for(let p of source){let data=getPiece(p.id);if(!data)continue;html+='<g class="sticker-layer'+(p.id===selected&&!preview?' selected':'')+'" data-id="'+p.id+'" transform="translate('+p.x+' '+p.y+') rotate('+(p.r||0)+') scale('+(p.s||p.scale)+')">'+
@@ -154,25 +264,40 @@ function renderTray(){let entries=list().filter(p=>tab==='all'||p.cat===tab);$('
 function updateCount(){let n=placed.length,N=theme.items.length;$('count').textContent=n+' / '+N;$('bar').style.width=(n/N*100)+'%';$('remaining').textContent='未贴 '+(N-n)+' 枚';$('quote').textContent=n===0?'从空白的房间出发，一件件搭起自己的小店。':n<13?'墙面和家具正在出现，这家小店有了轮廓。':n<29?'货架慢慢热闹起来了！再添些商品吧 ✿':n<N?'只差 '+(N-n)+' 枚啦，最后用鲜花和小动物点亮角落。':'贴满啦！这间小店是你创造的 ♡';$('undo').disabled=!history.length;$('redo').disabled=!future.length}
 function redraw(){renderStickers();renderGuide();renderTray();updateCount();persist()}
 function placePiece(id,x,y){let p=getPiece(id);if(!p||placed.some(x=>x.id===id))return false;let posX=typeof x==='number'?x:p.targetX,posY=typeof y==='number'?y:p.targetY;if(mode==='guided'&&typeof x==='number'&&Math.hypot(x-p.targetX,y-p.targetY)<130){posX=p.targetX;posY=p.targetY;note('✦ 找到了正确的贴纸位置！')}
-snapshot();placed.push({id:id,x:posX,y:posY,s:p.scale,r:0});selected=id;completed=placed.length===theme.items.length;redraw();if(completed)setTimeout(()=>$('win').classList.add('show'),550);return true}
+snapshot();placed.push({id:id,x:posX,y:posY,s:p.scale,r:0});selected=id;completed=placed.length===theme.items.length;redraw();if(completed)setTimeout(()=>$('win').classList.add('show'),550);if(document.body.classList.contains('tray-open')){document.body.classList.remove('tray-open');$('trayToggle').textContent='✂️ 打开贴纸板'}return true}
 function updateSelected(op){if(preview||!selected)return;let p=placed.find(a=>a.id===selected);if(!p)return;snapshot();if(op==='smaller')p.s=Math.max(.24,+(p.s-.08).toFixed(2));if(op==='bigger')p.s=Math.min(2.4,+(p.s+.08).toFixed(2));if(op==='rot')p.r=(p.r+15)%360;if(op==='top'){placed=placed.filter(a=>a.id!==selected);placed.push(p)}if(op==='remove'){placed=placed.filter(a=>a.id!==selected);selected=null}redraw()}
 function undo(){if(!history.length||preview)return;future.push(JSON.stringify(placed));placed=JSON.parse(history.pop());selected=null;completed=false;redraw()}
 function redo(){if(!future.length||preview)return;history.push(JSON.stringify(placed));placed=JSON.parse(future.pop());selected=null;redraw()}
-function load(){placed=(storage.scenes&&storage.scenes[theme.id]||[]).filter(p=>getPiece(p.id)).map(p=>({id:p.id,x:Number(p.x)||0,y:Number(p.y)||0,s:Number(p.s)||1,r:Number(p.r)||0}));selected=null;history=[];future=[];tab='all';mode='guided';preview=false;completed=placed.length===theme.items.length;$('sceneTitle').textContent=theme.title;$('sceneDesc').textContent=theme.sub;$('sceneBadge').textContent=theme.mark;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab==='all'));$('guided').classList.add('active');$('free').classList.remove('active');$('preview').textContent='◉ 看成品';$('base').innerHTML=room(theme);renderThemes();redraw()}
+function load(){resetCamera();document.body.classList.remove('tray-open');placed=(storage.scenes&&storage.scenes[theme.id]||[]).filter(p=>getPiece(p.id)).map(p=>({id:p.id,x:Number(p.x)||0,y:Number(p.y)||0,s:Number(p.s)||1,r:Number(p.r)||0}));selected=null;history=[];future=[];tab='all';mode='guided';preview=false;completed=placed.length===theme.items.length;$('sceneTitle').textContent=theme.title;$('sceneDesc').textContent=theme.sub;$('sceneBadge').textContent=theme.mark;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab==='all'));$('guided').classList.add('active');$('free').classList.remove('active');$('preview').textContent='◉ 看成品';$('base').innerHTML=room(theme);renderThemes();redraw()}
 function startTray(e){if(preview)return;if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();let tile=e.currentTarget,id=tile.dataset.id;activeDrag={type:'new',id:id,pointer:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};$('ghost').innerHTML=stickerSVG(getPiece(id));try{tile.setPointerCapture(e.pointerId)}catch(err){}}
-function startBoard(e){if(preview)return;let piece=e.target.closest('[data-id]');if(!piece){selected=null;renderStickers();renderGuide();return}if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();let id=piece.getAttribute('data-id'),p=placed.find(a=>a.id===id);if(!p)return;selected=id;let point=scenePos(e);activeDrag={type:'existing',id,pointer:e.pointerId,startX:e.clientX,startY:e.clientY,offsetX:p.x-point.x,offsetY:p.y-point.y,before:JSON.stringify(placed),moved:false};renderStickers();try{$('scene').setPointerCapture(e.pointerId)}catch(err){}}
-function pointerMove(e){if(!activeDrag||activeDrag.pointer!==e.pointerId)return;let d=Math.hypot(e.clientX-activeDrag.startX,e.clientY-activeDrag.startY);if(d>6)activeDrag.moved=true;if(activeDrag.type==='new'){if(!activeDrag.moved)return;$('ghost').style.display='block';$('ghost').style.left=(e.clientX-55)+'px';$('ghost').style.top=(e.clientY-60)+'px'}else{if(!activeDrag.moved)return;if(e.cancelable)e.preventDefault();let p=placed.find(a=>a.id===activeDrag.id),c=scenePos(e);if(p){p.x=Math.max(75,Math.min(1010,c.x+activeDrag.offsetX));p.y=Math.max(175,Math.min(770,c.y+activeDrag.offsetY));renderStickers()}}}
-function pointerEnd(e){if(!activeDrag||activeDrag.pointer!==e.pointerId)return;let d=activeDrag;activeDrag=null;$('ghost').style.display='none';if(d.type==='new'){if(!d.moved){placePiece(d.id);return}let board=$('scene').getBoundingClientRect();if(e.clientX>=board.left&&e.clientX<=board.right&&e.clientY>=board.top&&e.clientY<=board.bottom){let c=scenePos(e);placePiece(d.id,c.x,c.y)}else{selected=d.id;renderGuide();note('拖到场景里，或者轻点贴纸自动放好')}}else if(d.moved){history.push(d.before);if(history.length>75)history.shift();future=[];let p=placed.find(a=>a.id===d.id),ref=getPiece(d.id);if(p&&mode==='guided'&&Math.hypot(p.x-ref.targetX,p.y-ref.targetY)<80){p.x=ref.targetX;p.y=ref.targetY;note('✦ 贴纸自动吸附到推荐位置')}redraw()}else{renderStickers();renderGuide()}}
+function startBoard(e){if(registerBoardContact(e))return;
+let piece=preview?null:e.target.closest('[data-id]');
+if(!piece){selected=null;renderStickers();renderGuide();
+e.preventDefault();activeDrag={type:'pan',pointer:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false,originX:camera.cx,originY:camera.cy};
+try{$('scene').setPointerCapture(e.pointerId)}catch(err){}
+return}if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();let id=piece.getAttribute('data-id'),p=placed.find(a=>a.id===id);if(!p)return;selected=id;let point=scenePos(e);activeDrag={type:'existing',id,pointer:e.pointerId,startX:e.clientX,startY:e.clientY,offsetX:p.x-point.x,offsetY:p.y-point.y,before:JSON.stringify(placed),moved:false};renderStickers();try{$('scene').setPointerCapture(e.pointerId)}catch(err){}}
+function pointerMove(e){if(cameraMove(e))return;if(!activeDrag||activeDrag.pointer!==e.pointerId)return;let d=Math.hypot(e.clientX-activeDrag.startX,e.clientY-activeDrag.startY);if(d>6)activeDrag.moved=true;if(activeDrag.type==='pan'){if(activeDrag.moved)panMove(e,activeDrag);return}if(activeDrag.type==='new'){if(!activeDrag.moved)return;$('ghost').style.display='block';$('ghost').style.left=(e.clientX-55)+'px';$('ghost').style.top=(e.clientY-60)+'px'}else{if(!activeDrag.moved)return;if(e.cancelable)e.preventDefault();let p=placed.find(a=>a.id===activeDrag.id),c=scenePos(e);if(p){p.x=Math.max(75,Math.min(1010,c.x+activeDrag.offsetX));p.y=Math.max(175,Math.min(770,c.y+activeDrag.offsetY));renderStickers()}}}
+function pointerEnd(e){if(cameraRelease(e))return;if(!activeDrag||activeDrag.pointer!==e.pointerId)return;let d=activeDrag;activeDrag=null;$('ghost').style.display='none';if(d.type==='pan')return;if(d.type==='new'){if(!d.moved){placePiece(d.id);return}let board=$('scene').getBoundingClientRect();if(e.clientX>=board.left&&e.clientX<=board.right&&e.clientY>=board.top&&e.clientY<=board.bottom){let c=scenePos(e);placePiece(d.id,c.x,c.y)}else{selected=d.id;renderGuide();note('拖到场景里，或者轻点贴纸自动放好')}}else if(d.moved){history.push(d.before);if(history.length>75)history.shift();future=[];let p=placed.find(a=>a.id===d.id),ref=getPiece(d.id);if(p&&mode==='guided'&&Math.hypot(p.x-ref.targetX,p.y-ref.targetY)<80){p.x=ref.targetX;p.y=ref.targetY;note('✦ 贴纸自动吸附到推荐位置')}redraw()}else{renderStickers();renderGuide()}}
 window.addEventListener('pointermove',pointerMove,{passive:false});window.addEventListener('pointerup',pointerEnd);window.addEventListener('pointercancel',pointerEnd);$('scene').addEventListener('pointerdown',startBoard);
 for(let b of ['smaller','bigger','rot','top','remove'])$(b).addEventListener('click',()=>updateSelected(b));
 $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);
+$('zoomIn').addEventListener('click',()=>zoomBy(1.25));
+$('zoomOut').addEventListener('click',()=>zoomBy(1/1.25));
+$('zoomHome').addEventListener('click',resetCamera);
+$('focusToggle').addEventListener('click',toggleFocus);
+$('trayToggle').addEventListener('click',()=>{
+let on=document.body.classList.toggle('tray-open');
+$('trayToggle').textContent=on?'✂️ 收起贴纸板':'✂️ 打开贴纸板';
+});
+$('scene').addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();zoomBy(e.deltaY<0?1.12:1/1.12)}},{passive:false});
+
 $('guided').addEventListener('click',()=>{mode='guided';$('guided').classList.add('active');$('free').classList.remove('active');renderGuide();note('引导摆放：靠近推荐位置会自动吸附')});
 $('free').addEventListener('click',()=>{mode='free';$('free').classList.add('active');$('guided').classList.remove('active');renderGuide();note('自由造景：每枚贴纸都可以随心摆放')});
 $('preview').addEventListener('click',()=>{preview=!preview;selected=null;thisPreview();});
 function thisPreview(){$('preview').textContent=preview?'← 返回编辑':'◉ 看成品';renderStickers();renderGuide();note(preview?'这是全部贴纸摆好的示例，返回继续制作':'继续创造你的小店吧 ♡')}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));renderTray()}));
 $('reset').addEventListener('click',()=>{if(!placed.length)return;if(!confirm('将这间小店的贴纸全部收回吗？'))return;snapshot();placed=[];selected=null;preview=false;completed=false;redraw();note('一张干净的场景底板，又可以开始啦')});
-function exportPng(){let scene=$('scene').cloneNode(true);scene.setAttribute('width','1060');scene.setAttribute('height','800');scene.setAttribute('xmlns','http://www.w3.org/2000/svg');let g=scene.querySelector('#guides');if(g)g.remove();scene.querySelectorAll('.selection-box').forEach(n=>n.remove());let fr=scene.querySelector('#placed');if(fr){fr.innerHTML='';let all=sortedPieces(placed);for(let p of all){let data=getPiece(p.id);if(data)fr.innerHTML+='<g transform="translate('+p.x+' '+p.y+') rotate('+(p.r||0)+') scale('+(p.s||1)+')">'+art(data.kind,data.variant)+'</g>'}}
+function exportPng(){let scene=$('scene').cloneNode(true);scene.setAttribute('viewBox','0 0 1060 800');scene.setAttribute('width','1060');scene.setAttribute('height','800');scene.setAttribute('xmlns','http://www.w3.org/2000/svg');let g=scene.querySelector('#guides');if(g)g.remove();scene.querySelectorAll('.selection-box').forEach(n=>n.remove());let fr=scene.querySelector('#placed');if(fr){fr.innerHTML='';let all=sortedPieces(placed);for(let p of all){let data=getPiece(p.id);if(data)fr.innerHTML+='<g transform="translate('+p.x+' '+p.y+') rotate('+(p.r||0)+') scale('+(p.s||1)+')">'+art(data.kind,data.variant)+'</g>'}}
 let data=new XMLSerializer().serializeToString(scene),url=URL.createObjectURL(new Blob([data],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{try{let c=document.createElement('canvas');c.width=2120;c.height=1600;let ctx=c.getContext('2d');ctx.fillStyle='#f9f0e7';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob){let u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=theme.title+'-浮梦造景社.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),12000);note('✧ 高清造景明信片已生成')}else saveSvg(data)},'image/png')}catch(err){saveSvg(data)}URL.revokeObjectURL(url)};img.onerror=()=>{URL.revokeObjectURL(url);saveSvg(data)};img.src=url}
 function saveSvg(data){let u=URL.createObjectURL(new Blob([data],{type:'image/svg+xml;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=theme.title+'.svg';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000);note('已保存矢量画图片')}
 $('save').addEventListener('click',exportPng);$('winSave').addEventListener('click',()=>{$('win').classList.remove('show');exportPng()});$('winClose').addEventListener('click',()=>$('win').classList.remove('show'));
