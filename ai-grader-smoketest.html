@@ -1,0 +1,26 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IELTS Quest AI 测试</title><style>body{font:16px system-ui;background:#0c1930;color:#e6f5ff;padding:16px;max-width:720px;margin:auto}input,button{font:inherit;padding:12px;border-radius:8px;margin:6px 0}input{display:block;width:95%}button{background:#52dfb3;border:0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#193451;padding:18px;border-radius:10px}</style></head><body><h2>IELTS Quest · Hy4 首次测试</h2><p>此页面仅用于联调，不是正式学生网站；不显示密码或 Access Token。请仅用测试账号。</p><form id="f"><label>测试学生用户名<input id="u" value="ielts_manual_test01" autocomplete="username"></label><label>测试账号密码<input id="p" type="password" autocomplete="current-password"></label><button id="b">登录并提交一篇示例作文（可能消耗少量 Tokens）</button></form><h3>测试状态</h3><pre id="status">准备测试</pre><h3>模型返回报告</h3><pre id="report">尚未测试</pre><script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script><script>
+const pk="eyJhbGciOiJSUzI1NiIsImtpZCI6IjgxZWVlYjc5LTAxZjAtNDZkOC04NzI3LWE0ODljNWVhYjRiZSJ9.eyJpc3MiOiJodHRwczovL2llbHRzLXF1ZXN0LWQ4Z3pqNnFvNDgzMDFlNWQ1LmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsImV4cCI6NDA5ODMwOTQ4MywiaWF0IjoxNzk0NjI2MjgzLCJub25jZSI6InVhZ2pyLU54VDFTTXNMSTNwZzFrbVEiLCJhdF9oYXNoIjoidWFnanItTnhUMVNNc0xJM3BnMWttUSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJyb2xlIjoiYW5vbiIsImlzX2Fub255bW91cyI6dHJ1ZSwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiYW5vbnltb3VzIiwicHJvdmlkZXJzIjpbImFub255bW91cyJdfSwidXNlcl9tZXRhZGF0YSI6eyJuYW1lIjoiQW5vbnltb3VzIn0sInVzZXJfdHlwZSI6IiIsImNsaWVudF90eXBlIjoiY2xpZW50X3VzZXIiLCJpc19zeXN0ZW1fYWRtaW4iOmZhbHNlfQ.LO7Z7yWV7ja2A7prmzuBn52uwGV2m2eQSd8h5VWeNmSuxVpEK8Sgy4pfpBFutimFxkkhDoHt3Qu3deSFDa1v7CycUjRX-S9zLUP9_zs-Fvf-sSoRGZbd6UvmwNECep19t-7M0Vt9Qm5CZpoWavNOqth9t8d14iHPjWqGoIJ3blMsD28yQuCLw0knnYRkQyml-D9xKwo1_X2xIjaCs3l6SEYytNW2mZEwA5tZVgstjjfm7_9RiLIOFTBoZWjMtmKlpA0pscHV-n7nopYD9OKwDGx42cKSUyW6PKqWGlCa2MB7ZbBzuWV0on67mpRLB2tRLrIFWcTmgx5gFPNNe7mhPQ";
+const api="https://ielts-quest-d8gzj6qo48301e5d5-1532053589.ap-shanghai.app.tcloudbase.com/api/ielts-essay-grader";
+const status=document.getElementById('status'),report=document.getElementById('report'),btn=document.getElementById('b');
+const sample="Some people believe that universities should focus only on academic subjects, while others think practical skills are important. Discuss both views and give your opinion.\n\nAcademic subjects allow students to develop strong theoretical knowledge. For example, an engineering student must understand mathematics and physics before designing safe equipment. Studying research also encourages critical thinking and helps learners identify reliable evidence.\n\nHowever, practical skills are necessary because graduates need to apply their knowledge at work. Internships give students opportunities to solve real problems, while group projects teach teamwork and communication. These experiences can also improve confidence and make the transition to employment easier.\n\nIn my opinion, universities should combine academic learning with practical activities. Students benefit most when they can understand a concept and then use it in a realistic situation. Therefore, degree programmes should protect academic standards while offering more opportunities for meaningful practice.";
+document.getElementById('f').onsubmit=async e=>{
+e.preventDefault();btn.disabled=true;status.textContent='正在登录测试账号……';report.textContent='尚未返回';
+try{
+if(!window.cloudbase?.init)throw Error('CloudBase SDK 未加载');
+const app=cloudbase.init({env:'ielts-quest-d8gzj6qo48301e5d5',region:'ap-shanghai',accessKey:pk,auth:{detectSessionInUrl:false}});
+const auth=app.auth;
+const username=document.getElementById('u').value.trim(),password=document.getElementById('p').value;
+const login=await auth.signInWithPassword({username,password});document.getElementById('p').value='';
+if(login.error)throw login.error;
+let t=login.data?.session?.access_token||login.data?.session?.accessToken;
+if(!t&&auth.getAccessToken){let x=await auth.getAccessToken();t=x?.accessToken||x?.data?.accessToken||''}
+if(!t)throw Error('已登录，但没有获得 Access Token');
+status.textContent='账号已登录，正在发送测试作文……';
+const response=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t},body:JSON.stringify({task:'task2',question:'Some people believe that universities should focus only on academic subjects, while others think practical skills are important. Discuss both views and give your opinion.',essay:sample,figure:'',zh:''})});
+const data=await response.json().catch(()=>({}));
+if(!response.ok)throw Error('HTTP '+response.status+'：'+(data.error||data.code||data.message||'服务器未返回详细错误'));
+if(typeof data.report!=='string')throw Error('服务器没有返回 report 字段');
+report.textContent=data.report;status.textContent='测试成功：收到真实 AI 报告（HTTP '+response.status+'）。';
+}catch(err){status.textContent='测试未通过：'+(err.message||String(err))}finally{btn.disabled=false}
+};
+</script></body></html>
