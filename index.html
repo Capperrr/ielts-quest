@@ -177,8 +177,9 @@ body[data-theme="cosmos"]>.shell{position:relative;z-index:1}
     <p>注册或登录自己的学习账号。你的词库、错题、金币、等级和训练记录会保存在自己的云端档案中。</p>
     <div class="authTabs"><button class="active" id="loginTab" type="button">登录账号</button><button id="registerTab" type="button">创建账号</button></div>
     <form id="studentAuth">
-      <label for="authEmail">邮箱</label><input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="student@example.com" required>
-      <label for="authPassword">密码（至少 8 位）</label><input id="authPassword" type="password" minlength="8" autocomplete="current-password" placeholder="输入你的密码" required>
+      <label for="authUsername">用户名</label><input id="authUsername" type="text" inputmode="text" autocomplete="username" maxlength="24" minlength="5" pattern="[A-Za-z][A-Za-z0-9._-]{4,23}" placeholder="例如 student_001（5–24 位）" required>
+      <label for="authPassword">密码（8–32 位，至少三类字符）</label><input id="authPassword" type="password" minlength="8" maxlength="32" autocomplete="current-password" placeholder="包含大小写、数字、特殊字符中的至少三类" required>
+      <div id="inviteField" hidden><label for="authInviteCode">班级邀请码（仅注册需要）</label><input id="authInviteCode" type="text" autocomplete="off" maxlength="128" placeholder="请输入老师提供的邀请码"></div>
       <button class="btn" type="submit" id="authSubmit">登录并开始学习 →</button>
     </form>
     <div id="authStatus" class="authStatus" aria-live="polite">正在连接学生账号系统……</div>
@@ -187,77 +188,117 @@ body[data-theme="cosmos"]>.shell{position:relative;z-index:1}
 </div>
 <script>
 'use strict';
-// 部署云端账号时，只修改下面的两个公开配置值。
-// 填入 Supabase Project URL 和 publishable key/anon key（不要填写 service_role 或 secret key）。
-const CLOUD_CONFIG = {
-  url: 'PASTE_SUPABASE_PROJECT_URL_HERE',
-  anonKey: 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE'
-};
-const CLOUD_ENABLED = /^https:\/\//.test(CLOUD_CONFIG.url) &&
-  /^(sb_publishable_|eyJ)/.test(CLOUD_CONFIG.anonKey);
+// IELTS Quest / Tencent CloudBase staging. Browser code contains NO private API keys.
+// Only Publishable Key may be placed here; NEVER paste CAM SecretId/SecretKey.
+const CLOUD_CONFIG = Object.freeze({
+  env: 'ielts-quest-d8gzj6qo48301e5d5',
+  region: 'ap-shanghai',
+  publishableKey: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjgxZWVlYjc5LTAxZjAtNDZkOC04NzI3LWE0ODljNWVhYjRiZSJ9.eyJpc3MiOiJodHRwczovL2llbHRzLXF1ZXN0LWQ4Z3pqNnFvNDgzMDFlNWQ1LmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsImV4cCI6NDA5ODMwOTQ4MywiaWF0IjoxNzk0NjI2MjgzLCJub25jZSI6InVhZ2pyLU54VDFTTXNMSTNwZzFrbVEiLCJhdF9oYXNoIjoidWFnanItTnhUMVNNc0xJM3BnMWttUSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJpZWx0cy1xdWVzdC1kOGd6ajZxbzQ4MzAxZTVkNSIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJyb2xlIjoiYW5vbiIsImlzX2Fub255bW91cyI6dHJ1ZSwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiYW5vbnltb3VzIiwicHJvdmlkZXJzIjpbImFub255bW91cyJdfSwidXNlcl9tZXRhZGF0YSI6eyJuYW1lIjoiQW5vbnltb3VzIn0sInVzZXJfdHlwZSI6IiIsImNsaWVudF90eXBlIjoiY2xpZW50X3VzZXIiLCJpc19zeXN0ZW1fYWRtaW4iOmZhbHNlfQ.LO7Z7yWV7ja2A7prmzuBn52uwGV2m2eQSd8h5VWeNmSuxVpEK8Sgy4pfpBFutimFxkkhDoHt3Qu3deSFDa1v7CycUjRX-S9zLUP9_zs-Fvf-sSoRGZbd6UvmwNECep19t-7M0Vt9Qm5CZpoWavNOqth9t8d14iHPjWqGoIJ3blMsD28yQuCLw0knnYRkQyml-D9xKwo1_X2xIjaCs3l6SEYytNW2mZEwA5tZVgstjjfm7_9RiLIOFTBoZWjMtmKlpA0pscHV-n7nopYD9OKwDGx42cKSUyW6PKqWGlCa2MB7ZbBzuWV0on67mpRLB2tRLrIFWcTmgx5gFPNNe7mhPQ',
+  registrationUrl: 'https://ielts-quest-d8gzj6qo48301e5d5-1532053589.ap-shanghai.app.tcloudbase.com/api/ielts-student-register/register'
+});
+// Fail closed: until a real Publishable Key is supplied, keep the original offline demo.
+const CLOUD_ENABLED = typeof CLOUD_CONFIG.publishableKey === 'string' && CLOUD_CONFIG.publishableKey.length >= 12 && CLOUD_CONFIG.publishableKey !== 'PASTE_CLOUDBASE_PUBLISHABLE_KEY_HERE';
 let cloudClient=null, currentUser=null, pendingUserId=null, cloudSaveTimer=null;
 let saveVersion=0, savingCloud=false, authMode='login', accountEpoch=0;
 function accountStatus(text,err=false){const el=document.getElementById('authStatus');if(el){el.textContent=text;el.style.color=err?'#ffa5ae':'#f6cc72'}}
 function showAuth(){const g=document.getElementById('authGate');g.hidden=false;document.querySelector('.shell').classList.add('cloudLocked');document.getElementById('logoutBtn').hidden=true}
 function hideAuth(){document.getElementById('authGate').hidden=true;document.querySelector('.shell').classList.remove('cloudLocked');document.getElementById('logoutBtn').hidden=false}
-function authScreen(mode){authMode=mode;document.getElementById('loginTab').classList.toggle('active',mode==='login');document.getElementById('registerTab').classList.toggle('active',mode==='register');document.getElementById('authSubmit').textContent=mode==='login'?'登录并开始学习 →':'创建学生账号 →';document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';accountStatus(mode==='login'?'请输入邮箱和密码。':'注册后可能需要点击邮箱中的确认链接。')}
+function authScreen(mode){
+  authMode=mode;
+  document.getElementById('loginTab').classList.toggle('active',mode==='login');
+  document.getElementById('registerTab').classList.toggle('active',mode==='register');
+  document.getElementById('inviteField').hidden=mode!=='register';
+  document.getElementById('authInviteCode').required=mode==='register';
+  document.getElementById('authSubmit').textContent=mode==='login'?'登录并开始学习 →':'使用邀请码创建账号 →';
+  document.getElementById('authPassword').autocomplete=mode==='login'?'current-password':'new-password';
+  accountStatus(mode==='login'?'请输入用户名和密码。':'请填写用户名、密码和老师发放的班级邀请码。');
+}
 async function activateAccount(user){
-  if(!cloudClient||!user||currentUser?.id===user.id||pendingUserId===user.id)return;
-  pendingUserId=user.id;const epoch=++accountEpoch;accountStatus('正在读取这位学生的独立学习档案……');
+  if(!cloudClient||!user||!user.id||currentUser?.id===user.id||pendingUserId===user.id)return;
+  pendingUserId=user.id;
+  const epoch=++accountEpoch;
+  accountStatus('正在读取这位学生的独立学习档案……');
   try{
-    const {data,error}=await cloudClient.from('student_progress').select('state').eq('user_id',user.id).maybeSingle();
+    const {data,error}=await cloudClient.rdb().from('student_progress').select('state').eq('user_id',user.id).maybeSingle();
     if(epoch!==accountEpoch)return;
     if(error)throw error;
+    // Never merge another student's browser-local progress automatically.
     state={...FRESH(),...(data?.state||{})};
     if(!Array.isArray(state.custom))state.custom=[];
-    state.corpusProgress=state.corpusProgress&&typeof state.corpusProgress==='object'?state.corpusProgress:{};state.inventory={...FRESH().inventory,...(state.inventory||{})};
-    state.mistakes=state.mistakes||{};state.stats=state.stats||{};state.owned=Array.isArray(state.owned)?state.owned:['default'];
-    state.seen=Array.isArray(state.seen)?[...new Set(state.seen)]:Object.keys(state.stats);if(!state.zhPreferenceV5){state.showChinese=false;state.zhPreferenceV5=true}state.goalBand=state.goalBand||'6.0';state.t1Format=state.t1Format||'all';state.t2Type=state.t2Type||'all';state.t2Topic=state.t2Topic||'all';ensureDay();currentUser=user;session=null;page='home';feedback=null;
-    document.getElementById('accountIdentity').textContent='👤 '+(user.email||'我的账号')+' · 私有云端档案';
+    state.corpusProgress=state.corpusProgress&&typeof state.corpusProgress==='object'?state.corpusProgress:{};
+    state.inventory={...FRESH().inventory,...(state.inventory||{})};
+    state.mistakes=state.mistakes||{};state.stats=state.stats||{};
+    state.owned=Array.isArray(state.owned)?state.owned:['default'];
+    state.seen=Array.isArray(state.seen)?[...new Set(state.seen)]:Object.keys(state.stats);
+    if(!state.zhPreferenceV5){state.showChinese=false;state.zhPreferenceV5=true}
+    state.goalBand=state.goalBand||'6.0';state.t1Format=state.t1Format||'all';
+    state.t2Type=state.t2Type||'all';state.t2Topic=state.t2Topic||'all';
+    ensureDay();currentUser=user;session=null;page='home';feedback=null;
+    document.getElementById('accountIdentity').textContent='👤 '+(user.username||user.email||'我的账号')+' · 私有云端档案';
     document.getElementById('syncStatus').textContent='☁️ 云端已连接';
     hideAuth();render();if(!data)save();
-  }catch(err){accountStatus('登录成功，但读取云端记录失败：'+(err.message||'请检查 SQL 与权限配置'),true)}
+  }catch(err){accountStatus('登录成功，但读取云端记录失败：'+(err.message||'请先运行 CloudBase SQL 与 RLS 配置'),true)}
   finally{if(pendingUserId===user.id)pendingUserId=null}
 }
 async function flushCloud(){
   if(!CLOUD_ENABLED||!cloudClient||!currentUser||savingCloud)return;
-  clearTimeout(cloudSaveTimer);savingCloud=true;
-  const version=saveVersion, uid=currentUser.id, snapshot=JSON.parse(JSON.stringify(state));
+  clearTimeout(cloudSaveTimer);cloudSaveTimer=null;savingCloud=true;
+  const version=saveVersion,uid=currentUser.id,snapshot=JSON.parse(JSON.stringify(state));
   const status=document.getElementById('syncStatus');status.textContent='☁️ 保存中…';
   try{
-    const {error}=await cloudClient.from('student_progress').upsert({user_id:uid,state:snapshot,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+    const {error}=await cloudClient.rdb().from('student_progress').upsert({
+      user_id:uid,state:snapshot,updated_at:new Date().toISOString()
+    },{onConflict:'user_id'});
     if(error)throw error;
     if(uid===currentUser?.id)status.textContent='☁️ 已保存';
   }catch(err){
     if(uid===currentUser?.id)status.textContent='⚠️ 云端保存失败，请保持页面打开并检查网络';
-    // 不显示“已保存”，避免学生误以为跨设备数据已经同步。
   }finally{
     savingCloud=false;
-    if(version!==saveVersion&&uid===currentUser?.id)cloudSaveTimer=setTimeout(flushCloud,200);
+    if(version!==saveVersion&&uid===currentUser?.id)cloudSaveTimer=setTimeout(flushCloud,250);
   }
 }
+async function registerCloudBaseStudent(username,password,inviteCode){
+  const response=await fetch(CLOUD_CONFIG.registrationUrl,{
+    method:'POST',mode:'cors',cache:'no-store',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({username,password,inviteCode})
+  });
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok||!payload.ok)throw Error(payload.error||('注册服务返回 HTTP '+response.status));
+  return payload;
+}
 function startCloud(){
-  showAuth();accountStatus('正在加载登录系统……');
+  showAuth();accountStatus('正在连接腾讯云账号系统……');
   const script=document.createElement('script');
-  script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+  // Official CloudBase v3 browser bundle; never use v4 beta for username login.
+  script.src='https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js';
   script.onload=async()=>{
     try{
-      if(!window.supabase)throw Error('身份验证脚本未加载');
-      cloudClient=window.supabase.createClient(CLOUD_CONFIG.url,CLOUD_CONFIG.anonKey);
+      if(!window.cloudbase?.init)throw Error('腾讯云身份认证脚本未加载');
+      cloudClient=window.cloudbase.init({
+        env:CLOUD_CONFIG.env,region:CLOUD_CONFIG.region,
+        accessKey:CLOUD_CONFIG.publishableKey,auth:{detectSessionInUrl:false}
+      });
+      if(!cloudClient.auth||typeof cloudClient.rdb!=='function')throw Error('当前腾讯云 SDK 不支持所需的账号或数据库接口');
       cloudClient.auth.onAuthStateChange((event,sess)=>{
         if(event==='SIGNED_OUT'){
-          accountEpoch++;currentUser=null;pendingUserId=null;state=FRESH();session=null;page='home';showAuth();authScreen('login');
+          accountEpoch++;currentUser=null;pendingUserId=null;state=FRESH();
+          session=null;page='home';showAuth();authScreen('login');
           document.getElementById('accountIdentity').textContent='🔒 请先登录';
           document.getElementById('syncStatus').textContent='';
-        } else if(event==='SIGNED_IN'&&sess?.user&&currentUser?.id!==sess.user.id){
+        }else if(event==='SIGNED_IN'&&sess?.user&&currentUser?.id!==sess.user.id){
           setTimeout(()=>activateAccount(sess.user),0);
         }
       });
-      const {data,error}=await cloudClient.auth.getSession();if(error)throw error;
-      if(data.session?.user)await activateAccount(data.session.user);else authScreen('login');
-    }catch(err){accountStatus('连接失败：'+(err.message||'请检查 Supabase URL 与密钥'),true)}
+      const {data,error}=await cloudClient.auth.getSession();
+      if(error)throw error;
+      const user=data?.user||data?.session?.user;
+      if(data?.session&&user)await activateAccount(user);
+      else authScreen('login');
+    }catch(err){accountStatus('腾讯云连接失败：'+(err.message||'请检查 Publishable Key 与数据库权限'),true)}
   };
-  script.onerror=()=>accountStatus('无法加载登录脚本。请在 GitHub Pages 的 HTTPS 网站中打开并检查网络。',true);
+  script.onerror=()=>accountStatus('无法加载腾讯云登录脚本，请检查网络或 SDK CDN 地址。',true);
   document.head.appendChild(script);
 }
 // 游戏内置的原创教学练习题。所有内容可离线运行。
@@ -752,22 +793,31 @@ if(el.id==='exitQuiz'){go('home');return}if(el.id==='submitText'){answer($('type
 document.addEventListener('submit', e => {
   e.preventDefault();
   if(e.target.id==='studentAuth'){
-    if(!cloudClient){accountStatus('尚未连上账号服务器，请检查网络。',true);return}
-    const email=$('authEmail').value.trim(),password=$('authPassword').value;
-    if(password.length<8){accountStatus('密码至少 8 位。',true);return}
+    if(!cloudClient){accountStatus('尚未连上腾讯云账号服务器，请检查网络。',true);return}
+    const username=$('authUsername').value.trim(),password=$('authPassword').value;
+    const inviteCode=$('authInviteCode').value.trim();
+    if(!/^[A-Za-z][A-Za-z0-9._-]{4,23}$/.test(username)){accountStatus('用户名需要 5–24 位，以字母开头，只允许字母、数字、点、下划线和短横线。',true);return}
+    const classes=[/[a-z]/,/[A-Z]/,/[0-9]/,/[^A-Za-z0-9]/].filter(re=>re.test(password)).length;
+    if(password.length<8||password.length>32||(authMode==='register'&&classes<3)){
+      accountStatus('注册密码需要 8–32 位，且至少包含大小写字母、数字、特殊字符中的三类。',true);return
+    }
+    if(authMode==='register'&&!inviteCode){accountStatus('请输入班级邀请码。',true);return}
     $('authSubmit').disabled=true;accountStatus('正在'+(authMode==='register'?'创建账号':'验证账号')+'……');
     (async()=>{
       try{
         if(authMode==='register'){
-          const options=location.protocol.startsWith('http')?{emailRedirectTo:location.origin+location.pathname}:undefined;
-          const {data,error}=await cloudClient.auth.signUp({email,password,options});if(error)throw error;
-          if(data.session?.user)await activateAccount(data.session.user);
-          else accountStatus('注册申请已提交：请打开邮箱确认，然后返回本站登录。');
-        }else{
-          const {data,error}=await cloudClient.auth.signInWithPassword({email,password});if(error)throw error;
-          if(data.user)await activateAccount(data.user);
+          // Invitation code is verified only by the CloudBase server function.
+          await registerCloudBaseStudent(username,password,inviteCode);
+          accountStatus('注册成功，正在首次登录并建立独立学习档案……');
         }
-      }catch(err){accountStatus('操作失败：'+(err.message||'请稍后再试'),true)}finally{$('authSubmit').disabled=false}
+        const {data,error}=await cloudClient.auth.signInWithPassword({username,password});
+        if(error)throw error;
+        if(data?.user)await activateAccount(data.user);
+        else if(data?.session?.user)await activateAccount(data.session.user);
+        else throw Error('登录未返回账号资料，请重新登录');
+        $('authPassword').value='';$('authInviteCode').value='';
+      }catch(err){accountStatus('操作失败：'+(err.message||'请稍后再试'),true)}
+      finally{$('authSubmit').disabled=false}
     })();
     return;
   }

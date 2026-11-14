@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const sql=fs.readFileSync(new URL('../cloudbase_progress_setup.sql',import.meta.url),'utf8');
+const has=(s,label)=>assert.ok(html.includes(s),'Missing: '+label);
+has('IELTS Quest V8','original game title');
+has('const GAP = [','original phrase training bank');
+has('V9_CORPUS','original corpus');
+has('ESSAY_AI_ENDPOINT','essay assessment tab');
+has('const CLOUD_CONFIG','CloudBase configuration');
+has('authUsername','username input');
+has('authInviteCode','invite-only registration input');
+has("registrationUrl: 'https://",'server registration URL');
+has('registerCloudBaseStudent(username,password,inviteCode)','server-side signup');
+has('auth.signInWithPassword({username,password})','CloudBase username login');
+has("cloudClient.rdb().from('student_progress')",'per-user PostgreSQL sync');
+has('cloudClient.auth.getSession()','persistent login session restore');
+assert.ok(!html.includes('PASTE_SUPABASE_PROJECT_URL_HERE'),'Supabase placeholder still present');
+assert.ok(!html.includes('@supabase/supabase-js'),'legacy auth SDK still present');
+assert.ok(!html.includes('TCB_SECRET_KEY'),'private CAM key named in browser code');
+assert.ok(!html.includes('TCB_SECRET_ID'),'private CAM id named in browser code');
+assert.ok(sql.includes('ENABLE ROW LEVEL SECURITY'),'RLS not enabled');
+for(const op of ['FOR SELECT TO authenticated','FOR INSERT TO authenticated','FOR UPDATE TO authenticated']) assert.ok(sql.includes(op),'Missing RLS policy: '+op);
+assert.ok(sql.includes('WITH CHECK (user_id = (SELECT auth.uid())::text)'),'RLS ownership check missing');
+
+const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)];
+assert.ok(scripts.length>0,'No inline scripts');
+for(let i=0;i<scripts.length;i++) new vm.Script(scripts[i][1],{filename:'index.html:script#'+(i+1)});
+console.log('PASS: inline JS syntax, preserved game landmarks, CloudBase auth wiring, RLS ownership policies.');
+console.log('Note: live CloudBase credentials, PostgreSQL table, CORS and signup require manual integration tests.');
