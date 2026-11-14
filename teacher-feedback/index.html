@@ -121,6 +121,19 @@ body:after{opacity:.12}
 .btn.ghost{background:#22343d;color:#d1dfd8}
 .online-badge{background:#20372f;color:#bedbc5;border-color:#557b67}
 .dot,.online-badge i,.flash-dot{box-shadow:none}
+
+/* Each feedback type now has two visibly distinct pools: universal and course-specific. */
+.choice-groups{display:flex;flex-direction:column;gap:18px}
+.selection-group{display:block;padding:13px 12px 15px;background:#142a31;border:1px solid #405e64;position:relative}
+.selection-group.course{background:#1a2c34;border-color:#5d7c83}
+.group-heading{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;padding:0 2px 11px;font-size:13px}
+.group-heading strong{display:inline-flex;align-items:center;gap:8px;color:#e3eee8;font-weight:850}
+.selection-group.shared .group-heading strong:before{content:"✳";color:#b4d3b7;font-size:17px}
+.selection-group.course .group-heading strong:before{content:"◆";color:#a4c7c7;font-size:14px}
+.group-heading>span{color:#a8bbb7;font-size:11px;letter-spacing:.2px}
+.choice-groups .choices{display:grid}
+@media(max-width:560px){.selection-group{padding:12px 10px 14px}.group-heading>span{font-size:10px}}
+
 </style>
 </head>
 <body>
@@ -189,12 +202,12 @@ body:after{opacity:.12}
 <section class="panel stage-panel" id="step-two">
 <div class="panel-sig"><span>STAGE 02 / 03</span><span>COLLECT XP & CHALLENGES</span></div>
 <h2 class="section-title"><span class="num">02</span><span>收集学生表现<small>SELECT SKILLS & CHALLENGES</small></span></h2>
-<p class="intro-text" id="courseHint">根据课程选择真实课堂观察，每类建议选择 1–2 项，最多 5 项。</p>
+<p class="intro-text" id="courseHint">分别选择通用课堂表现和课程专项能力，所有选项都根据当前课程自动更新。</p>
 <div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">快速查找评价标签</span></label><div class="search-shell"><span aria-hidden="true">⌕</span><input id="optionSearch" type="search" autocomplete="off" placeholder="搜索词汇 / 语法 / 拼写 / 审题 ..."><span class="kbd">⌕</span></div></div>
 <div class="subhead good-head"><strong><span aria-hidden="true">✦</span> 优势天赋 <span class="subtitle-en">POWER UPS</span></strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
-<div class="choices" id="goodChoices" role="group" aria-label="优点选项"></div>
+<div class="choice-groups" id="goodChoices" role="group" aria-label="优点选项：通用表现和本课程专项"></div>
 <div class="subhead bad-head"><strong><span aria-hidden="true">⚡</span> 需要提升 <span class="subtitle-en">SKILL GAPS</span></strong><span class="limit" id="badCount">已选 0 / 5</span></div>
-<div class="choices" id="badChoices" role="group" aria-label="不足选项"></div>
+<div class="choice-groups" id="badChoices" role="group" aria-label="不足选项：通用表现和本课程专项"></div>
 <div class="sep"><span>OR WRITE YOUR OWN</span></div>
 <div class="custom-fields">
 <label class="field"><span class="field-title">＋ 自定义优点 <span class="muted">（选填）</span></span><input id="customGood" maxlength="120" placeholder="例如：愿意主动修改作文"></label>
@@ -393,34 +406,104 @@ w("对话回应不够主动","可以听懂部分问题，但接话和追问仍�
  w("自我纠错还不主动","表达有误后需要老师提示才能意识到问题","听自己录音，重点核对发音、语法和内容完整性","听回课堂录音并纠正3个表达问题")
 ]}
 };
+
+// Shared behavioural observations shown in ALL course types.
+// Academic abilities stay in DATA[course].good / .bad.
+var COMMON={
+good:[
+s("认真听讲","课堂听讲专注，能够认真跟随老师的讲解思路"),
+s("笔记认真","能够认真记录课堂重点、示范表达及需要巩固的知识"),
+s("课堂专注度高","课堂状态专注，能够持续投入到学习任务中"),
+s("积极参与互动","能够主动回答问题，积极参与课堂互动"),
+s("学习态度踏实","学习态度端正踏实，对课堂任务保持认真"),
+s("积极完成课堂练习","愿意投入课堂训练，能够按要求完成练习"),
+s("主动思考问题","面对课堂问题愿意先独立思考，再表达自己的理解"),
+s("愿意主动提问","遇到不理解的知识点能够主动向老师确认"),
+s("乐于接受反馈","能够认真听取修改建议，并愿意作出调整"),
+s("自我纠错意识较好","能够主动回查练习，发现部分问题后及时订正"),
+s("课堂反馈准确","对教师课堂提问的理解比较到位，回答较准确"),
+s("课堂反应灵活","能够较快理解新的学习任务并调整解题思路"),
+s("学习积极性较高","愿意主动尝试新内容，参与课堂任务的积极性较高"),
+s("注意整理重点","能够将老师讲解的核心内容进行归纳整理"),
+s("遇到难题有耐心","面对有挑战的题目能够保持耐心并继续尝试"),
+s("练习态度认真","练习时愿意投入精力，能按要求逐项完成任务"),
+s("愿意复盘错误","能够回顾错误原因，并尝试将订正应用到后续练习"),
+s("参与状态稳定","整节课的参与状态比较稳定，能持续跟随课程节奏")
+],
+bad:[
+w("课堂笔记不够完整","对课堂重点内容的记录还不够完整，后续复习可能缺少依据","每节课用关键词记录核心方法、例句和常见错误，课后补齐笔记","整理本节课笔记，归纳3个重点知识点"),
+w("听讲专注度需提升","课堂中偶尔出现注意力分散的情况，影响部分知识点的吸收","将课堂任务拆分成小目标，听讲时标记重点，并在练习后立即检查理解情况","复盘本节课重点内容并完成一组巩固练习"),
+w("主动回答较少","课堂中能够跟随内容，但主动回答和表达个人思路的次数较少","在每个知识点学习后，尝试先独立作答，再主动解释自己的判断依据","整理课堂3个问题并独立写出回答思路"),
+w("课堂互动偏被动","课堂参与以听讲为主，遇到问题时较少主动表达或提问","在课堂练习中尝试主动说出思路，遇到不理解的地方及时提问","整理课堂中2个不确定的知识点，下次课主动核对"),
+w("知识点记录缺少分类","笔记中知识点和例句混在一起，后续查阅和复习不够方便","把笔记按核心规则、典型例句、个人错题三类整理","按三类整理本节课笔记并补充例句"),
+w("课堂知识吸收不够稳定","对新知识的理解在教师提示下较好，独立练习时仍不够稳定","学习新知识后立即用简短例题独立检验，再对照课堂示范查漏补缺","选择本节课3个重点知识点，各完成一个独立练习"),
+w("练习后缺少回查","完成课堂练习后较少主动检查，部分可避免的错误没有及时发现","养成完成后逐项核查题目要求、基础知识点和个人高频错误的习惯","重新检查本节课练习，标记并订正错误"),
+w("接受反馈后巩固不足","能够理解老师的修改建议，但后续练习中同类问题仍会重复出现","将每次订正后的正确表达记录下来，并进行一次无提示仿写或复做","整理本节课3处订正内容并完成再次练习"),
+w("课后复习不够系统","已学知识点的复习缺少固定安排，掌握程度不够稳定","按课堂笔记建立短时复习安排，优先复盘核心方法与高频错误","完成本节课的重点回顾和错题复做"),
+w("遇到难题容易停顿","面对难度较高的任务时容易停下等待提示，独立尝试还不够充分","先独立列出已知信息和解决步骤，再对照提示逐步完成","挑选2道课堂难题，独立写出尝试过程"),
+w("课堂练习速度偏慢","课堂练习完成速度较慢，容易影响后续任务的时间安排","先读清要求，再给每个小任务设定合理时间，完成后集中核对","计时完成一组课堂同类练习并记录用时"),
+w("提问和反馈需更主动","遇到不清楚的问题时较少及时反馈，可能影响后续内容的理解","在不理解的地方做简单标记，并在适当环节及时向老师确认","列出课堂尚未掌握的2个问题并完成复习"),
+w("独立完成任务信心不足","教师引导下能够继续练习，但独立作答时容易犹豫","从较熟悉的题目开始独立作答，再逐步撤去提示，训练自行判断","独立复做一组课堂例题并记录不确定之处"),
+w("课堂复盘意识需加强","完成练习后较少总结掌握情况，仍需进一步建立复盘习惯","下课前用一句话总结本节课学到的方法，再标记下一次重点练习方向","总结本节课3个收获和1个待提高点")
+]
+};
+
 var $=function(id){return document.getElementById(id);};
 var goodSel=new Set(),badSel=new Set();
 function renderChoices(kind){
- var arr=DATA[$("course").value][kind],sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");
+ var course=DATA[$("course").value],sel=kind==="good"?goodSel:badSel,root=$(kind+"Choices");
  var search=cleanText($("optionSearch").value).toLowerCase();
  root.textContent="";
- var visible=0;
- arr.forEach(function(item,i){
-   if(search&&!sel.has(i)&&((item.label+" "+item.desc).toLowerCase().indexOf(search)===-1))return;
-   visible++;
-   var btn=document.createElement("button");btn.type="button";
-   btn.className="chip "+kind+(sel.has(i)?" selected":"");
-   btn.textContent=item.label;
-   btn.title=item.desc;
-   btn.setAttribute("aria-pressed",sel.has(i)?"true":"false");
-   if(!sel.has(i)&&sel.size>=5)btn.disabled=true;
-   btn.addEventListener("click",function(){
-     if(sel.has(i))sel.delete(i);else if(sel.size<5)sel.add(i);
-     renderChoices(kind);
+ var groups=[
+  {prefix:"shared",title:"通用课堂表现",detail:"适用全部课程",items:COMMON[kind],tone:"shared"},
+  {prefix:"course",title:course.name+" · 专项",detail:kind==="good"?"本课程专业优势":"本课程需要提升的能力",items:course[kind],tone:"course"}
+ ];
+ var totalVisible=0;
+ groups.forEach(function(group){
+   var section=document.createElement("div");
+   section.className="selection-group "+group.tone;
+   var heading=document.createElement("div");heading.className="group-heading";
+   var label=document.createElement("strong");label.textContent=group.title;
+   var detail=document.createElement("span");detail.textContent=group.detail;
+   heading.appendChild(label);heading.appendChild(detail);
+   var list=document.createElement("div");list.className="choices";
+   var visible=0;
+   group.items.forEach(function(item,i){
+     var id=group.prefix+":"+i;
+     if(search&&!sel.has(id)&&((item.label+" "+item.desc).toLowerCase().indexOf(search)===-1))return;
+     visible++;totalVisible++;
+     var btn=document.createElement("button");btn.type="button";
+     btn.className="chip "+kind+(sel.has(id)?" selected":"");
+     btn.textContent=item.label;btn.title=item.desc;
+     btn.setAttribute("aria-pressed",sel.has(id)?"true":"false");
+     if(!sel.has(id)&&sel.size>=5)btn.disabled=true;
+     btn.addEventListener("click",function(){
+       if(sel.has(id))sel.delete(id);else if(sel.size<5)sel.add(id);
+       renderChoices(kind);
+     });
+     list.appendChild(btn);
    });
-   root.appendChild(btn);
+   if(!visible)return;
+   section.appendChild(heading);section.appendChild(list);
+   root.appendChild(section);
  });
- if(!visible){var label=document.createElement("span");label.className="hint";label.textContent="没有匹配项，可以尝试其他关键词或使用自定义输入。";root.appendChild(label);}
- $(kind+"Count").textContent="已选 "+sel.size+" / 5";if(typeof updateHUD==="function")updateHUD();
+ if(!totalVisible){var label=document.createElement("span");label.className="hint";label.textContent="没有匹配项，请换个关键词或使用下方自定义输入。";root.appendChild(label);}
+ $(kind+"Count").textContent="已选 "+sel.size+" / 5";
+ if(typeof updateHUD==="function")updateHUD();
 }
-function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"建议每类选 1–2 项，可多选。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";updateHUD();}
+function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"下方分为所有课程通用表现与本课程专项表现，两类可混合选择。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";updateHUD();}
 function cleanText(value){return String(value||"").replace(/[\r\n]+/g,"，").replace(/\s+/g," ").trim().replace(/[；;。,.，]+$/,"");}
-function chooseItems(kind){var arr=DATA[$("course").value][kind];var chosen=Array.from(kind==="good"?goodSel:badSel).sort(function(a,b){return a-b;}).map(function(i){return arr[i];});var custom=cleanText($(kind==="good"?"customGood":"customBad").value);if(custom)chosen.push(kind==="good"?s("自定义",custom):w("自定义",custom,"针对“"+custom+"”进行专项练习，完成后依据课堂示例检查和订正","围绕“"+custom+"”完成一项课堂相关巩固练习"));return chosen;}
+function chooseItems(kind){
+ var selected=kind==="good"?goodSel:badSel;
+ var chosen=Array.from(selected).map(function(key){
+   var parts=key.split(":");
+   var group=parts[0]==="shared"?COMMON[kind]:DATA[$("course").value][kind];
+   return group[Number(parts[1])];
+ }).filter(Boolean);
+ var custom=cleanText($(kind==="good"?"customGood":"customBad").value);
+ if(custom)chosen.push(kind==="good"?s("自定义",custom):w("自定义",custom,"针对“"+custom+"”进行专项练习，并根据课堂反馈检查是否改善","围绕“"+custom+"”完成一项课堂相关的巩固练习"));
+ return chosen;
+}
 function participation(){
 var v=$("participation").value,p={
 "积极":"积极互动，课堂专注认真",
@@ -464,7 +547,7 @@ $("generate").addEventListener("click",generate);
 $("result").addEventListener("input",function(){$("printView").textContent=$("result").value;});
 $("sample").addEventListener("click",function(){
 $("course").value="basic";changeCourse();$("student").value="示例同学";$("first").checked=true;$("participation").value="积极";$("late").value="无迟到";$("partBox").hidden=true;$("customGood").value="";$("customBad").value="";$("homework").value="范文学习 + 例题2主体段1";$("notes").value="";
-goodSel.add(0);goodSel.add(9);badSel.add(13);badSel.add(14);renderChoices("good");renderChoices("bad");generate();
+goodSel.add("shared:1");goodSel.add("course:9");badSel.add("course:13");badSel.add("course:14");renderChoices("good");renderChoices("bad");generate();
 });
 $("clear").addEventListener("click",function(){
 $("student").value="";$("course").value="basic";$("late").value="无迟到";$("participation").value="积极";$("first").checked=true;$("partOther").value="";$("customGood").value="";$("customBad").value="";$("homework").value="";$("notes").value="";$("result").value="";$("printView").textContent="";$("partBox").hidden=true;changeCourse();$("toast").textContent="已清空，本页面不会自动保存学生信息。";$("student").focus();
