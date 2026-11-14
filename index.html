@@ -832,7 +832,7 @@ document.addEventListener('submit', e => {
           if(error)throw error;
           pendingEmailVerification=null;
         }else{
-          ({data,error}=await cloudClient.auth.signInWithPassword({username:loginId,password}));
+          ({data,error}=await cloudClient.auth.signInWithPassword(loginId.includes('@')?{email:email,password}:{username:loginId,password}));
           if(error)throw error;
         }
         let user=data?.user||data?.session?.user;
