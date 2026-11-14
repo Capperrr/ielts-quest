@@ -337,7 +337,7 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
   <h1><span class="headline-top">CLASS</span><span class="headline-bottom">REPORT<span class="period">.</span></span></h1>
   <div class="hero-chinese">课堂反馈<span>生成器</span><span class="hero-star">✦</span></div>
   <p class="hero-desc">把每节课的观察变成<span>专业、具体、有温度</span>的反馈。选择课程、标记优缺点、生成完整评语，像通关一样简单。</p>
-  <div class="hero-ctas"><a class="hero-start" href="#step-one"><span class="play-icon" aria-hidden="true">▶</span> START QUEST <span aria-hidden="true">↗</span></a><span class="hero-shortcut">4 COURSES <b> / </b> ONE CLICK</span></div>
+  <div class="hero-ctas"><a class="hero-start" href="#step-one"><span class="play-icon" aria-hidden="true">▶</span> START QUEST <span aria-hidden="true">↗</span></a><span class="hero-shortcut">5 COURSES <b> / </b> ONE CLICK</span></div>
  </div>
  <div class="hero-right"><div class="world-window"><div class="world-titlebar"><span class="world-square">▣</span> CLASSROOM.EXE <span class="world-level">LEVEL 99</span></div>
 <svg class="scene-svg" viewBox="0 0 470 276" role="img" aria-label="明亮海蓝色像素街机场景中的机器人教师，周围有星星、书本和城市背景" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
@@ -377,7 +377,7 @@ input::placeholder,textarea::placeholder{color:#b0d0dc}
 <h2 class="section-title"><span class="num">01</span><span>创建课堂档案<small>WHO ARE WE TEACHING TODAY?</small></span></h2>
 <div class="fields">
 <label class="field mobile-full"><span class="field-title">学生姓名 <span class="required-star">✱</span></span><input id="student" maxlength="35" autocomplete="off" placeholder="输入学生姓名 / 例如：陈同学"></label>
-<label class="field mobile-full"><span class="field-title">课程类型 <span class="required-star">✱</span></span><select id="course"><option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option></select></label>
+<label class="field mobile-full"><span class="field-title">课程类型 <span class="required-star">✱</span></span><select id="course"><option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option><option value="basicSpeaking">雅思基础口语</option></select></label>
 <label class="field"><span class="field-title">迟到情况</span><select id="late"><option value="无迟到">未迟到</option><option value="迟到">迟到</option></select></label>
 <label class="field"><span class="field-title">课堂表现</span><select id="participation"><option value="积极">积极互动、课堂专注认真</option><option value="踏实">积极互动、态度踏实上进</option><option value="笔记">认真做笔记、参与课堂练习</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
 <label class="field full" id="partBox" hidden><span class="field-title">自定义课堂表现</span><input id="partOther" placeholder="例如：积极回答问题，听写认真"></label>
@@ -590,6 +590,40 @@ w("对话回应不够主动","可以听懂部分问题，但接话和追问仍�
  w("易混淆相近发音","对部分发音相近的单词辨识不够稳定","使用最小对立词进行听辨和跟读，结合口型区别发音","完成课堂相近音词汇辨音练习"),
  w("听力做题易漏条件","听问题时容易遗漏否定、数量或时间等限制信息","听前预测信息类型，听时圈出否定、数字和时间信息","重听课堂对话并整理重点限制词"),
  w("自我纠错还不主动","表达有误后需要老师提示才能意识到问题","听自己录音，重点核对发音、语法和内容完整性","听回课堂录音并纠正3个表达问题")
+]},
+basicSpeaking:{name:"雅思基础口语",hint:"针对 Part 1/2/3 听题理解、语流、词汇替换、句式准确性与发音。",
+good:[
+s("语流整体连贯","整体能够保持语流，表现出充分的交流意愿"),
+s("乐于主动交流","能够主动表达观点，课堂互动积极"),
+s("连接词较丰富","能够使用多种连接方式组织口语内容，并尝试说明因果、转折关系"),
+s("词汇自然准确","常见口语词汇运用自然，能清晰表达个人意思"),
+s("词组搭配较丰富","能够使用较多日常固定词组和搭配丰富口头表达"),
+s("同义替换有意识","能够通过近义表达或解释来避免重复用词"),
+s("句式较丰富","能够尝试在口语回答中使用不同句型"),
+s("发音清晰自然","多数发音清楚，语调较自然，能让听者理解"),
+s("Part 1 作答积极","能够针对熟悉的日常话题持续作答"),
+s("Part 2 展开较好","能够围绕个人经历或话题补充较完整细节"),
+s("Part 3 有观点","面对抽象话题能提出基本观点并尝试解释"),
+s("积极回应追问","愿意根据追问补充原因或例子"),
+s("能够纠正表达","听取反馈后能够尝试改正发音或语法问题"),
+s("语言组织灵活","在不确定词汇时能够换一种说法继续交流")
+],bad:[
+w("Part 1 听题理解不稳","Part 1 偶尔出现未准确听懂题目的情况，影响回答方向","先听疑问词、主题词和时间信息，遇到没听清的情况适当请求重复","听辨并复述 10 道 Part 1 问题，再完整作答"),
+w("Part 3 题意理解困难","Part 3 抽象问题理解不够稳定，听题障碍明显影响作答质量","抓住话题、比较对象及限制条件，练习拆解较长问句","听辨 8 道 Part 3 问题，提取关键词并录音回答"),
+w("语流时有中断","回答时因找词或组织内容而频繁停顿","使用观点—原因—例子三步结构，进行连续表达练习","选 3 个话题，分别连续回答 45 秒并录音"),
+w("重复表达较多","口语中部分句型和词汇重复较频繁，信息推进不够充分","为常见观点准备两个替换说法，并补充有意义的细节","改写 5 组重复表达并重新回答"),
+w("连接词使用机械","能够使用连接词，但有时与实际逻辑关系不符","先判断因果、对比或补充关系，再选择连接方式","检查 5 个口语回答中的逻辑词并改写"),
+w("固定搭配不准确","个别动词、形容词与介词搭配不够自然","把课堂错搭配整理成常用语块并放进实际话题造句","整理 8 组口语词组搭配并录音"),
+w("替换表达不灵活","遇到不熟悉的词时较难用简单英语继续解释","练习用定义、近义词和例子解释目标词","为 6 个常见词准备两种口语替换表达"),
+w("句式丰富但语法偏弱","尝试的句型较丰富，但时态、三单和从句结构错误偏多","保留句式变化，集中回查高频语法问题，先保证主句结构完整","订正 6 个口语错句并无稿复述"),
+w("三单口误较多","描述他人或一般事实时，第三人称单数动词词尾容易遗漏","对比 I work / He works，练习转换主语","使用 he/she/it 录制 8 个正确句子"),
+w("口语时态不稳定","过去经历与当前习惯的时态容易混淆","根据时间线区分过去事件与现在习惯","讲述一段过去经历并检查 6 个动词"),
+w("回答内容较短","回答基本切题但解释与例子不足","在回答后补充一个原因和具体例子","为 5 个回答各补充两句内容"),
+w("Part 3 理由不充分","抽象题容易只表态，缺少原因与影响的分析","用观点—机制—例子结构展开 Part 3 回答","完成 4 个 Part 3 问题的分层回答"),
+w("听题遗漏限制条件","对主题有初步理解，但容易漏听比较、时间和否定信息","专门听辨疑问词、时间和限制条件，再复述题目意思","完成 10 道题目的关键词识别练习"),
+w("个别发音不清晰","部分单词重音或尾音不够清楚，影响可理解度","逐词跟读并录音核对重音，再进行连贯句子练习","跟读 10 个词及 5 个句子"),
+w("语调和停顿生硬","语音节奏、句子重音和意群停顿还不够自然","模仿完整句的意群停顿，突出关键词","跟读并录制 5 个完整回答"),
+w("陌生话题易卡顿","熟悉话题回答较顺，但抽象或陌生话题中组织语言困难","先给出简单立场，再举熟悉的例子，逐步扩展回答","随机选 5 道陌生话题题目口头回答")
 ]}
 };
 
@@ -752,7 +786,8 @@ reading:{
  gw("形容词与副词混用","描述动作时误用形容词，或形容名词时误用副词","区分 a careful student 与 study carefully 的修饰关系","用5组形容词和副词各完成一组对比句","She reads careful → She reads carefully"),
  gw("主语与物主代词混淆","my/mine、your/yours 及 he/his 等所有格形式使用不稳定","从 my book 与 the book is mine 两种结构入手区别限定词和独立物主代词","完成8个物主代词短句填空","This is mine book → This is my book")
  ]},
-speaking:{good:[],bad:[]}
+speaking:{good:[],bad:[]},
+basicSpeaking:{good:[],bad:[]}
 };
 
 var $=function(id){return document.getElementById(id);};
