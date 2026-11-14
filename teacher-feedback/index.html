@@ -3,188 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1029">
-<title>课堂反馈助手 · IELTS & Pre-Starter</title>
+<meta name="theme-color" content="#0a0b1d">
+<title>CLASS REPORT · Pixel Arcade 教师课堂反馈</title>
 <style>
 
-:root{
-  --bg:#0b1029;--surface:#1a2449;--ink:#f4f7ff;--muted:#b7c1e3;--line:#606da7;
-  --brand:#bba0ff;--light:#313468;--good:#65f4d0;--bad:#ff91b2;--shadow:6px 6px 0 #070b21;
-}
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-html{scroll-behavior:smooth}
-body{
- margin:0;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
- font-size:15px;line-height:1.65;
- background-color:var(--bg);
- background-image:radial-gradient(ellipse at 7% 7%,#38206477,transparent 30%),radial-gradient(ellipse at 95% 23%,#07646655,transparent 25%),linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff07 1px,transparent 1px);
- background-size:auto,auto,28px 28px,28px 28px;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;-webkit-tap-highlight-color:transparent}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #f7df7d;outline-offset:3px}
-.wrap{max-width:1160px;margin:auto;padding:26px 20px 56px}
-.head{
- position:relative;overflow:hidden;isolation:isolate;
- padding:37px 38px 34px;margin-bottom:25px;
- background:linear-gradient(115deg,#302c76 5%,#52359b 60%,#2e5b9f 105%);
- border:3px solid #bda9ff;border-radius:4px;
- box-shadow:8px 8px 0 #080b21,inset 0 0 0 3px #6f67b5;
-}
-.head:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.22;background-image:linear-gradient(90deg,transparent 94%,#fff 94%),linear-gradient(transparent 94%,#fff 94%);background-size:26px 26px;pointer-events:none}
-.head:after{
- content:"";position:absolute;right:42px;top:46px;width:13px;height:13px;background:#f9dd85;
- box-shadow:13px 0 #f9dd85,26px 0 #f9dd85,39px 0 #f9dd85,13px -13px #f9dd85,26px -13px #f9dd85,13px 13px #f9dd85,26px 13px #f9dd85,13px 26px #f9dd85,26px 26px #f9dd85,0 39px #f9dd85,13px 39px #f9dd85,26px 39px #f9dd85,39px 39px #f9dd85;
- transform:rotate(-12deg);opacity:.85;pointer-events:none
-}
-.eyebrow{font-family:ui-monospace,"Courier New",monospace;font-size:12px;letter-spacing:1.8px;font-weight:800;color:#88ffdc}
-.head h1{position:relative;z-index:1;font-size:clamp(27px,4vw,40px);line-height:1.3;margin:11px 0 9px;letter-spacing:1px;font-weight:900;text-shadow:3px 3px 0 #192155}
-.head h1 span{color:#ffd97c}
-.head p{margin:0;color:#edeaff;max-width:620px;font-weight:500}
-.header-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;max-width:720px}
-.header-tags span{display:inline-flex;background:#121845a6;border:1px solid #c0b8f5;padding:5px 10px;border-radius:2px;color:#fff;font-size:12px;box-shadow:3px 3px 0 #111440}
-.layout{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:23px;align-items:start}
-.panel{position:relative;min-width:0;background:linear-gradient(175deg,#1d2951,#161e3d);border:2px solid #5b6aa7;border-radius:4px;box-shadow:var(--shadow);padding:23px;margin-bottom:21px}
-.panel:before{content:"";position:absolute;left:0;top:0;height:6px;width:68px;background:repeating-linear-gradient(90deg,#61e9d1 0 9px,transparent 9px 13px);pointer-events:none}
-.section-title{display:flex;gap:12px;align-items:center;font-size:17px;font-weight:850;margin:3px 0 19px;letter-spacing:.25px}
-.num{display:grid;place-items:center;border-radius:2px;width:30px;height:30px;flex:none;background:#c4a8ff;color:#17143c;box-shadow:3px 3px 0 #090f2a;font-weight:900;font-family:ui-monospace,monospace;font-size:14px}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:block;min-width:0}.field.full{grid-column:1/-1}
-.field-title{display:block;font-size:13px;font-weight:750;margin:0 0 7px;color:#e1e6ff}
-input:not([type=checkbox]),select,textarea{
- width:100%;min-height:45px;appearance:auto;padding:11px 12px;
- background:#0f1835;border:2px solid #52618b;border-radius:3px;color:#f7f7ff;
- box-shadow:inset 2px 2px 0 #0b122a;
-}
-input::placeholder,textarea::placeholder{color:#97a3c2}
-select{color-scheme:dark}
-textarea{resize:vertical}
-input:not([type=checkbox]):focus,select:focus,textarea:focus{border-color:#d8b2ff}
-.hint{font-size:12px;color:var(--muted);margin:8px 0 0}
-.toggle-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:17px 0 0;background:#111b3c;border:1px dashed #596cb1;border-radius:3px;padding:11px 12px}
-.toggle-row input{accent-color:#a58dff;width:20px;height:20px}
-.toggle-row label{font-weight:700}.muted{color:var(--muted)}.small{font-size:12px}
-.subhead{display:flex;justify-content:space-between;gap:9px;align-items:center;margin:20px 0 10px}
-.subhead strong{font-size:15px}.limit{font-size:12px;color:#9dfde1;font-family:ui-monospace,monospace}
+:root{--bg:#0a0b1d;--surface:#171a36;--surface2:#1b1f41;--ink:#f4f2ff;--muted:#a1a5c8;--stroke:#4d528d;--purple:#b19aff;--lime:#c9ff72;--pink:#ff8fbd;--cyan:#75eafb;--shadow:#060612}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;overflow-x:hidden;background:#0a0b1d;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;line-height:1.55}
+body:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:radial-gradient(circle at 5% 15%,#52398355,transparent 27%),radial-gradient(circle at 93% 27%,#2b347e55,transparent 28%),linear-gradient(#676ca40a 1px,transparent 1px),linear-gradient(90deg,#676ca40a 1px,transparent 1px);background-size:auto,auto,32px 32px,32px 32px}
+body:after{content:"";position:fixed;z-index:-1;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,transparent 0 3px,#03031422 4px 5px);opacity:.3}
+.ambient{position:absolute;pointer-events:none;z-index:-1;width:240px;height:240px;filter:blur(60px);border-radius:50%;opacity:.25}.ambient-one{left:-80px;top:330px;background:#6745cb}.ambient-two{right:-100px;top:900px;background:#2374b1}
+[hidden]{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.wrap{max-width:1320px;margin:auto;padding:0 30px 42px}
+.topnav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #333659;margin-bottom:25px}
+.brand{display:inline-flex;align-items:center;gap:13px;text-decoration:none;font:900 18px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:1.3px}
+.brand-accent{color:var(--lime)}.brand-mark{display:grid;grid-template-columns:repeat(2,12px);grid-template-rows:repeat(2,12px);gap:3px;transform:rotate(-10deg)}.brand-mark span{background:var(--purple);box-shadow:2px 2px 0 #6959c4}.brand-mark span:nth-child(2){background:var(--lime);box-shadow:2px 2px 0 #568742}.brand-mark span:nth-child(3){background:var(--cyan);box-shadow:2px 2px 0 #308ca3}.brand-mark span:nth-child(4){background:var(--pink);box-shadow:2px 2px 0 #ab567a}
+.top-right{display:flex;align-items:center;gap:25px}.nav-hint{font:700 11px/1.3 ui-monospace,monospace;letter-spacing:2px;color:#9399c5}.online-badge{border:1px solid #4c765d;background:#152b27;color:#c0f5ce;border-radius:2px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;font:800 11px/1 ui-monospace,monospace;letter-spacing:.5px}.online-badge i,.flash-dot{display:inline-block;width:8px;height:8px;background:var(--lime);box-shadow:0 0 9px #b7f675}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:center;min-height:388px;position:relative;padding:25px 12px 40px;border-bottom:1px solid #30345d}
+.hero:before{content:"";position:absolute;top:0;left:0;width:64px;height:5px;background:var(--lime);box-shadow:74px 0 var(--purple),148px 0 var(--cyan),222px 0 var(--pink)}
+.hero-left{position:relative;z-index:1}.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:7px 9px 7px 12px;border:1px solid #7772a7;background:#202042;color:#dcd8ff;font:800 11px/1.2 ui-monospace,monospace;letter-spacing:1px;box-shadow:4px 4px 0 #060719}.tag-plus{color:var(--lime);font-size:17px;line-height:10px}.flash-dot{background:var(--pink);box-shadow:0 0 10px #ff8fbd}
+.hero-topline{font:800 11px/1.2 ui-monospace,monospace;letter-spacing:3px;color:var(--cyan);margin:28px 0 8px}.hero-topline span{color:var(--pink);font-size:18px}
+h1{margin:0;max-width:680px;font-family:Impact,"Arial Black",ui-monospace,monospace;font-weight:1000;line-height:.89;letter-spacing:1.5px;font-size:clamp(64px,7.4vw,110px);transform:skewY(-1deg)}
+.headline-top,.headline-bottom{display:block}.headline-top{color:#f7f1ff;text-shadow:5px 5px 0 #5b4b8a,9px 9px 0 #111124}.headline-bottom{color:var(--lime);text-shadow:5px 5px 0 #4e8849,9px 9px 0 #0c1020}.period{color:var(--pink)}
+.hero-chinese{font-size:clamp(24px,2.8vw,36px);font-weight:900;margin-top:22px;letter-spacing:2px}.hero-chinese>span:first-child{color:#c7b4ff}.hero-star{margin-left:15px;color:var(--pink);font-size:24px}
+.hero-desc{margin:11px 0 25px;color:#b4b8d6;font-size:14px;max-width:520px;line-height:1.9}.hero-desc span{color:#e7e2ff;font-weight:750}
+.hero-ctas{display:flex;align-items:center;gap:20px;flex-wrap:wrap}.hero-start{display:inline-flex;justify-content:center;align-items:center;gap:12px;background:var(--lime);color:#151529;padding:13px 18px;border:2px solid #efffc4;box-shadow:5px 5px 0 #52602f;text-decoration:none;font:900 13px/1.2 ui-monospace,monospace;letter-spacing:.9px}.hero-start:hover{transform:translate(1px,1px);box-shadow:4px 4px 0 #52602f}.play-icon{font-size:12px}.hero-shortcut{font:750 11px/1.4 ui-monospace,monospace;color:#858fb7;letter-spacing:.5px}.hero-shortcut b{color:var(--purple)}
+.hero-right{position:relative;padding:16px 10px 18px 14px;min-width:0}
+.world-window{background:#101129;border:3px solid #8f7fcc;box-shadow:9px 9px 0 #07071a,0 0 0 7px #242243;transform:rotate(1.1deg);position:relative}
+.world-titlebar{height:31px;display:flex;align-items:center;gap:8px;background:#d5c1ff;color:#25204b;padding:0 9px;font:900 11px/1 ui-monospace,monospace;letter-spacing:.65px}.world-square{font-size:16px}.world-level{margin-left:auto;padding:3px 6px;color:#252145;background:#a38ae0}
+.scene-svg{display:block;width:100%;height:auto;aspect-ratio:470/276;image-rendering:pixelated}
+.world-caption{display:flex;justify-content:space-between;padding:7px 11px;color:#e5ddff;background:#1b1a43;font:700 10px/1 ui-monospace,monospace;letter-spacing:1px}.world-caption span:last-child{color:var(--lime)}
+.floating-badge{position:absolute;z-index:2;white-space:nowrap;font:900 12px/1 ui-monospace,monospace;box-shadow:4px 4px 0 #050614;transform:rotate(-6deg)}
+.floating-a{left:-13px;bottom:20px;padding:11px 13px;background:var(--pink);color:#251126}.floating-b{right:-13px;top:5px;padding:10px 12px;background:#9af4e2;color:#19343b;transform:rotate(5deg)}
+.pixel-float{animation:hoverBot 3.2s ease-in-out infinite}.scene-svg g.pixel-float{transform-box:fill-box;transform-origin:center}
+@keyframes hoverBot{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.status-grid{display:grid;grid-template-columns:1fr 1fr 1.05fr 1.24fr;gap:12px;margin:23px 0 30px}
+.status-card{position:relative;display:flex;align-items:center;gap:12px;min-width:0;min-height:95px;padding:16px;background:#151936;border:1px solid #454a79;box-shadow:4px 4px 0 #060713}
+.stat-icon{display:grid;place-items:center;flex:none;width:39px;height:39px;font:900 24px/1 ui-monospace,monospace;background:#2a315b;color:var(--cyan);border:1px solid #576597}
+.icon-name{color:var(--pink)}.icon-select{color:var(--lime)}
+.stat-copy{min-width:0}.stat-label{display:block;font:800 10px/1.45 ui-monospace,monospace;letter-spacing:1px;color:#939dca;margin-bottom:6px}.stat-copy strong{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:850;color:#f2efff}
+.stat-corner{position:absolute;right:8px;top:5px;color:#656c9b;font:700 9px ui-monospace,monospace}.mini-green{color:var(--lime);font:900 10px ui-monospace,monospace}.mini-pink{color:var(--pink);font:900 10px ui-monospace,monospace}
+.progress-stat{display:block;padding:15px}.progress-stat-head{display:flex;justify-content:space-between;align-items:center;gap:7px}.progress-stat-head .stat-label{margin:0}.progress-stat-head strong{font:900 20px ui-monospace,monospace;color:var(--lime)}
+.pixel-progress{height:13px;margin:8px 0;background:repeating-linear-gradient(90deg,#303858 0 13px,#151936 13px 17px);border:1px solid #59628d;overflow:hidden}.pixel-progress>div{height:100%;width:0;background:repeating-linear-gradient(90deg,var(--lime) 0 13px,#8dc74c 13px 17px);transition:width .24s ease}.progress-legend{font-size:10px;color:#858fb5;line-height:1.3}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:23px;align-items:start}
+.left{min-width:0}.panel{position:relative;min-width:0;border:1px solid #54598f;background:linear-gradient(165deg,#1b2042,#131830);box-shadow:6px 6px 0 #060713;padding:24px;margin-bottom:26px;scroll-margin-top:12px}
+.panel:before{content:"";position:absolute;left:-1px;top:-1px;width:14px;height:14px;border-left:3px solid var(--lime);border-top:3px solid var(--lime);pointer-events:none}
+.panel:after{content:"";position:absolute;right:-1px;bottom:-1px;width:14px;height:14px;border-right:3px solid #b59dff;border-bottom:3px solid #b59dff;pointer-events:none}
+.panel-sig{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px dashed #4c527a;padding-bottom:13px;margin-bottom:19px;color:#a0a7d5;letter-spacing:1.1px;font:800 10px/1.5 ui-monospace,monospace}.panel-sig span:first-child{color:var(--lime)}.panel-sig span:last-child{text-align:right}
+.section-title{display:flex;gap:14px;align-items:center;font-size:20px;font-weight:900;margin:0 0 22px;color:#f6f3ff;line-height:1.3}.section-title small{display:block;font:800 10px/1.4 ui-monospace,monospace;color:#8c94bc;letter-spacing:1.2px;margin-top:5px}
+.num{display:grid;flex:none;place-items:center;width:42px;height:42px;background:#b7a3fb;border:2px solid #e4d9ff;color:#21173a;box-shadow:4px 4px 0 #6756a4;font:900 19px/1 ui-monospace,monospace}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:block;min-width:0}.field.full{grid-column:1/-1}.field-title{display:block;font-weight:750;font-size:13px;color:#d6d8f3;margin:0 0 8px}.required-star{font-size:11px;color:var(--lime)}
+input:not([type=checkbox]),select,textarea{width:100%;min-width:0;background:#0d122a;border:1px solid #515681;color:#f4f4ff;border-radius:2px;min-height:46px;padding:11px 13px;box-shadow:inset 2px 2px 0 #070b1a;outline:0}
+input:not([type=checkbox]):focus,select:focus,textarea:focus{border-color:var(--lime);box-shadow:0 0 0 2px #cafb7330,inset 2px 2px 0 #070b1a}input::placeholder,textarea::placeholder{color:#777f9f}select{color-scheme:dark}textarea{resize:vertical}
+.toggle-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-top:22px;padding:13px;background:#11162e;border:1px dashed #525a84}.toggle-label{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:800;color:var(--lime)}.toggle-label input{position:absolute;width:1px;height:1px;opacity:0}.toggle-track{display:inline-flex;align-items:center;background:#4e4a72;width:39px;height:22px;padding:3px;box-shadow:2px 2px 0 #060713}.toggle-track span{width:16px;height:16px;background:#aaa8bd}.toggle-label input:checked + .toggle-track{background:#4c8055}.toggle-label input:checked + .toggle-track span{background:var(--lime);transform:translateX(17px)}.toggle-label input:focus-visible + .toggle-track{outline:3px solid var(--lime);outline-offset:3px}
+.muted{color:#9ba5c4}.small{font-size:12px}.stage-foot{display:flex;align-items:center;justify-content:space-between;color:#787fa9;border-top:1px dashed #3b426c;margin-top:22px;padding-top:11px;font:800 10px/1 ui-monospace,monospace;letter-spacing:2px}.pixel-dots{color:var(--purple);letter-spacing:5px}
+.intro-text{font-size:13px;color:#acb5d3;line-height:1.8;margin:-6px 0 17px}
+.searchbox{margin-bottom:20px}.search-shell{position:relative;display:flex;align-items:center}.search-shell>span:first-child{position:absolute;left:13px;font-size:28px;line-height:1;color:var(--cyan)}.search-shell input{padding-left:42px;padding-right:45px!important}.kbd{position:absolute;right:11px;color:#7e8bae;background:#252b51;padding:2px 7px;font:800 13px ui-monospace,monospace}
+.subhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 12px;border-bottom:1px solid #45476c;padding-bottom:9px}.subhead strong{font-size:15px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}.subhead strong>span:first-child{color:var(--lime);font-size:18px}.bad-head strong>span:first-child{color:var(--pink)}.subtitle-en{color:#8793ba;font:800 10px ui-monospace,monospace;letter-spacing:1px}.limit{font:800 12px ui-monospace,monospace;color:#b5bbda;white-space:nowrap}
 .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.chip{
- display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;
- background:#111b3e;color:#e2e9ff;border:2px solid #495984;border-radius:3px;
- text-align:left;padding:10px 10px 10px 11px;line-height:1.45;font-size:13px;font-weight:650;
- box-shadow:3px 3px 0 #080e23;transition:background .12s,border-color .12s,transform .12s
-}
-.chip:after{content:"+";font:800 17px/1 ui-monospace,monospace;color:#8ba1d4;flex:none}
-.chip.selected.good{background:#143d47;border-color:#6beed1;color:#acffe9}
-.chip.selected.bad{background:#442943;border-color:#ffa2bf;color:#ffe1eb}
-.chip.selected:after{content:"✓";color:currentColor}
-.chip:not(:disabled):active{transform:translate(2px,2px);box-shadow:1px 1px 0 #080e23}
-.chip:disabled{opacity:.44;cursor:not-allowed}
-.choice-help{color:#9aaad1;font-size:12px;margin-top:12px}
-.top-gap{margin-top:18px}
-.actionrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn{border-radius:3px;border:2px solid #8092c8;box-shadow:4px 4px 0 #080c23;padding:11px 15px;font-weight:800;background:#26345e;color:#e8edff;min-height:45px}
-.btn.primary{background:#bba5ff;color:#17113b;border-color:#e2d8ff}
-.btn.subtle{background:#1a2750;border-color:#7083b8;color:#e5ebff}
-.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #080c23}
-.btn:hover:not(:active){filter:brightness(1.12)}
-.result-panel{position:sticky;top:16px}
-.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.live{display:inline-flex;gap:7px;align-items:center;font-family:ui-monospace,monospace;font-size:12px;color:#8cffde}
-.dot{width:8px;height:8px;background:#6bffcd;box-shadow:2px 2px #07534d}
-.result{min-height:495px;padding:16px;background:#0c1631;border-color:#6877a8;font-size:14px;line-height:1.98;color:#e8edff;white-space:pre-wrap;letter-spacing:.1px}
-.note{font-size:12px;color:#b5c1e2;margin-top:16px;background:#101a37;border-left:4px solid #8a86d8;padding:13px}
-.toast{color:#88ffdc;font-size:13px;min-height:24px;margin-top:12px}
-.sep{height:2px;background:repeating-linear-gradient(90deg,#52628f 0 13px,transparent 13px 20px);margin:18px 0}
-.footer{text-align:center;color:#9da9ca;font-family:ui-monospace,monospace;font-size:12px;margin-top:11px}
-.searchbox{margin:15px 0 5px}
-.searchbox input{background:#111b3e}
-.search-hint{font-size:12px;color:#9caad0;margin:6px 0 0}
-@media(hover:hover){.chip:hover:not(:disabled){border-color:#d0bcff;background:#233365}}
-@media(max-width:820px){
- .wrap{padding:14px 12px 36px}.head{padding:26px 20px;border-radius:3px}
- .head:after{opacity:.24;right:25px}
- .layout{grid-template-columns:1fr;gap:0}
- .result-panel{position:static}
- .panel{padding:20px}.result{min-height:380px}
-}
-@media(max-width:510px){
- .head h1{font-size:27px}.eyebrow{font-size:10px;letter-spacing:1px}
- .fields{grid-template-columns:1fr 1fr}
- .field.mobile-full{grid-column:1/-1}
- .choices{grid-template-columns:1fr}
- .chip{min-height:46px}
- .btn{flex:1 1 auto}
-}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chip{transition:none}}
+.chip{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;background:#151b3c;color:#d3daee;border:1px solid #494f83;box-shadow:3px 3px 0 #090c1e;border-radius:2px;padding:10px 10px 10px 12px;font-size:13px;line-height:1.4;min-height:45px;font-weight:700;transition:transform .1s,background .1s,border-color .1s}
+.chip:after{content:"+";color:#949cbd;font:900 17px ui-monospace,monospace;flex:none}
+.chip.selected.good{color:#d4ffd7;background:#1b3f35;border:1px solid #8adf9b;box-shadow:3px 3px 0 #2b6e4a}
+.chip.selected.bad{color:#ffe1ef;background:#4d2744;border:1px solid #f395bd;box-shadow:3px 3px 0 #934e6c}
+.chip.selected:after{content:"✓";color:inherit}
+.chip:not(:disabled):active{transform:translate(2px,2px);box-shadow:1px 1px 0 #090c1e}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+@media(hover:hover){.chip:hover:not(:disabled){background:#292f5c;border-color:var(--purple)}.chip.selected.good:hover{background:#295a45}.chip.selected.bad:hover{background:#683051}}
+.sep{display:flex;align-items:center;gap:10px;margin:24px 0 17px;color:#777fa8;white-space:nowrap;font:800 10px ui-monospace,monospace;letter-spacing:1px}.sep:before,.sep:after{content:"";height:1px;background:#444a79;flex:1}
+.custom-fields{display:grid;gap:14px}.mini-tip{display:flex;gap:9px;align-items:flex-start;margin-top:19px;color:#b6bee2;background:#222348;border-left:3px solid var(--cyan);padding:12px 13px;font-size:12px;line-height:1.7}.mini-tip span{color:var(--cyan);font-size:17px}.top-gap{margin-top:19px}
+.actionrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:23px}
+.btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #696b9d;border-radius:2px;padding:12px 14px;box-shadow:4px 4px 0 #07081a;color:#eceaff;background:#2a2d59;font-weight:850;font-size:13px;transition:transform .12s,box-shadow .12s,filter .12s}
+.btn.primary{background:var(--lime);border-color:#edffbb;color:#242a20;box-shadow:4px 4px 0 #65883c}
+.btn.subtle{background:#322d61;border-color:#8f7ec9}.btn.ghost{background:#1d2245;color:#abb4dc}
+.btn:hover{filter:brightness(1.06)}.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #060713}.btn-icon{font-size:18px}.btn-arrow{font-size:16px}.input-actions .primary{flex:1 1 100%}
+.result-panel{position:sticky;top:16px;padding-bottom:25px}.result-panel .panel-sig{margin-bottom:18px}.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.result-head .section-title{margin-bottom:0}.result-num{background:var(--pink);color:#3a1532;box-shadow:4px 4px 0 #a84d83}.live{display:flex;gap:7px;align-items:center;color:var(--lime);font:900 10px ui-monospace,monospace}.dot{display:inline-block;width:7px;height:7px;background:var(--lime);box-shadow:0 0 8px #cafb72}
+.terminal{background:#080d20;border:2px solid #5d5a9a;box-shadow:inset 0 0 0 3px #121631,4px 4px 0 #0a0a15;padding:5px}
+.terminal-top{display:flex;align-items:center;gap:10px;padding:9px 10px 10px;background:#26234c;border-bottom:2px solid #62598a;font:800 10px ui-monospace,monospace;color:#cabdf5;letter-spacing:.3px}
+.terminal-dots{display:flex;gap:5px}.terminal-dots i{width:10px;height:10px;background:#ff90ba;border:1px solid #f9bdd1}.terminal-dots i:nth-child(2){background:#ffe28b;border-color:#ffebb0}.terminal-dots i:nth-child(3){background:#9af7b3;border-color:#c6ffd4}
+.terminal-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.terminal-status{margin-left:auto;color:#9fdda4}
+.terminal-bar{padding:12px 12px 4px;background:#0a1128;color:#ad9ffd;font:800 12px ui-monospace,monospace}.terminal-bar>span:first-child{color:var(--lime)}.terminal-comment{color:#66799e;font-weight:500}
+.terminal .result{display:block;width:100%;min-height:480px;padding:12px 13px 16px;background:#0a1128;box-shadow:none;border:0;outline:0;color:#f1f4ff;font-size:14px;line-height:1.9;white-space:pre-wrap;letter-spacing:.15px;resize:vertical}.terminal .result::placeholder{color:#8392b5;opacity:1}.terminal .result:focus{outline:1px dashed #6f7db4;outline-offset:-2px;box-shadow:none}
+.terminal-footer{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#171c3a;color:#8898bb;font:750 10px ui-monospace,monospace}.terminal-footer>span:last-child{margin-left:auto}.blink-cursor{color:var(--lime);animation:blink 1.1s steps(2) infinite}@keyframes blink{50%{opacity:0}}
+.result-actions .primary{flex:1 1 100%}.result-actions .subtle{flex:1 1 40%}
+.toast{color:var(--lime);min-height:25px;margin-top:10px;font-weight:750;font-size:13px}
+.privacy-note{display:flex;gap:12px;margin-top:18px;padding:16px 13px;border:1px dashed #5e668f;background:#111732}.privacy-icon{font-size:27px;line-height:1;color:var(--cyan)}.privacy-note p{margin:0;font-size:12px;line-height:1.75;color:#acb9d4}.privacy-note p strong{display:block;font:900 11px ui-monospace,monospace;letter-spacing:1px;color:var(--cyan);margin-bottom:4px}.privacy-note p span{display:block}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #333657;margin-top:20px;padding:23px 0;color:#7d86af;font:700 10px/1.4 ui-monospace,monospace;letter-spacing:1px}.footer>span:first-child{color:var(--purple)}.footer a{text-decoration:none;color:var(--lime)}
 .print-view{display:none}
-@media print{
- @page{margin:16mm}
- body{background:#fff;color:#111}
- .head,.left,.actionrow,.note,.footer,.result-head,.hint,.toast,.result{display:none!important}
- .wrap{max-width:none;padding:0}
- .layout{display:block}
- .result-panel{display:block;border:0;background:#fff;box-shadow:none;padding:0}
- .result-panel:before{display:none}
- .print-view{display:block!important;white-space:pre-wrap;color:#111;font:15px/1.95 "PingFang SC","Microsoft YaHei",sans-serif}
-}
+@media(max-width:1100px){.wrap{padding-left:22px;padding-right:22px}.status-grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr .9fr;gap:20px}.hero-right{padding:12px 5px}.layout{grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:18px}.panel{padding:19px}.section-title{font-size:18px}}
+@media(max-width:820px){.hero{grid-template-columns:1fr;gap:15px;padding:22px 0 32px}.hero-left{max-width:700px}.hero-right{max-width:530px;width:100%;margin:0 auto}.hero h1{font-size:clamp(70px,12vw,100px)}.layout{grid-template-columns:1fr}.result-panel{position:static}.terminal .result{min-height:380px}.panel{padding:23px}}
+@media(max-width:560px){.wrap{padding:0 13px 28px}.topnav{height:63px;margin-bottom:19px}.brand{font-size:14px}.brand-mark{grid-template-columns:repeat(2,9px);grid-template-rows:repeat(2,9px)}.nav-hint{display:none}.online-badge{font-size:9px;padding:7px 8px}.hero{padding:22px 1px 28px}.hero-topline{margin-top:20px;font-size:10px;letter-spacing:1.5px}.hero h1{font-size:clamp(58px,16vw,86px);letter-spacing:0}.hero-chinese{font-size:25px;margin-top:20px}.hero-desc{font-size:13px}.hero-ctas{gap:14px}.hero-start{font-size:12px}.hero-right{padding:13px 7px 15px}.world-titlebar{font-size:9px}.floating-badge{font-size:9px}.status-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:19px}.status-card{min-height:88px;padding:10px;gap:7px}.stat-icon{width:28px;height:30px;font-size:18px}.stat-label{font-size:8px}.stat-copy strong{font-size:12px}.progress-stat{padding:10px}.progress-stat-head strong{font-size:18px}.progress-stat-head .stat-label{font-size:8px}.progress-legend{font-size:9px}.panel{padding:16px;margin-bottom:19px}.panel-sig{font-size:9px}.section-title{font-size:18px;margin-bottom:18px}.num{width:37px;height:37px;font-size:16px}.fields{grid-template-columns:1fr 1fr;gap:12px}.field.mobile-full{grid-column:1/-1}.choices{grid-template-columns:1fr}.chip{min-height:44px}.toggle-row{align-items:flex-start}.result-head .live{font-size:9px}.result-head .section-title{font-size:16px}.terminal .result{min-height:385px}.footer{justify-content:center;text-align:center}.footer a{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media print{@page{margin:16mm}body{background:#fff!important;color:#111}.ambient,.topnav,.hero,.status-grid,.left,.result-head,.panel-sig,.terminal,.actionrow,.privacy-note,.footer,.toast{display:none!important}.wrap{max-width:none;padding:0}.layout{display:block}.result-panel{position:static;padding:0;border:0;box-shadow:none;background:#fff}.result-panel:before,.result-panel:after{display:none}.print-view{display:block!important;white-space:pre-wrap;color:#111;font:15px/1.95 "PingFang SC","Microsoft YaHei",sans-serif}}
 
 </style>
 </head>
 <body>
-<main class="wrap">
-<header class="head">
-<div class="eyebrow">✦ TEACHER / QUEST MODE / LEVEL UP ✦</div>
-<h1>课堂反馈助手 <span aria-hidden="true">▣</span></h1>
-<p>选课程 · 点选学生表现 · 一键生成个性化反馈。无需 AI，专为日常授课设计。</p>
-<div class="header-tags"><span>雅思基础 / 强化写作</span><span>Pre-Starter 读写 / 听说</span><span>首课 & 日常课</span><span>PIXEL EDITION</span><span>手机 / iPad 适用</span></div>
+<div class="ambient ambient-one" aria-hidden="true"></div>
+<div class="ambient ambient-two" aria-hidden="true"></div>
+<main class="wrap" id="top">
+<nav class="topnav" aria-label="工具导航">
+ <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span><span>EDU<span class="brand-accent">/</span>ARCADE</span></a>
+ <div class="top-right"><span class="nav-hint">TEACHER'S STUDIO</span><span class="online-badge"><i></i> NO AI · LOCAL MODE</span></div>
+</nav>
+<header class="hero">
+ <div class="hero-left">
+  <div class="hero-tag"><span class="flash-dot"></span> <span>NEW GAME / 教师任务控制台</span> <span class="tag-plus">+</span></div>
+  <div class="hero-topline">WELCOME BACK, TEACHER <span>✳</span></div>
+  <h1><span class="headline-top">CLASS</span><span class="headline-bottom">REPORT<span class="period">.</span></span></h1>
+  <div class="hero-chinese">课堂反馈<span>生成器</span><span class="hero-star">✦</span></div>
+  <p class="hero-desc">把每节课的观察变成<span>专业、具体、有温度</span>的反馈。选择课程、标记优缺点、生成完整评语，像通关一样简单。</p>
+  <div class="hero-ctas"><a class="hero-start" href="#step-one"><span class="play-icon" aria-hidden="true">▶</span> START QUEST <span aria-hidden="true">↗</span></a><span class="hero-shortcut">4 COURSES <b> / </b> ONE CLICK</span></div>
+ </div>
+ <div class="hero-right"><div class="world-window"><div class="world-titlebar"><span class="world-square">▣</span> CLASSROOM.EXE <span class="world-level">LEVEL 99</span></div>
+<svg class="scene-svg" viewBox="0 0 470 276" role="img" aria-label="复古像素风夜空中的可爱机器人教师，周围是星星、书本和游戏场景" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+<defs>
+<linearGradient id="worldGradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#28285a"/><stop offset="1" stop-color="#111734"/></linearGradient>
+</defs>
+<rect width="470" height="276" fill="url(#worldGradient)"/>
+<g opacity=".14"><path d="M0 0V276" stroke="#8e95db" stroke-width="1"/><path d="M22 0V276" stroke="#8e95db" stroke-width="1"/><path d="M44 0V276" stroke="#8e95db" stroke-width="1"/><path d="M66 0V276" stroke="#8e95db" stroke-width="1"/><path d="M88 0V276" stroke="#8e95db" stroke-width="1"/><path d="M110 0V276" stroke="#8e95db" stroke-width="1"/><path d="M132 0V276" stroke="#8e95db" stroke-width="1"/><path d="M154 0V276" stroke="#8e95db" stroke-width="1"/><path d="M176 0V276" stroke="#8e95db" stroke-width="1"/><path d="M198 0V276" stroke="#8e95db" stroke-width="1"/><path d="M220 0V276" stroke="#8e95db" stroke-width="1"/><path d="M242 0V276" stroke="#8e95db" stroke-width="1"/><path d="M264 0V276" stroke="#8e95db" stroke-width="1"/><path d="M286 0V276" stroke="#8e95db" stroke-width="1"/><path d="M308 0V276" stroke="#8e95db" stroke-width="1"/><path d="M330 0V276" stroke="#8e95db" stroke-width="1"/><path d="M352 0V276" stroke="#8e95db" stroke-width="1"/><path d="M374 0V276" stroke="#8e95db" stroke-width="1"/><path d="M396 0V276" stroke="#8e95db" stroke-width="1"/><path d="M418 0V276" stroke="#8e95db" stroke-width="1"/><path d="M440 0V276" stroke="#8e95db" stroke-width="1"/><path d="M462 0V276" stroke="#8e95db" stroke-width="1"/><path d="M484 0V276" stroke="#8e95db" stroke-width="1"/><path d="M0 0H470" stroke="#8e95db" stroke-width="1"/><path d="M0 22H470" stroke="#8e95db" stroke-width="1"/><path d="M0 44H470" stroke="#8e95db" stroke-width="1"/><path d="M0 66H470" stroke="#8e95db" stroke-width="1"/><path d="M0 88H470" stroke="#8e95db" stroke-width="1"/><path d="M0 110H470" stroke="#8e95db" stroke-width="1"/><path d="M0 132H470" stroke="#8e95db" stroke-width="1"/><path d="M0 154H470" stroke="#8e95db" stroke-width="1"/><path d="M0 176H470" stroke="#8e95db" stroke-width="1"/><path d="M0 198H470" stroke="#8e95db" stroke-width="1"/><path d="M0 220H470" stroke="#8e95db" stroke-width="1"/><path d="M0 242H470" stroke="#8e95db" stroke-width="1"/><path d="M0 264H470" stroke="#8e95db" stroke-width="1"/></g>
+<g><rect x="16" y="38" width="5" height="5" fill="#eac3ff" opacity="1"/><rect x="41" y="85" width="3" height="3" fill="#9cf3ff" opacity="0.7"/><rect x="76" y="21" width="3" height="3" fill="#eac3ff" opacity="0.7"/><rect x="128" y="40" width="5" height="5" fill="#9cf3ff" opacity="1"/><rect x="181" y="18" width="3" height="3" fill="#eac3ff" opacity="0.7"/><rect x="204" y="68" width="3" height="3" fill="#9cf3ff" opacity="0.7"/><rect x="308" y="36" width="5" height="5" fill="#eac3ff" opacity="1"/><rect x="360" y="72" width="3" height="3" fill="#9cf3ff" opacity="0.7"/><rect x="413" y="27" width="3" height="3" fill="#eac3ff" opacity="0.7"/><rect x="439" y="88" width="5" height="5" fill="#9cf3ff" opacity="1"/><rect x="86" y="119" width="3" height="3" fill="#eac3ff" opacity="0.7"/><rect x="333" y="121" width="3" height="3" fill="#9cf3ff" opacity="0.7"/></g>
+<g opacity=".96"><rect x="386" y="35" width="43" height="43" fill="#ffe59e"/><rect x="396" y="25" width="23" height="10" fill="#ffe59e"/><rect x="396" y="78" width="23" height="10" fill="#ffe59e"/><rect x="376" y="45" width="10" height="23" fill="#ffe59e"/><rect x="429" y="45" width="10" height="23" fill="#ffe59e"/><rect x="400" y="42" width="13" height="13" fill="#fff9d3"/></g>
+<g opacity=".6"><rect x="28" y="139" width="84" height="13" fill="#444875"/><rect x="37" y="127" width="62" height="13" fill="#444875"/><rect x="360" y="158" width="86" height="12" fill="#50527f"/><rect x="373" y="145" width="62" height="14" fill="#50527f"/></g>
+<g fill="#171e48"><rect x="0" y="191" width="69" height="85"/><rect x="50" y="161" width="64" height="115"/><rect x="108" y="193" width="66" height="83"/><rect x="294" y="183" width="63" height="93"/><rect x="340" y="166" width="74" height="110"/><rect x="410" y="194" width="60" height="82"/></g>
+<g fill="#4d477c"><rect x="14" y="210" width="8" height="12"/><rect x="38" y="210" width="8" height="12"/><rect x="67" y="185" width="8" height="12"/><rect x="90" y="185" width="8" height="12"/><rect x="123" y="213" width="8" height="12"/><rect x="340" y="193" width="8" height="12"/><rect x="364" y="193" width="8" height="12"/><rect x="382" y="193" width="8" height="12"/><rect x="423" y="213" width="8" height="12"/><rect x="443" y="213" width="8" height="12"/></g>
+<rect x="0" y="241" width="470" height="35" fill="#232451"/>
+<rect x="0" y="240" width="470" height="5" fill="#957dec"/>
+<g fill="#34346a"><rect x="0" y="251" width="12" height="12"/><rect x="25" y="251" width="12" height="12"/><rect x="50" y="251" width="12" height="12"/><rect x="75" y="251" width="12" height="12"/><rect x="100" y="251" width="12" height="12"/><rect x="125" y="251" width="12" height="12"/><rect x="150" y="251" width="12" height="12"/><rect x="175" y="251" width="12" height="12"/><rect x="200" y="251" width="12" height="12"/><rect x="225" y="251" width="12" height="12"/><rect x="250" y="251" width="12" height="12"/><rect x="275" y="251" width="12" height="12"/><rect x="300" y="251" width="12" height="12"/><rect x="325" y="251" width="12" height="12"/><rect x="350" y="251" width="12" height="12"/><rect x="375" y="251" width="12" height="12"/><rect x="400" y="251" width="12" height="12"/><rect x="425" y="251" width="12" height="12"/><rect x="450" y="251" width="12" height="12"/><rect x="475" y="251" width="12" height="12"/></g>
+<g class="pixel-float" transform="translate(176,42)">
+<rect x="18" y="129" width="120" height="8" fill="#080e29" opacity=".56"/>
+<rect x="65" y="0" width="5" height="5" fill="#fff59e"/><rect x="70" y="0" width="5" height="5" fill="#fff59e"/><rect x="60" y="5" width="5" height="5" fill="#fff59e"/><rect x="65" y="5" width="5" height="5" fill="#fff59e"/><rect x="70" y="5" width="5" height="5" fill="#fff59e"/><rect x="75" y="5" width="5" height="5" fill="#fff59e"/><rect x="65" y="10" width="5" height="5" fill="#151538"/><rect x="70" y="10" width="5" height="5" fill="#151538"/><rect x="35" y="15" width="5" height="5" fill="#151538"/><rect x="40" y="15" width="5" height="5" fill="#151538"/><rect x="45" y="15" width="5" height="5" fill="#151538"/><rect x="50" y="15" width="5" height="5" fill="#151538"/><rect x="55" y="15" width="5" height="5" fill="#151538"/><rect x="60" y="15" width="5" height="5" fill="#151538"/><rect x="65" y="15" width="5" height="5" fill="#151538"/><rect x="70" y="15" width="5" height="5" fill="#151538"/><rect x="75" y="15" width="5" height="5" fill="#151538"/><rect x="80" y="15" width="5" height="5" fill="#151538"/><rect x="85" y="15" width="5" height="5" fill="#151538"/><rect x="90" y="15" width="5" height="5" fill="#151538"/><rect x="95" y="15" width="5" height="5" fill="#151538"/><rect x="100" y="15" width="5" height="5" fill="#151538"/><rect x="30" y="20" width="5" height="5" fill="#151538"/><rect x="35" y="20" width="5" height="5" fill="#a58cff"/><rect x="40" y="20" width="5" height="5" fill="#a58cff"/><rect x="45" y="20" width="5" height="5" fill="#a58cff"/><rect x="50" y="20" width="5" height="5" fill="#a58cff"/><rect x="55" y="20" width="5" height="5" fill="#a58cff"/><rect x="60" y="20" width="5" height="5" fill="#a58cff"/><rect x="65" y="20" width="5" height="5" fill="#a58cff"/><rect x="70" y="20" width="5" height="5" fill="#a58cff"/><rect x="75" y="20" width="5" height="5" fill="#a58cff"/><rect x="80" y="20" width="5" height="5" fill="#a58cff"/><rect x="85" y="20" width="5" height="5" fill="#a58cff"/><rect x="90" y="20" width="5" height="5" fill="#a58cff"/><rect x="95" y="20" width="5" height="5" fill="#a58cff"/><rect x="100" y="20" width="5" height="5" fill="#a58cff"/><rect x="105" y="20" width="5" height="5" fill="#151538"/><rect x="25" y="25" width="5" height="5" fill="#151538"/><rect x="30" y="25" width="5" height="5" fill="#a58cff"/><rect x="35" y="25" width="5" height="5" fill="#a58cff"/><rect x="40" y="25" width="5" height="5" fill="#a58cff"/><rect x="45" y="25" width="5" height="5" fill="#a58cff"/><rect x="50" y="25" width="5" height="5" fill="#a58cff"/><rect x="55" y="25" width="5" height="5" fill="#a58cff"/><rect x="60" y="25" width="5" height="5" fill="#a58cff"/><rect x="65" y="25" width="5" height="5" fill="#a58cff"/><rect x="70" y="25" width="5" height="5" fill="#a58cff"/><rect x="75" y="25" width="5" height="5" fill="#a58cff"/><rect x="80" y="25" width="5" height="5" fill="#a58cff"/><rect x="85" y="25" width="5" height="5" fill="#a58cff"/><rect x="90" y="25" width="5" height="5" fill="#a58cff"/><rect x="95" y="25" width="5" height="5" fill="#a58cff"/><rect x="100" y="25" width="5" height="5" fill="#a58cff"/><rect x="105" y="25" width="5" height="5" fill="#a58cff"/><rect x="110" y="25" width="5" height="5" fill="#151538"/><rect x="20" y="30" width="5" height="5" fill="#151538"/><rect x="25" y="30" width="5" height="5" fill="#a58cff"/><rect x="30" y="30" width="5" height="5" fill="#a58cff"/><rect x="35" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="45" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="50" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="55" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="60" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="65" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="70" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="75" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="80" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="85" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="90" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="95" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="100" y="30" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="30" width="5" height="5" fill="#a58cff"/><rect x="110" y="30" width="5" height="5" fill="#a58cff"/><rect x="115" y="30" width="5" height="5" fill="#151538"/><rect x="20" y="35" width="5" height="5" fill="#151538"/><rect x="25" y="35" width="5" height="5" fill="#a58cff"/><rect x="30" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="45" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="55" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="60" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="65" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="70" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="85" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="90" y="35" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="100" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="35" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="35" width="5" height="5" fill="#a58cff"/><rect x="115" y="35" width="5" height="5" fill="#151538"/><rect x="20" y="40" width="5" height="5" fill="#151538"/><rect x="25" y="40" width="5" height="5" fill="#a58cff"/><rect x="30" y="40" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="40" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="45" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="40" width="5" height="5" fill="#fdfcff"/><rect x="55" y="40" width="5" height="5" fill="#fdfcff"/><rect x="60" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="65" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="70" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="40" width="5" height="5" fill="#fdfcff"/><rect x="85" y="40" width="5" height="5" fill="#fdfcff"/><rect x="90" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="40" width="5" height="5" fill="#7ce7ff"/><rect x="100" y="40" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="40" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="40" width="5" height="5" fill="#a58cff"/><rect x="115" y="40" width="5" height="5" fill="#151538"/><rect x="20" y="45" width="5" height="5" fill="#151538"/><rect x="25" y="45" width="5" height="5" fill="#a58cff"/><rect x="30" y="45" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="45" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="45" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="45" width="5" height="5" fill="#fdfcff"/><rect x="55" y="45" width="5" height="5" fill="#fdfcff"/><rect x="60" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="65" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="70" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="45" width="5" height="5" fill="#fdfcff"/><rect x="85" y="45" width="5" height="5" fill="#fdfcff"/><rect x="90" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="45" width="5" height="5" fill="#7ce7ff"/><rect x="100" y="45" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="45" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="45" width="5" height="5" fill="#a58cff"/><rect x="115" y="45" width="5" height="5" fill="#151538"/><rect x="20" y="50" width="5" height="5" fill="#151538"/><rect x="25" y="50" width="5" height="5" fill="#a58cff"/><rect x="30" y="50" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="50" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="45" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="55" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="60" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="65" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="70" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="85" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="90" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="50" width="5" height="5" fill="#7ce7ff"/><rect x="100" y="50" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="50" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="50" width="5" height="5" fill="#a58cff"/><rect x="115" y="50" width="5" height="5" fill="#151538"/><rect x="20" y="55" width="5" height="5" fill="#151538"/><rect x="25" y="55" width="5" height="5" fill="#a58cff"/><rect x="30" y="55" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="55" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="55" width="5" height="5" fill="#7ce7ff"/><rect x="45" y="55" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="55" width="5" height="5" fill="#151538"/><rect x="55" y="55" width="5" height="5" fill="#151538"/><rect x="60" y="55" width="5" height="5" fill="#151538"/><rect x="65" y="55" width="5" height="5" fill="#151538"/><rect x="70" y="55" width="5" height="5" fill="#151538"/><rect x="75" y="55" width="5" height="5" fill="#151538"/><rect x="80" y="55" width="5" height="5" fill="#151538"/><rect x="85" y="55" width="5" height="5" fill="#151538"/><rect x="90" y="55" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="55" width="5" height="5" fill="#7ce7ff"/><rect x="100" y="55" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="55" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="55" width="5" height="5" fill="#a58cff"/><rect x="115" y="55" width="5" height="5" fill="#151538"/><rect x="20" y="60" width="5" height="5" fill="#151538"/><rect x="25" y="60" width="5" height="5" fill="#a58cff"/><rect x="30" y="60" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="60" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="45" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="50" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="55" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="60" y="60" width="5" height="5" fill="#ff86b7"/><rect x="65" y="60" width="5" height="5" fill="#ff86b7"/><rect x="70" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="85" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="90" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="95" y="60" width="5" height="5" fill="#7ce7ff"/><rect x="100" y="60" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="60" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="60" width="5" height="5" fill="#a58cff"/><rect x="115" y="60" width="5" height="5" fill="#151538"/><rect x="20" y="65" width="5" height="5" fill="#151538"/><rect x="25" y="65" width="5" height="5" fill="#a58cff"/><rect x="30" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="35" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="40" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="45" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="50" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="55" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="60" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="65" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="70" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="75" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="80" y="65" width="5" height="5" fill="#7ce7ff"/><rect x="85" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="90" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="95" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="100" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="105" y="65" width="5" height="5" fill="#e5d8ff"/><rect x="110" y="65" width="5" height="5" fill="#a58cff"/><rect x="115" y="65" width="5" height="5" fill="#151538"/><rect x="25" y="70" width="5" height="5" fill="#151538"/><rect x="30" y="70" width="5" height="5" fill="#a58cff"/><rect x="35" y="70" width="5" height="5" fill="#a58cff"/><rect x="40" y="70" width="5" height="5" fill="#a58cff"/><rect x="45" y="70" width="5" height="5" fill="#a58cff"/><rect x="50" y="70" width="5" height="5" fill="#a58cff"/><rect x="55" y="70" width="5" height="5" fill="#a58cff"/><rect x="60" y="70" width="5" height="5" fill="#a58cff"/><rect x="65" y="70" width="5" height="5" fill="#a58cff"/><rect x="70" y="70" width="5" height="5" fill="#a58cff"/><rect x="75" y="70" width="5" height="5" fill="#a58cff"/><rect x="80" y="70" width="5" height="5" fill="#a58cff"/><rect x="85" y="70" width="5" height="5" fill="#a58cff"/><rect x="90" y="70" width="5" height="5" fill="#a58cff"/><rect x="95" y="70" width="5" height="5" fill="#a58cff"/><rect x="100" y="70" width="5" height="5" fill="#a58cff"/><rect x="105" y="70" width="5" height="5" fill="#a58cff"/><rect x="110" y="70" width="5" height="5" fill="#151538"/><rect x="30" y="75" width="5" height="5" fill="#151538"/><rect x="35" y="75" width="5" height="5" fill="#151538"/><rect x="40" y="75" width="5" height="5" fill="#151538"/><rect x="45" y="75" width="5" height="5" fill="#151538"/><rect x="50" y="75" width="5" height="5" fill="#151538"/><rect x="55" y="75" width="5" height="5" fill="#151538"/><rect x="60" y="75" width="5" height="5" fill="#151538"/><rect x="65" y="75" width="5" height="5" fill="#151538"/><rect x="70" y="75" width="5" height="5" fill="#151538"/><rect x="75" y="75" width="5" height="5" fill="#151538"/><rect x="80" y="75" width="5" height="5" fill="#151538"/><rect x="85" y="75" width="5" height="5" fill="#151538"/><rect x="90" y="75" width="5" height="5" fill="#151538"/><rect x="95" y="75" width="5" height="5" fill="#151538"/><rect x="100" y="75" width="5" height="5" fill="#151538"/><rect x="105" y="75" width="5" height="5" fill="#151538"/><rect x="40" y="80" width="5" height="5" fill="#151538"/><rect x="45" y="80" width="5" height="5" fill="#151538"/><rect x="50" y="80" width="5" height="5" fill="#373b80"/><rect x="55" y="80" width="5" height="5" fill="#373b80"/><rect x="60" y="80" width="5" height="5" fill="#373b80"/><rect x="65" y="80" width="5" height="5" fill="#373b80"/><rect x="70" y="80" width="5" height="5" fill="#373b80"/><rect x="75" y="80" width="5" height="5" fill="#373b80"/><rect x="80" y="80" width="5" height="5" fill="#373b80"/><rect x="85" y="80" width="5" height="5" fill="#373b80"/><rect x="90" y="80" width="5" height="5" fill="#151538"/><rect x="95" y="80" width="5" height="5" fill="#151538"/><rect x="35" y="85" width="5" height="5" fill="#151538"/><rect x="40" y="85" width="5" height="5" fill="#373b80"/><rect x="45" y="85" width="5" height="5" fill="#373b80"/><rect x="50" y="85" width="5" height="5" fill="#373b80"/><rect x="55" y="85" width="5" height="5" fill="#cbf96b"/><rect x="60" y="85" width="5" height="5" fill="#cbf96b"/><rect x="65" y="85" width="5" height="5" fill="#cbf96b"/><rect x="70" y="85" width="5" height="5" fill="#cbf96b"/><rect x="75" y="85" width="5" height="5" fill="#cbf96b"/><rect x="80" y="85" width="5" height="5" fill="#cbf96b"/><rect x="85" y="85" width="5" height="5" fill="#373b80"/><rect x="90" y="85" width="5" height="5" fill="#373b80"/><rect x="95" y="85" width="5" height="5" fill="#373b80"/><rect x="100" y="85" width="5" height="5" fill="#151538"/><rect x="30" y="90" width="5" height="5" fill="#151538"/><rect x="35" y="90" width="5" height="5" fill="#373b80"/><rect x="40" y="90" width="5" height="5" fill="#373b80"/><rect x="45" y="90" width="5" height="5" fill="#373b80"/><rect x="50" y="90" width="5" height="5" fill="#373b80"/><rect x="55" y="90" width="5" height="5" fill="#cbf96b"/><rect x="60" y="90" width="5" height="5" fill="#cbf96b"/><rect x="65" y="90" width="5" height="5" fill="#cbf96b"/><rect x="70" y="90" width="5" height="5" fill="#cbf96b"/><rect x="75" y="90" width="5" height="5" fill="#cbf96b"/><rect x="80" y="90" width="5" height="5" fill="#cbf96b"/><rect x="85" y="90" width="5" height="5" fill="#373b80"/><rect x="90" y="90" width="5" height="5" fill="#373b80"/><rect x="95" y="90" width="5" height="5" fill="#373b80"/><rect x="100" y="90" width="5" height="5" fill="#373b80"/><rect x="105" y="90" width="5" height="5" fill="#151538"/><rect x="20" y="95" width="5" height="5" fill="#151538"/><rect x="25" y="95" width="5" height="5" fill="#151538"/><rect x="30" y="95" width="5" height="5" fill="#373b80"/><rect x="35" y="95" width="5" height="5" fill="#373b80"/><rect x="40" y="95" width="5" height="5" fill="#373b80"/><rect x="45" y="95" width="5" height="5" fill="#373b80"/><rect x="50" y="95" width="5" height="5" fill="#373b80"/><rect x="55" y="95" width="5" height="5" fill="#cbf96b"/><rect x="60" y="95" width="5" height="5" fill="#cbf96b"/><rect x="65" y="95" width="5" height="5" fill="#cbf96b"/><rect x="70" y="95" width="5" height="5" fill="#cbf96b"/><rect x="75" y="95" width="5" height="5" fill="#cbf96b"/><rect x="80" y="95" width="5" height="5" fill="#cbf96b"/><rect x="85" y="95" width="5" height="5" fill="#373b80"/><rect x="90" y="95" width="5" height="5" fill="#373b80"/><rect x="95" y="95" width="5" height="5" fill="#373b80"/><rect x="100" y="95" width="5" height="5" fill="#373b80"/><rect x="105" y="95" width="5" height="5" fill="#373b80"/><rect x="110" y="95" width="5" height="5" fill="#151538"/><rect x="115" y="95" width="5" height="5" fill="#151538"/><rect x="15" y="100" width="5" height="5" fill="#151538"/><rect x="20" y="100" width="5" height="5" fill="#a58cff"/><rect x="25" y="100" width="5" height="5" fill="#a58cff"/><rect x="30" y="100" width="5" height="5" fill="#151538"/><rect x="35" y="100" width="5" height="5" fill="#373b80"/><rect x="40" y="100" width="5" height="5" fill="#373b80"/><rect x="45" y="100" width="5" height="5" fill="#cbf96b"/><rect x="50" y="100" width="5" height="5" fill="#cbf96b"/><rect x="55" y="100" width="5" height="5" fill="#cbf96b"/><rect x="60" y="100" width="5" height="5" fill="#cbf96b"/><rect x="65" y="100" width="5" height="5" fill="#cbf96b"/><rect x="70" y="100" width="5" height="5" fill="#cbf96b"/><rect x="75" y="100" width="5" height="5" fill="#cbf96b"/><rect x="80" y="100" width="5" height="5" fill="#cbf96b"/><rect x="85" y="100" width="5" height="5" fill="#cbf96b"/><rect x="90" y="100" width="5" height="5" fill="#373b80"/><rect x="95" y="100" width="5" height="5" fill="#373b80"/><rect x="100" y="100" width="5" height="5" fill="#151538"/><rect x="105" y="100" width="5" height="5" fill="#a58cff"/><rect x="110" y="100" width="5" height="5" fill="#a58cff"/><rect x="115" y="100" width="5" height="5" fill="#151538"/><rect x="15" y="105" width="5" height="5" fill="#151538"/><rect x="20" y="105" width="5" height="5" fill="#a58cff"/><rect x="25" y="105" width="5" height="5" fill="#a58cff"/><rect x="30" y="105" width="5" height="5" fill="#151538"/><rect x="35" y="105" width="5" height="5" fill="#373b80"/><rect x="40" y="105" width="5" height="5" fill="#373b80"/><rect x="45" y="105" width="5" height="5" fill="#373b80"/><rect x="50" y="105" width="5" height="5" fill="#373b80"/><rect x="55" y="105" width="5" height="5" fill="#373b80"/><rect x="60" y="105" width="5" height="5" fill="#373b80"/><rect x="65" y="105" width="5" height="5" fill="#373b80"/><rect x="70" y="105" width="5" height="5" fill="#373b80"/><rect x="75" y="105" width="5" height="5" fill="#373b80"/><rect x="80" y="105" width="5" height="5" fill="#373b80"/><rect x="85" y="105" width="5" height="5" fill="#373b80"/><rect x="90" y="105" width="5" height="5" fill="#373b80"/><rect x="95" y="105" width="5" height="5" fill="#151538"/><rect x="100" y="105" width="5" height="5" fill="#a58cff"/><rect x="105" y="105" width="5" height="5" fill="#a58cff"/><rect x="110" y="105" width="5" height="5" fill="#151538"/><rect x="15" y="110" width="5" height="5" fill="#151538"/><rect x="20" y="110" width="5" height="5" fill="#a58cff"/><rect x="25" y="110" width="5" height="5" fill="#a58cff"/><rect x="30" y="110" width="5" height="5" fill="#151538"/><rect x="35" y="110" width="5" height="5" fill="#373b80"/><rect x="40" y="110" width="5" height="5" fill="#373b80"/><rect x="45" y="110" width="5" height="5" fill="#373b80"/><rect x="50" y="110" width="5" height="5" fill="#373b80"/><rect x="55" y="110" width="5" height="5" fill="#373b80"/><rect x="60" y="110" width="5" height="5" fill="#373b80"/><rect x="65" y="110" width="5" height="5" fill="#373b80"/><rect x="70" y="110" width="5" height="5" fill="#373b80"/><rect x="75" y="110" width="5" height="5" fill="#373b80"/><rect x="80" y="110" width="5" height="5" fill="#373b80"/><rect x="85" y="110" width="5" height="5" fill="#373b80"/><rect x="90" y="110" width="5" height="5" fill="#373b80"/><rect x="95" y="110" width="5" height="5" fill="#151538"/><rect x="100" y="110" width="5" height="5" fill="#a58cff"/><rect x="105" y="110" width="5" height="5" fill="#a58cff"/><rect x="110" y="110" width="5" height="5" fill="#151538"/><rect x="20" y="115" width="5" height="5" fill="#151538"/><rect x="25" y="115" width="5" height="5" fill="#151538"/><rect x="30" y="115" width="5" height="5" fill="#151538"/><rect x="35" y="115" width="5" height="5" fill="#373b80"/><rect x="40" y="115" width="5" height="5" fill="#373b80"/><rect x="45" y="115" width="5" height="5" fill="#373b80"/><rect x="50" y="115" width="5" height="5" fill="#373b80"/><rect x="55" y="115" width="5" height="5" fill="#373b80"/><rect x="60" y="115" width="5" height="5" fill="#373b80"/><rect x="65" y="115" width="5" height="5" fill="#373b80"/><rect x="70" y="115" width="5" height="5" fill="#373b80"/><rect x="75" y="115" width="5" height="5" fill="#373b80"/><rect x="80" y="115" width="5" height="5" fill="#373b80"/><rect x="85" y="115" width="5" height="5" fill="#373b80"/><rect x="90" y="115" width="5" height="5" fill="#373b80"/><rect x="95" y="115" width="5" height="5" fill="#151538"/><rect x="100" y="115" width="5" height="5" fill="#151538"/><rect x="105" y="115" width="5" height="5" fill="#151538"/><rect x="35" y="120" width="5" height="5" fill="#151538"/><rect x="40" y="120" width="5" height="5" fill="#373b80"/><rect x="45" y="120" width="5" height="5" fill="#373b80"/><rect x="50" y="120" width="5" height="5" fill="#373b80"/><rect x="55" y="120" width="5" height="5" fill="#373b80"/><rect x="60" y="120" width="5" height="5" fill="#373b80"/><rect x="65" y="120" width="5" height="5" fill="#373b80"/><rect x="70" y="120" width="5" height="5" fill="#373b80"/><rect x="75" y="120" width="5" height="5" fill="#373b80"/><rect x="80" y="120" width="5" height="5" fill="#373b80"/><rect x="85" y="120" width="5" height="5" fill="#373b80"/><rect x="90" y="120" width="5" height="5" fill="#151538"/><rect x="35" y="125" width="5" height="5" fill="#151538"/><rect x="40" y="125" width="5" height="5" fill="#373b80"/><rect x="45" y="125" width="5" height="5" fill="#373b80"/><rect x="50" y="125" width="5" height="5" fill="#373b80"/><rect x="55" y="125" width="5" height="5" fill="#151538"/><rect x="70" y="125" width="5" height="5" fill="#151538"/><rect x="75" y="125" width="5" height="5" fill="#373b80"/><rect x="80" y="125" width="5" height="5" fill="#373b80"/><rect x="85" y="125" width="5" height="5" fill="#373b80"/><rect x="90" y="125" width="5" height="5" fill="#151538"/><rect x="35" y="130" width="5" height="5" fill="#151538"/><rect x="40" y="130" width="5" height="5" fill="#373b80"/><rect x="45" y="130" width="5" height="5" fill="#373b80"/><rect x="50" y="130" width="5" height="5" fill="#373b80"/><rect x="55" y="130" width="5" height="5" fill="#151538"/><rect x="70" y="130" width="5" height="5" fill="#151538"/><rect x="75" y="130" width="5" height="5" fill="#373b80"/><rect x="80" y="130" width="5" height="5" fill="#373b80"/><rect x="85" y="130" width="5" height="5" fill="#373b80"/><rect x="90" y="130" width="5" height="5" fill="#151538"/><rect x="35" y="135" width="5" height="5" fill="#151538"/><rect x="40" y="135" width="5" height="5" fill="#151538"/><rect x="45" y="135" width="5" height="5" fill="#151538"/><rect x="50" y="135" width="5" height="5" fill="#151538"/><rect x="75" y="135" width="5" height="5" fill="#151538"/><rect x="80" y="135" width="5" height="5" fill="#151538"/><rect x="85" y="135" width="5" height="5" fill="#151538"/><rect x="90" y="135" width="5" height="5" fill="#151538"/>
+</g>
+<g transform="translate(46,184)"><rect x="4" y="8" width="74" height="37" fill="#0c112b"/><rect x="0" y="0" width="74" height="36" fill="#71e1ee"/><rect x="6" y="7" width="62" height="22" fill="#26265f"/><rect x="14" y="12" width="28" height="4" fill="#c9f972"/><rect x="14" y="21" width="42" height="3" fill="#7ddaf0"/><rect x="17" y="36" width="64" height="7" fill="#aa89ff"/></g>
+<g transform="translate(346,200)"><rect x="0" y="22" width="70" height="9" fill="#0b1131"/><rect x="5" y="0" width="58" height="22" fill="#fa81bc"/><rect x="12" y="7" width="44" height="5" fill="#ffdae9"/><rect x="0" y="-7" width="58" height="7" fill="#b5a0ff"/><rect x="13" y="-17" width="45" height="10" fill="#6fe3e7"/></g>
+<g transform="translate(29,29)"><rect width="103" height="28" fill="#c8fb77"/><text x="8" y="19" fill="#171c3c" font-size="13" font-weight="900" font-family="monospace">LV.99 ★</text></g>
+<g transform="translate(315,117)"><rect x="0" y="0" width="113" height="30" fill="#f6efff"/><rect x="9" y="28" width="10" height="10" fill="#f6efff"/><text x="9" y="20" font-size="12" fill="#402a75" font-family="monospace" font-weight="900">A+ READY!</text></g>
+</svg><div class="world-caption"><span>01 — WRITE BETTER</span><span>★ ★ ★</span></div></div><span class="floating-badge floating-a">+100 XP</span><span class="floating-badge floating-b">✦ QUEST READY</span></div>
 </header>
+<div class="status-grid" aria-label="任务概览">
+ <div class="status-card"><span class="stat-icon icon-course" aria-hidden="true">▦</span><div class="stat-copy"><span class="stat-label">ACTIVE COURSE</span><strong id="hudCourse">雅思基础写作</strong></div><span class="stat-corner" aria-hidden="true">01</span></div>
+ <div class="status-card"><span class="stat-icon icon-name" aria-hidden="true">✦</span><div class="stat-copy"><span class="stat-label">CURRENT STUDENT</span><strong id="hudName">等待输入姓名</strong></div><span class="stat-corner" aria-hidden="true">02</span></div>
+ <div class="status-card"><span class="stat-icon icon-select" aria-hidden="true">★</span><div class="stat-copy"><span class="stat-label">SKILL POINTS</span><strong><span id="hudGood">0</span> <span class="mini-green">PLUS</span> · <span id="hudBad">0</span> <span class="mini-pink">FIX</span></strong></div><span class="stat-corner" aria-hidden="true">03</span></div>
+ <div class="status-card progress-stat"><div class="progress-stat-head"><span class="stat-label">MISSION COMPLETION</span><strong id="hudPercent">0%</strong></div><div class="pixel-progress" aria-label="填写进度"><div id="hudProgress"></div></div><div class="progress-legend">输入姓名 + 选择优点与不足 = 解锁报告</div></div>
+</div>
 <div class="layout">
 <div class="left">
-<section class="panel">
-<h2 class="section-title"><span class="num">1</span>课堂基本信息</h2>
+<section class="panel stage-panel" id="step-one">
+<div class="panel-sig"><span>STAGE 01 / 03</span><span>PLAYER PROFILE</span></div>
+<h2 class="section-title"><span class="num">01</span><span>创建课堂档案<small>WHO ARE WE TEACHING TODAY?</small></span></h2>
 <div class="fields">
-<label class="field mobile-full"><span class="field-title">学生姓名</span><input id="student" maxlength="35" autocomplete="off" placeholder="例如：小陈 / 陈同学"></label>
-<label class="field mobile-full"><span class="field-title">课程类型</span><select id="course">
-<option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option>
-</select></label>
+<label class="field mobile-full"><span class="field-title">学生姓名 <span class="required-star">✱</span></span><input id="student" maxlength="35" autocomplete="off" placeholder="输入学生姓名 / 例如：陈同学"></label>
+<label class="field mobile-full"><span class="field-title">课程类型 <span class="required-star">✱</span></span><select id="course"><option value="basic">雅思基础写作</option><option value="advanced">雅思强化写作</option><option value="reading">Pre-Starter 读写</option><option value="speaking">Pre-Starter 听说</option></select></label>
 <label class="field"><span class="field-title">迟到情况</span><select id="late"><option value="无迟到">未迟到</option><option value="迟到">迟到</option></select></label>
-<label class="field"><span class="field-title">课堂参与情况</span><select id="participation"><option value="积极">积极互动、课堂专注认真</option><option value="踏实">积极互动、态度踏实上进</option><option value="笔记">认真做笔记、参与课堂练习</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
-
-<label class="field full" id="partBox" hidden><span class="field-title">课堂表现补充</span><input id="partOther" placeholder="例如：积极回答问题，听写认真"></label>
+<label class="field"><span class="field-title">课堂表现</span><select id="participation"><option value="积极">积极互动、课堂专注认真</option><option value="踏实">积极互动、态度踏实上进</option><option value="笔记">认真做笔记、参与课堂练习</option><option value="认真">认真听讲、完成练习</option><option value="一般">能跟随课堂进度</option><option value="安静">互动较少、较为安静</option><option value="自定">自定义</option></select></label>
+<label class="field full" id="partBox" hidden><span class="field-title">自定义课堂表现</span><input id="partOther" placeholder="例如：积极回答问题，听写认真"></label>
 </div>
-<div class="toggle-row"><input type="checkbox" id="first" checked><label for="first">这是首课</label><span class="muted small">自动切换为【首课表现】</span></div>
+<div class="toggle-row"><label class="toggle-label" for="first"><input type="checkbox" id="first" checked><span class="toggle-track" aria-hidden="true"><span></span></span>这是首课</label><span class="muted small">反馈标题自动显示「首课表现」</span></div>
+<div class="stage-foot"><span>STEP 01</span><span class="pixel-dots" aria-hidden="true">■■□□</span></div>
 </section>
-<section class="panel">
-<h2 class="section-title"><span class="num">2</span>选择学生的优点和不足</h2>
-<p class="hint" id="courseHint">选项会随课程切换，可搜索词汇、语法、审题、课堂表现等关键词。建议各选 1–2 项。</p>
-<div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">🔎 快速筛选优点 / 不足</span></label><input id="optionSearch" type="search" autocomplete="off" placeholder="例如：词汇、语法、拼写、审题、逻辑"><p class="search-hint">输入关键词仅筛选选项，不影响已经选中的内容。</p></div><div class="subhead"><strong>✨ 优点</strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
+<section class="panel stage-panel" id="step-two">
+<div class="panel-sig"><span>STAGE 02 / 03</span><span>COLLECT XP & CHALLENGES</span></div>
+<h2 class="section-title"><span class="num">02</span><span>收集学生表现<small>SELECT SKILLS & CHALLENGES</small></span></h2>
+<p class="intro-text" id="courseHint">根据课程选择真实课堂观察，每类建议选择 1–2 项，最多 5 项。</p>
+<div class="searchbox"><label class="field" for="optionSearch"><span class="field-title">快速查找评价标签</span></label><div class="search-shell"><span aria-hidden="true">⌕</span><input id="optionSearch" type="search" autocomplete="off" placeholder="搜索词汇 / 语法 / 拼写 / 审题 ..."><span class="kbd">⌕</span></div></div>
+<div class="subhead good-head"><strong><span aria-hidden="true">✦</span> 优势天赋 <span class="subtitle-en">POWER UPS</span></strong><span class="limit" id="goodCount">已选 0 / 5</span></div>
 <div class="choices" id="goodChoices" role="group" aria-label="优点选项"></div>
-<div class="subhead top-gap"><strong>🎯 需要提升</strong><span class="limit" id="badCount">已选 0 / 3</span></div>
+<div class="subhead bad-head"><strong><span aria-hidden="true">⚡</span> 需要提升 <span class="subtitle-en">SKILL GAPS</span></strong><span class="limit" id="badCount">已选 0 / 5</span></div>
 <div class="choices" id="badChoices" role="group" aria-label="不足选项"></div>
-<div class="sep"></div>
-<label class="field"><span class="field-title">补充一个自定义优点（可不填）</span><input id="customGood" maxlength="120" placeholder="例如：愿意主动修改作文"></label>
-<label class="field top-gap"><span class="field-title">补充一个自定义不足（可不填）</span><input id="customBad" maxlength="120" placeholder="例如：因果解释不够深入"></label>
-<div class="choice-help">针对选择的不足，系统会自动匹配训练建议和作业，不会编造学生分数或实际表现。</div>
+<div class="sep"><span>OR WRITE YOUR OWN</span></div>
+<div class="custom-fields">
+<label class="field"><span class="field-title">＋ 自定义优点 <span class="muted">（选填）</span></span><input id="customGood" maxlength="120" placeholder="例如：愿意主动修改作文"></label>
+<label class="field"><span class="field-title">＋ 自定义不足 <span class="muted">（选填）</span></span><input id="customBad" maxlength="120" placeholder="例如：因果解释不够深入"></label>
+</div>
+<div class="mini-tip"><span aria-hidden="true">✳</span> 系统会依据选择的不足自动匹配提升方法，不会虚构成绩。</div>
+<div class="stage-foot"><span>STEP 02</span><span class="pixel-dots" aria-hidden="true">■■■□</span></div>
 </section>
-<section class="panel">
-<h2 class="section-title"><span class="num">3</span>作业与个性化补充</h2>
-<label class="field"><span class="field-title">本节课作业（留空则自动安排）</span><textarea id="homework" rows="3" placeholder="例如：例题2主体段写作；完成课堂词汇复习"></textarea></label>
-<label class="field top-gap"><span class="field-title">其他需要写进课堂表现的内容（可不填）</span><textarea id="notes" rows="2" placeholder="例如：独立完成了两道练习，最后一题需进一步巩固"></textarea></label>
-<div class="actionrow"><button type="button" class="btn primary" id="generate">生成课堂反馈</button><button type="button" class="btn subtle" id="sample">填入示例</button><button type="button" class="btn subtle" id="clear">清空重来</button></div>
+<section class="panel stage-panel" id="step-three">
+<div class="panel-sig"><span>STAGE 03 / 03</span><span>FINAL BOSS: HOMEWORK</span></div>
+<h2 class="section-title"><span class="num">03</span><span>布置训练任务<small>MAKE IT PERSONAL</small></span></h2>
+<label class="field"><span class="field-title">本节课作业 <span class="muted">（不填则自动安排）</span></span><textarea id="homework" rows="3" placeholder="例如：范文学习 + 例题2主体段1"></textarea></label>
+<label class="field top-gap"><span class="field-title">课堂观察补充 <span class="muted">（选填）</span></span><textarea id="notes" rows="2" placeholder="例如：独立完成两道练习，最后一题仍需巩固"></textarea></label>
+<div class="actionrow input-actions"><button type="button" class="btn primary" id="generate"><span class="btn-icon" aria-hidden="true">✦</span> 生成课堂反馈 <span class="btn-arrow" aria-hidden="true">↗</span></button><button type="button" class="btn subtle" id="sample">▶ 查看示例</button><button type="button" class="btn ghost" id="clear">↺ 清空</button></div>
+<div class="stage-foot"><span>STEP 03</span><span class="pixel-dots" aria-hidden="true">■■■■</span></div>
 </section>
 </div>
-<section class="panel result-panel">
-<div class="result-head"><h2 class="section-title"><span class="num">✓</span>生成结果</h2><span class="live"><i class="dot"></i>可直接修改</span></div>
-<p class="hint" style="margin:-8px 0 12px">右侧文本可手动润色，复制后直接粘贴到学生反馈系统。</p>
-<textarea id="result" class="result" spellcheck="false" aria-label="生成的课堂反馈" placeholder="填写姓名并选择优点、不足后，点击“生成课堂反馈”……"></textarea>
-<div class="actionrow"><button type="button" class="btn primary" id="copy">复制反馈</button><button type="button" class="btn subtle" id="download">下载 TXT</button><button type="button" class="btn subtle" id="print">打印 / 存为 PDF</button></div>
+<section class="panel result-panel" id="result-panel">
+<div class="panel-sig"><span>OUTPUT TERMINAL</span><span>LIVE PREVIEW</span></div>
+<div class="result-head"><h2 class="section-title"><span class="num result-num">★</span><span>报告输出终端<small>YOUR REPORT IS READY TO COPY</small></span></h2><span class="live"><i class="dot"></i> EDITABLE</span></div>
+<div class="terminal">
+ <div class="terminal-top"><span class="terminal-dots"><i></i><i></i><i></i></span><span class="terminal-name">REPORT_PREVIEW.TXT</span><span class="terminal-status">● TXT</span></div>
+ <div class="terminal-bar"><span>➜</span> report.generate()<span class="terminal-comment"> // instant, local</span></div>
+ <textarea id="result" class="result" spellcheck="false" aria-label="生成的课堂反馈" placeholder="> SYSTEM READY_&#10;&#10;  等待输入学生信息...&#10;  选择优点和不足后，点击生成。&#10;&#10;  ✓ 无需 AI&#10;  ✓ 无需登录&#10;  ✓ 可直接复制修改"></textarea>
+ <div class="terminal-footer"><span class="blink-cursor" aria-hidden="true">▮</span> <span>可在此直接修改文字</span><span>UTF-8</span></div>
+</div>
+<div class="actionrow result-actions"><button type="button" class="btn primary" id="copy">▣ 复制反馈</button><button type="button" class="btn subtle" id="download">⇩ 下载 TXT</button><button type="button" class="btn subtle" id="print">▤ 打印 / PDF</button></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<div class="note">隐私说明：本工具完全在浏览器中运行，不调用 AI、云端数据库或第三方接口。姓名和评价不会通过本网页自动上传或保存；关闭页面后请自行保留需要的反馈。请先核对实际课堂表现再发送给家长或学生。</div>
+<div class="privacy-note"><span class="privacy-icon" aria-hidden="true">◈</span><p><strong>PRIVATE BY DESIGN</strong><span>本工具在当前浏览器运行，不使用 AI 或数据库，也不会自动上传、保存学生资料。请在发送前核实课堂情况。</span></p></div>
 <pre class="print-view" id="printView"></pre>
 </section>
 </div>
-<div class="footer">Independent teaching tool · 静态 HTML / JavaScript · 无需登录</div>
+<footer class="footer"><span>✦ END OF QUEST ✦</span><span>CRAFTED FOR TEACHERS · HTML + JAVASCRIPT · NO AI</span><a href="#top">BACK TO TOP ↑</a></footer>
 </main>
+
 <script>
 (function(){
 "use strict";
@@ -371,9 +389,9 @@ function renderChoices(kind){
    root.appendChild(btn);
  });
  if(!visible){var label=document.createElement("span");label.className="hint";label.textContent="没有匹配项，可以尝试其他关键词或使用自定义输入。";root.appendChild(label);}
- $(kind+"Count").textContent="已选 "+sel.size+" / 5";
+ $(kind+"Count").textContent="已选 "+sel.size+" / 5";if(typeof updateHUD==="function")updateHUD();
 }
-function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"建议每类选 1–2 项，可多选。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";}
+function changeCourse(){goodSel.clear();badSel.clear();$("optionSearch").value="";$("courseHint").textContent=DATA[$("course").value].hint+"建议每类选 1–2 项，可多选。";renderChoices("good");renderChoices("bad");$("toast").textContent="已切换课程，请重新选择对应的表现。";updateHUD();}
 function cleanText(value){return String(value||"").replace(/[\r\n]+/g,"，").replace(/\s+/g," ").trim().replace(/[；;。,.，]+$/,"");}
 function chooseItems(kind){var arr=DATA[$("course").value][kind];var chosen=Array.from(kind==="good"?goodSel:badSel).sort(function(a,b){return a-b;}).map(function(i){return arr[i];});var custom=cleanText($(kind==="good"?"customGood":"customBad").value);if(custom)chosen.push(kind==="good"?s("自定义",custom):w("自定义",custom,"针对“"+custom+"”进行专项练习，完成后依据课堂示例检查和订正","围绕“"+custom+"”完成一项课堂相关巩固练习"));return chosen;}
 function participation(){
@@ -411,7 +429,7 @@ str+="【提升方法】：\n"+actions.map(function(a,i){return (i+1)+"."+a;}).j
 str+="【本节课作业】：\n"+hw;
 return str;
 }
-function generate(){var output=makeText();if(output!==null){$("result").value=output;$("printView").textContent=output;$("toast").textContent="已生成，可在结果框内直接修改文字。";}}
+function generate(){var output=makeText();if(output!==null){$("result").value=output;$("printView").textContent=output;$("toast").textContent="任务完成！反馈已生成，可在输出终端直接修改。";}}
 $("course").addEventListener("change",changeCourse);
 $("optionSearch").addEventListener("input",function(){renderChoices("good");renderChoices("bad");});
 $("participation").addEventListener("change",function(){$("partBox").hidden=$("participation").value!=="自定";});
@@ -434,8 +452,25 @@ var t=$("result").value;if(!t.trim()){$("toast").textContent="请先生成反馈
 var fileName=cleanText($("student").value).replace(/[\\/:*?"<>|]/g,"_")||"学生";
 var blob=new Blob(["\uFEFF"+t],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=fileName+"_课堂反馈.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);$("toast").textContent="已准备好 TXT 文件。";
 });
+
+function updateHUD(){
+ var n=$("student").value.trim();
+ var g=goodSel.size+($("customGood").value.trim()?1:0);
+ var b=badSel.size+($("customBad").value.trim()?1:0);
+ $("hudCourse").textContent=DATA[$("course").value].name;
+ $("hudName").textContent=n||"等待输入姓名";
+ $("hudGood").textContent=String(g);
+ $("hudBad").textContent=String(b);
+ var progress=(n?1:0)+(g?1:0)+(b?1:0);
+ $("hudPercent").textContent=Math.round(progress/3*100)+"%";
+ $("hudProgress").style.width=Math.round(progress/3*100)+"%";
+}
+$("student").addEventListener("input",updateHUD);
+$("customGood").addEventListener("input",updateHUD);
+$("customBad").addEventListener("input",updateHUD);
+
 $("print").addEventListener("click",function(){if(!$("result").value.trim()){$("toast").textContent="请先生成反馈。";return;}$("printView").textContent=$("result").value;window.print();});
-changeCourse();
+changeCourse();updateHUD();
 })();
 </script>
 </body>
