@@ -374,7 +374,15 @@ function pulse(){
  const previous=shield;
  shield=Math.min(100,shield+20);
  invuln=Math.max(invuln,.6);
- soundDirector.pulse();haptic([35,35,95]);
+ beatAudio.effect("drop");haptic([35,35,95]);
+ const onBeat=beatAudio.offset()<=.12;
+ if(onBeat){
+  score+=500;feverEnergy=Math.min(100,feverEnergy+30);
+  judgement("BEAT DROP",beatAudio.offset());
+  if(feverEnergy>=100&&feverEnds<=beatAudio.time()){
+   feverEnds=beatAudio.time()+8;beatAudio.setFever(true);beatAudio.effect("fever")
+  }
+ }
  shake=.95;pulseVisual();
  // All three lanes, the whole forward danger field — visible and useful in every run.
  let removed=0;
@@ -393,8 +401,8 @@ function pulse(){
   ring.rotation.x=Math.PI/2;ring.position.set(0,1.7,4-i*5);root.add(ring);
   beams.push({mesh:ring,life:.85+i*.12,duration:.85+i*.12,startZ:4-i*5})
  }
- if(removed)toast("✳ 光脉冲 · 清除 "+removed+" 架无人机 · 护盾 +"+(Math.round(shield-previous))+"%");
- else toast("✳ 光脉冲 · 前方已净空 · 护盾 +"+(Math.round(shield-previous))+"%");
+ if(removed)toast("✳ "+(onBeat?"ON BEAT +500 · ":"")+"清除 "+removed+" 架无人机 · 同步 +"+Math.round(shield-previous));
+ else toast("✳ "+(onBeat?"ON BEAT +500 · ":"")+"前方净空 · 同步 +"+Math.round(shield-previous));
  $("pulse").classList.add("cooling");
  updateHUD()
 }
@@ -410,7 +418,7 @@ function hit(big=false){
  if(invuln>0)return;
  shield=Math.max(0,shield-(big?50:LEVELS[stageIndex].damage));combo=0;invuln=1.35;shake=.52;
  $("impact").classList.add("on");setTimeout(()=>$("impact").classList.remove("on"),210);
- soundDirector.collision();haptic([85,45,135]);hitVisual();
+ beatAudio.effect("miss");haptic([85,45,135]);hitVisual();
  toast("⚠ 护盾受损");
  if(shield<=0)end(false);
 }
@@ -419,9 +427,9 @@ function collect(o){
  const gained=100+combo*30;score+=gained;
  shield=Math.min(100,shield+4);
  burst(o.group.position.x,o.group.position.y,o.group.position.z,0xffe2a3,15);
- soundDirector.collect(combo);haptic(18);metricPop();
+ beatAudio.effect("hit","GREAT");haptic(18);metricPop();
  if(combo%4===0)toast("✦ "+combo+" COMBO · +"+gained);
- if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");beatAudio.effect("fever")}
+ if(lumens===CONFIG.goal){toast("✦ 节奏目标达成！坚持到歌曲结束");beatAudio.effect("fever")}
 }
 function formatTime(s){let v=Math.max(0,Math.ceil(s));return String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0")}
 function updateHUD(){
@@ -655,17 +663,21 @@ function update(dt){
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
 $("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
-$("sound").onclick=()=>{soundOn=!soundOn;soundDirector.toggle(soundOn);$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"声音已开启":"已静音")};
+$("sound").onclick=()=>{soundOn=!soundOn;beatAudio.mute(!soundOn);$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"音乐已开启":"已静音")};
 window.addEventListener("keydown",e=>{
- if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD","Escape"].includes(e.code))e.preventDefault();
+ if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD","KeyJ","KeyK","ShiftLeft","ShiftRight","Escape"].includes(e.code))e.preventDefault();
  if(e.repeat)return;
  if(e.code==="ArrowLeft"||e.code==="KeyA")steer(-1);
  else if(e.code==="ArrowRight"||e.code==="KeyD")steer(1);
- else if(e.code==="Space")pulse();
+ else if(e.code==="Space"||e.code==="KeyJ")hitBeat();
+ else if(e.code==="KeyK"||e.code==="ShiftLeft"||e.code==="ShiftRight")pulse();
  else if(e.code==="Escape"){if(mode==="playing")pause();else if(mode==="paused")resume()}
 });
+window.addEventListener("keyup",e=>{if(e.code==="Space"||e.code==="KeyJ")releaseBeat()});
 function bind(id,fn){const node=$(id);node.addEventListener("pointerdown",e=>{e.preventDefault();fn()})}
 bind("left",()=>steer(-1));bind("right",()=>steer(1));bind("pulse",pulse);
+$("beat-hit").addEventListener("pointerdown",e=>{e.preventDefault();$("beat-hit").setPointerCapture(e.pointerId);hitBeat()});
+for(const type of ["pointerup","pointercancel","lostpointercapture"]){$("beat-hit").addEventListener(type,releaseBeat)}
 let startTouch=null,gestureMoved=false;
 $("world").addEventListener("pointerdown",e=>{startTouch={x:e.clientX,y:e.clientY,t:performance.now()};gestureMoved=false});
 $("world").addEventListener("pointerup",e=>{
@@ -681,7 +693,8 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
  window.__luminaQA={
   win:()=>{lumens=CONFIG.goal;end(true)},
   lose:()=>{shield=0;end(false)},
-  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y}}},
+  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time()}},
+  testBeatHit:()=>{const n=chartNotes.find(n=>n.state==="pending"&&n.type!=="hazard");if(!n)return false;markHit(n,"PERFECT",0);return true},
   pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
 }
