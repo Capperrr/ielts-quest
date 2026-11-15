@@ -62,6 +62,7 @@ const path=require("node:path");
    const prepared=await mobile.evaluate(lane=>window.__luminaQA.prepareLaneNote(lane),lane);
    if(!prepared)throw Error("Failed to prepare rhythm test note for "+id);
    await mobile.locator("#"+id).tap();
+   await mobile.waitForFunction(expected=>window.__luminaQA?.get().lumens>=expected,before+1,{timeout:3500});
    const state=await mobile.evaluate(()=>window.__luminaQA.get());
    if(state.targetLane!==lane)throw Error("One-tap did not select lane "+id+": "+JSON.stringify(state));
    if(state.lumens!==before+1)throw Error("One-tap did not HIT note on "+id+": "+JSON.stringify(state));
