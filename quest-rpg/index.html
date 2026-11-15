@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#080f1e">
-<meta name="description" content="IELTS Quest — 失落的词语之城。一款原创像素冒险雅思写作学习游戏。">
-<title>IELTS QUEST · 失落的词语之城</title>
+<meta name="theme-color" content="#1a2662">
+<meta name="description" content="IELTS Quest — 霓虹词语之城。一款原创3D摩登都市雅思写作冒险游戏。">
+<title>IELTS QUEST · 霓虹都市</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<div id="game" aria-label="像素冒险场景"></div>
+<div id="game" aria-label="3D霓虹未来城市"></div>
 <div id="vignette" aria-hidden="true"></div>
 <div id="hud" class="hidden">
-  <div class="hud-left"><div class="hud-logo">✦ IELTS QUEST <span>THE LOST CITY OF WORDS</span></div><div id="zone-label">01 / 遗忘的图书馆</div></div>
+  <div class="hud-left"><div class="hud-logo">✦ IELTS QUEST <span>NEON CITY OF WORDS</span></div><div id="zone-label">01 / 霓虹语汇广场</div></div>
   <div class="hud-right"><span id="shard-count">✧ 0</span><span id="progress-count">0 / 5 区域</span><button id="map-btn" class="hud-button" title="区域地图">◈ 地图</button><button id="journal-btn" class="hud-button" title="任务与错题">▤ 手账</button><button id="settings-btn" class="hud-button" title="设置">⚙</button></div>
 </div>
-<div id="quest-tip" class="hidden">向前探索，寻找发光的文字装置</div>
+<div id="quest-tip" class="hidden">探索发光的挑战建筑，每区完成两个不同小游戏</div>
 <div id="nearby" class="hidden"></div>
 <div id="touch-controls" class="hidden" aria-label="触屏控制">
   <div class="pad" aria-label="方向键">
@@ -29,14 +29,14 @@
 <main id="menu" class="screen">
   <div class="menu-clouds"></div><div class="menu-moon"></div>
   <div class="menu-content">
-    <p class="overline">AN ATMOSPHERIC PIXEL ADVENTURE</p>
+    <p class="overline">AN ELECTRIC 3D CITY ADVENTURE</p>
     <div class="title-ornament">✦ ───── ✧ ───── ✦</div>
     <h1>IELTS <em>QUEST</em></h1>
-    <h2>失落的词语之城</h2>
-    <p class="menu-story">当语言散落在雾中，<br>你能否让这座城市重新发光？</p>
-    <button id="start-btn" class="primary">踏入迷雾 <span>→</span></button>
+    <h2>霓虹词语之城</h2>
+    <p class="menu-story">穿梭于流光溢彩的未来都市，<br>逐一激活散落在城市中的语言信号。</p>
+    <button id="start-btn" class="primary">进入霓虹之城 <span>→</span></button>
     <button id="continue-btn" class="secondary">继续旅程</button>
-    <div class="menu-meta">原创像素冒险 · 雅思学术写作 · 手机 / iPad / 电脑</div>
+    <div class="menu-meta">3D 霓虹都市探险 · 雅思写作 · 手机 / iPad / 电脑</div>
   </div><div class="menu-silhouette" aria-hidden="true"></div>
 </main>
 <div id="modal-root" class="hidden">
@@ -48,8 +48,9 @@
 </div>
 <div id="toast" class="hidden" aria-live="polite"></div>
 <div id="credits" class="hidden"><div class="credits-inner"><p>THE CITY REMEMBERS</p><h1>黎明重临</h1><div class="credits-sun">✹</div><p>每一个清晰表达的想法，都是穿透黑暗的光。</p><button id="credits-btn" class="primary">回到城市</button></div></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script src="./questions.js"></script>
+<script src="./neon-city.js"></script>
 <script src="./game.js"></script>
 </body>
 </html>
