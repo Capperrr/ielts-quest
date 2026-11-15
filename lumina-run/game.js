@@ -8,7 +8,7 @@ let renderer,scene,camera,root,player,craft,craftGlow,trail=[],city=[],roadTiles
 let elapsed=0,score=0,lumens=0,shield=100,combo=0,best=0,mode="menu",targetLane=1,currentX=0,spawnIn=.4,invuln=0,pulseIn=0,shake=0,lastHUD=0,noticeTimeout=0,soundOn=true,audio=null,lastSwipe=null,quality=window.innerWidth<720?.7:1;
 const materials={};
 let stageIndex=0,selectedStage=0,stageArt=null,progress=getProgress(),soundDirector=new AudioDirector(),nearMisses=0;
-let activeTrail=progress.skin||"aqua";
+let activeTrail=progress.skin||"aqua",bossSpawned=false;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -184,6 +184,20 @@ function makeDrone(lane,z){
  glow(0xff79c9,5,0,.2,0,group,.8);
  objects.push({type:"drone",group,z,lane,age:0,hit:false})
 }
+function makeSentinel(){
+ const lane=Math.floor(Math.random()*3),group=new THREE.Group();
+ group.position.set(CONFIG.lanes[lane],2.7,-142);root.add(group);
+ const shell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.35,1),mat.bodyDark);group.add(shell);
+ const eye=sphere(.72,0,0,.6,mat.pink,group);
+ for(let i=0;i<3;i++){
+  const torus=new THREE.Mesh(new THREE.TorusGeometry(1.55+i*.32,.11,7,40),i%2?mat.cyan:mat.pink);
+  torus.rotation.set(.4*i,.7*i,.2*i);group.add(torus)
+ }
+ glow(0xffb2f5,8,0,0,0,group,.85);
+ objects.push({type:"sentinel",group,z:-142,lane,age:0,hit:false});
+ toast("⚠ NEXUS SENTINEL · 核心哨兵接近！");
+ soundDirector.tone(190,.65,"sawtooth",.12);
+}
 function spawn(){
  const lane=Math.floor(Math.random()*3),cfg=LEVELS[stageIndex];
  if(Math.random()<cfg.hazard){
@@ -214,7 +228,7 @@ function pulse(){
  let removed=0;
  objects.forEach(o=>{
   const near=Math.abs(o.group.position.z-4)<30&&Math.abs(o.group.position.x-currentX)<3.4;
-  if(o.type==="drone"&&near&&!o.hit){o.hit=true;removed++;score+=80;burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,14)}
+  if((o.type==="drone"||o.type==="sentinel")&&near&&!o.hit){o.hit=true;removed++;score+=o.type==="sentinel"?500:80;burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,o.type==="sentinel"?28:14)}
  });
  if(removed){toast("✦ 清除 "+removed+" 个障碍");combo=Math.min(combo+removed,9)}
  $("pulse").classList.add("cooling")
@@ -227,9 +241,9 @@ function burst(x,y,z,color=0xffefa8,count=12){
   particles.push({burst:true,node:mesh,life:.45+Math.random()*.55,vx:(Math.random()-.5)*12,vy:(Math.random()-.2)*9,vz:(Math.random()-.5)*12})
  }
 }
-function hit(){
+function hit(big=false){
  if(invuln>0)return;
- shield=Math.max(0,shield-LEVELS[stageIndex].damage);combo=0;invuln=1.35;shake=.52;
+ shield=Math.max(0,shield-(big?50:LEVELS[stageIndex].damage));combo=0;invuln=1.35;shake=.52;
  $("impact").classList.add("on");setTimeout(()=>$("impact").classList.remove("on"),210);
  soundDirector.collision();
  toast("⚠ 护盾受损");
@@ -318,7 +332,7 @@ function rankFor(success,stars){
  return stars===3?"A":stars===2?"B":"C"
 }
 function reset(){
- elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;
+ elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;bossSpawned=false;
  objects.forEach(o=>root.remove(o.group));objects=[];
  beams.forEach(o=>root.remove(o.mesh));beams=[];
  player.position.set(0,1.55,4);
@@ -390,6 +404,7 @@ function update(dt){
  if(active){
   elapsed+=dt;spawnIn-=dt;pulseIn=Math.max(0,pulseIn-dt);invuln=Math.max(0,invuln-dt);shake=Math.max(0,shake-dt*2);
   if(spawnIn<=0){spawn();spawnIn=CONFIG.spawnEvery*(.85+Math.random()*.45)}
+  if(stageIndex===2&&!bossSpawned&&elapsed>51){bossSpawned=true;makeSentinel()}
   soundDirector.tick(dt,combo);
   currentX=lerp(currentX,CONFIG.lanes[targetLane],1-Math.exp(-dt*11));
   player.position.x=currentX;
@@ -403,9 +418,10 @@ function update(dt){
     o.age+=dt;
     if(stageIndex>=1&&o.type==="drone")o.group.position.x=CONFIG.lanes[o.lane]+Math.sin(o.age*3.2+o.lane*2)*(.7+(stageIndex-1)*.35);
     if(o.type==="pickup"){o.group.rotation.y+=dt*3.7;o.group.children[0].rotation.z+=dt*.8;o.group.position.y=2.1+Math.sin(o.age*5)*.25}
+    else if(o.type==="sentinel"){o.group.rotation.y+=dt*2.2;o.group.position.y=2.8+Math.sin(o.age*3)*.4}
     else{o.group.rotation.z=Math.sin(o.age*5)*.12;o.group.position.y=2.1+Math.sin(o.age*4)*.24}
     if(!o.hit&&Math.abs(o.group.position.z-4)<1.65&&Math.abs(o.group.position.x-currentX)<1.75){
-      o.type==="pickup"?collect(o):hit();o.hit=true
+      o.type==="pickup"?collect(o):hit(o.type==="sentinel");o.hit=true
     }
   }
   for(let i=objects.length-1;i>=0;i--){
