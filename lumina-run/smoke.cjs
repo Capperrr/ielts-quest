@@ -37,11 +37,18 @@ const path=require("node:path");
  await mobile.waitForFunction(()=>window.__luminaQA?.get().mode==="playing");
  const coords=await mobile.evaluate(()=>{
   const rect=id=>{let b=document.getElementById(id).getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height}};
-  return {left:rect("left"),right:rect("right"),pulse:rect("pulse"),viewport:{w:innerWidth,h:innerHeight}}
+  return {left:rect("left"),right:rect("right"),pulse:rect("pulse"),hud:rect("progress-fill"),viewport:{w:innerWidth,h:innerHeight}}
  });
  if(Math.abs(coords.left.y-coords.right.y)>3)throw Error("Left / right buttons not aligned: "+JSON.stringify(coords));
  if(coords.pulse.y+coords.pulse.h>coords.right.y-5)throw Error("Pulse should be above right button: "+JSON.stringify(coords));
  if(coords.right.x<=coords.left.x)throw Error("Right key isn't at bottom right");
+ if(coords.hud.y+coords.hud.h>coords.pulse.y-10)throw Error("HUD overlaps pulse controls: "+JSON.stringify(coords));
+ await mobile.locator("#right").click();
+ const afterRight=await mobile.evaluate(()=>window.__luminaQA.get().targetLane);
+ if(afterRight!==2)throw Error("Mobile right steering not triggered");
+ await mobile.locator("#pulse").click();
+ const afterPulse=await mobile.evaluate(()=>window.__luminaQA.get().pulseIn);
+ if(afterPulse<=0)throw Error("Mobile pulse not triggered");
  await mobile.screenshot({path:path.join(__dirname,"screenshot-mobile.png"),fullPage:true});
  if(errors.length)throw Error(errors.join("\n"));
  console.log("PASS: WebGL desktop and mobile load, 3 stage transition/unlock, local save, control layout");
