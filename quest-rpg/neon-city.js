@@ -102,19 +102,19 @@ rebuild(){
    this.box(w,h,d,0,h/2,0,(seed%3===0?glass:tall),group);
    this.box(w+.35,.35,d+.4,0,h+.15,0,glowM[seed%3],group);
    this.box(w*.81,.1,d+.46,0,h*.32,0,glowM[(seed+1)%3],group);
-   for(let y=2;y<h-1;y+=1.75)for(let xx=-w/2+.9;xx<w/2-.5;xx+=1.35){
+   for(let y=2;y<h-1;y+=(innerWidth<750?3.4:2.5))for(let xx=-w/2+.9;xx<w/2-.5;xx+=2.0){
      if((Math.floor(y*3+xx*7+seed)%7)===0)continue;
      const win=this.box(.67,.85,.06,xx,y,d/2+.04,windowM[(Math.floor(xx+y+seed*2)+100)%3],group);
      if((Math.floor(xx*5+y+seed)%13)===0)win.visible=false
    }
-   for(let y=2;y<h-1;y+=2.15)for(let zz2=-d/2+.8;zz2<d/2-.5;zz2+=1.4){
+   for(let y=2;y<h-1;y+=(innerWidth<750?3.8:3.1))for(let zz2=-d/2+.8;zz2<d/2-.5;zz2+=2.0){
      this.box(.07,.72,.7,w/2+.05,y,zz2,windowM[(seed+Math.floor(y))%3],group)
    }
    if(seed%2===0){const s=this.sign(["NOVA","LIGHT","METRO","AETHER","VOLT"][seed%5],["#61ffff","#ff8cef","#ffd884"][seed%3],w*.86,1.35);s.position.set(0,h*.66,d/2+.18);group.add(s)}
    this.obstacles.push({x,z:zz,w:w+.5,d:d+.5});
    return group
  };
- for(let i=0;i<26;i++){
+ for(let i=0;i<(innerWidth<750?20:26);i++){
    const ring=i%4, side=i%2===0?-1:1;
    let x=side*(19+(i*7)%26),zz=-51+(i*17)%103;
    if(Math.abs(zz)<14&&Math.abs(x)<28)continue;
