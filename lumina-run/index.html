@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0c153e">
-<meta name="description" content="LUMINA｜霓光跃迁：一款原创3D未来都市飞行小游戏。支持手机、iPad及电脑。">
-<title>LUMINA — 霓光跃迁</title>
+<meta name="description" content="LUMINA BEATSHIFT：三首原创电子乐、音符判定、3D霓虹都市、手机和电脑可玩的节奏游戏。">
+<title>LUMINA 3.0 BEATSHIFT — 霓光节奏</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -14,45 +14,51 @@
 <div class="cinematic-bars" aria-hidden="true"></div>
 <div id="impact" aria-hidden="true"></div>
 <div id="pulse-fx" aria-hidden="true"><span class="pulse-wave pulse-wave-one"></span><span class="pulse-wave pulse-wave-two"></span><span class="pulse-gleam"></span></div>
+<div id="beat-screen-flash" aria-hidden="true"></div>
 <div id="hud" class="hidden">
   <div class="hud-top">
     <div class="hud-brand"><span class="brand-symbol">✳</span><span>LUMINA<small>NEON COURIER / 光城信使</small></span></div>
-    <div class="hud-center"><span class="hud-kicker" id="district-name">01 / AURORA CAUSEWAY</span><strong id="timer">01:15</strong><span class="meters" id="distance">0000 M</span></div>
+    <div class="hud-center"><span class="hud-kicker" id="district-name">AURORA DRIVE / 100 BPM</span><strong id="timer">00:47</strong><span class="meters" id="distance">SYNTHWAVE</span></div>
     <div class="hud-actions"><button id="sound" aria-label="切换声音" title="切换声音">♪</button><button id="pause" aria-label="暂停" title="暂停">Ⅱ</button></div>
   </div>
   <div class="hud-bottom">
     <div class="metrics">
-      <div class="metric"><span class="metric-label">光粒子 · LUMEN</span><strong id="lumens">00 <span>/ 12</span></strong></div>
-      <div class="metric vitality"><span class="metric-label">护盾 · SHIELD</span><div class="shield-track"><span id="shield-fill"></span></div><strong id="shield-num">100%</strong></div>
-      <div class="metric combo"><span class="metric-label">COMBO</span><strong id="combo">× 1</strong></div>
+      <div class="metric"><span class="metric-label">音符命中 · NOTES</span><strong id="lumens">00 <span>/ 40</span></strong></div>
+      <div class="metric vitality"><span class="metric-label">同步能量 · SYNC</span><div class="shield-track"><span id="shield-fill"></span></div><strong id="shield-num">100%</strong></div>
+      <div class="metric combo"><span class="metric-label">COMBO</span><strong id="combo">× 0</strong></div>
     </div>
+    <div class="fever-meter"><span id="fever-label">FEVER ENERGY</span><div class="fever-track"><i id="fever-fill"></i></div></div>
     <div class="progress"><div id="progress-fill"></div><div class="progress-light"></div></div>
   </div>
 </div>
+<div id="beat-judge" class="hidden" aria-live="polite"><strong id="judge-word">PERFECT</strong><span id="judge-ms">± 00 ms</span></div>
+<div id="beat-line" aria-hidden="true"><div class="beatline-marker"></div><div class="beatline-label">BEAT / HIT LINE</div></div>
 <div id="notification" class="hidden" aria-live="polite"></div>
-<div id="hint" class="hidden" aria-live="polite">✳ 光脉冲：清除前方所有航道的障碍，并回复20%护盾</div>
+<div id="hint" class="hidden" aria-live="polite">♪ 音符到达飞船前方判定线时，按 HIT！左右变道选择音符航道。</div>
 <div id="touch" class="hidden" aria-label="手机操控按钮">
   <div class="direction"><button id="left" aria-label="向左变道"><span>‹</span><small>LEFT</small></button><button id="right" aria-label="向右变道"><span>›</span><small>RIGHT</small></button></div>
-  <div class="pulse-stack"><div id="pulse-legend" class="pulse-legend">清障 + 回盾</div><button id="pulse" aria-label="光脉冲：清除前方障碍并回复20%护盾"><span>✳</span><small>光脉冲</small><b id="pulse-charge">READY</b><i id="pulse-ring"></i></button></div>
+  <button id="beat-hit" aria-label="在节拍线上点击音符；长音符需要按住" class="beat-hit"><span>◎</span><strong>HIT</strong><small>跟着节拍点击</small></button>
+  <div class="pulse-stack"><div id="pulse-legend" class="pulse-legend">ON BEAT · DROP</div><button id="pulse" aria-label="BEAT DROP：在节拍上释放增强技能、清障并恢复同步能量"><span>✳</span><small>BEAT DROP</small><b id="pulse-charge">READY</b><i id="pulse-ring"></i></button></div>
 </div>
 <div id="intro" class="overlay">
  <div class="intro-shine" aria-hidden="true"></div>
  <div class="intro-orbit" aria-hidden="true"><div class="orbit-a"></div><div class="orbit-b"></div><span>✧</span></div>
  <div class="intro-content">
-  <div class="eyebrow"><i></i> A CINEMATIC 3D ARCADE EXPERIENCE <i></i></div>
-  <div class="subtitle-top">THE CITY NEVER SLEEPS</div>
+  <div class="eyebrow"><i></i> A CINEMATIC RHYTHM-RUNNER EXPERIENCE <i></i></div>
+  <div class="subtitle-top">THREE TRACKS · ONE ELECTRIC CITY</div>
   <h1>LUM<span>I</span>NA<span class="dot">.</span></h1>
-  <div class="cn-title">霓 光 跃 迁</div>
-  <p class="story">三段航程，三座未来城区。<br>驾驶霓光飞行器，把最后一束光送到黎明。</p>
+  <div class="cn-title">霓 光 节 奏</div>
+  <p class="story">三首原创电子乐，三座会跳动的未来城区。<br>跟随音符变道、敲击节奏，让霓虹与音乐一同爆发。</p>
   <div id="stage-select" class="stage-select" aria-label="选择游戏关卡">
     <button class="stage-card is-selected" data-stage="0"><span>01 / AURORA</span><strong>霓光高架</strong><small>已解锁</small></button>
     <button class="stage-card" data-stage="1"><span>02 / SKY RAIL</span><strong>天轨城区</strong><small>尚未解锁</small></button>
     <button class="stage-card" data-stage="2"><span>03 / NEXUS</span><strong>核心塔区</strong><small>尚未解锁</small></button>
   </div>
   <p id="stage-story" class="stage-story">沿着城市主光轨，完成第一趟黎明运输。</p>
+  <div class="music-preview"><span class="music-symbol">♫</span><span><strong id="track-name">AURORA DRIVE</strong><small id="track-detail">SYNTHWAVE · 100 BPM · ORIGINAL MUSIC</small></span><div class="preview-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
   <div class="trail-picker" aria-label="选择飞行器尾迹"><span>FLIGHT TRAIL</span><button data-trail="aqua" class="active">AQUA</button><button data-trail="rose">ROSE ✦</button><button data-trail="solar">SOLAR ✦</button></div>
-  <button id="start" class="launch"><span id="launch-label">开始第一关</span><span class="launch-arrow">↗</span></button>
-  <div class="intro-guide"><span><b>← → / A D</b> 切换航道</span><span><b>SPACE / ✳</b> 光脉冲：清障 + 回盾（有冷却）</span><span><b>触屏</b> 左右按钮 / 滑动</span></div>
+  <button id="start" class="launch"><span id="launch-label">开始第一首歌</span><span class="launch-arrow">↗</span></button>
+  <div class="intro-guide"><span><b>← → / A D</b> 选择航道</span><span><b>SPACE / J / HIT</b> 跟拍敲音符</span><span><b>K / ✳</b> 节奏光脉冲</span><span><b>手机</b> 按左右键，再点中央 HIT</span></div>
   <div class="intro-footer"><span>ORIGINAL 3D WORLD</span><span class="sep">✦</span><span>NO LOGIN · INSTANT PLAY</span><span class="sep">✦</span><span>PHONE · iPAD · DESKTOP</span></div>
  </div>
 </div>
@@ -63,6 +69,7 @@
   <div class="rank" id="end-rank">A</div>
   <h2 id="result-title">黎明已送达</h2>
   <p id="result-desc">光穿过了整座城市。</p>
+  <div class="result-accuracy" id="result-accuracy">PERFECT 0 · GREAT 0 · GOOD 0 · MISS 0</div>
   <div class="result-stats">
     <div><small>光粒子</small><strong id="end-lumens">0</strong></div>
     <div><small>本次得分</small><strong id="end-score">0</strong></div>
@@ -77,7 +84,7 @@
 <div id="pause-screen" class="overlay hidden">
  <div class="pause-card">
   <div class="eyebrow">SYSTEM PAUSED</div><h2>光轨暂停</h2>
-  <p>星城的风还在等你。</p><p class="pulse-explainer"><strong>✳ 光脉冲</strong>：一次清除前方约100米内三条航道的无人机，并恢复20%护盾。使用后需要冷却。屏幕震动与音效会提示释放效果。</p>
+  <p>星城的风还在等你。</p><p class="pulse-explainer"><strong>◎ HIT</strong>：在音符穿过光线时敲击（长音符需按住），按得越准，PERFECT 越多。<br><strong>✳ BEAT DROP</strong>：跟着鼓点释放，消除障碍并恢复同步能量，准确释放还能触发高能奖励。</p>
   <button class="launch" id="resume"><span>继续飞行</span><span class="launch-arrow">→</span></button>
   <button class="text-button" id="quit">返回主界面</button>
  </div>
