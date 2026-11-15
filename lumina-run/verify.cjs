@@ -1,0 +1,14 @@
+const fs=require("node:fs"), assert=require("node:assert/strict"),path=require("node:path");
+const root=__dirname;
+const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
+const css=fs.readFileSync(path.join(root,"style.css"),"utf8");
+const js=fs.readFileSync(path.join(root,"game.js"),"utf8");
+assert.ok(html.includes('type="module" src="./game.js"'),"missing module");
+assert.ok(html.includes('style.css'),"missing css");
+assert.ok(js.startsWith("import * as THREE from"),"missing Three.js import");
+new Function(js.replace(/^import[^\n]+\n/,""));
+["start","restart","pause","resume","left","right","pulse","shield-fill","end-score","result","world"].forEach(id=>assert.ok(html.includes('id="'+id+'"'),"missing UI control "+id));
+["makeBuilding","buildCraft","spawn","makePickup","makeDrone","collect","pulse","end","pause","resume","resize"].forEach(token=>assert.ok(js.includes(token),"missing mechanism "+token));
+assert.ok(css.includes("@media"),"missing responsiveness");
+assert.ok(css.includes("pointer"),"missing touch controls");
+console.log("PASS: LUMINA markup, 3D game syntax, mechanics and responsive UI references.");

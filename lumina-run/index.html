@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0c153e">
+<meta name="description" content="LUMINA｜霓光跃迁：一款原创3D未来都市飞行小游戏。支持手机、iPad及电脑。">
+<title>LUMINA — 霓光跃迁</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="world" aria-label="霓虹都市3D飞行场景"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cinematic-bars" aria-hidden="true"></div>
+<div id="impact" aria-hidden="true"></div>
+<div id="hud" class="hidden">
+  <div class="hud-top">
+    <div class="hud-brand"><span class="brand-symbol">✳</span><span>LUMINA<small>NEON COURIER / 光城信使</small></span></div>
+    <div class="hud-center"><span class="hud-kicker">DAWN APPROACH</span><strong id="timer">01:15</strong><span class="meters" id="distance">0000 M</span></div>
+    <div class="hud-actions"><button id="sound" aria-label="切换声音" title="切换声音">♪</button><button id="pause" aria-label="暂停" title="暂停">Ⅱ</button></div>
+  </div>
+  <div class="hud-bottom">
+    <div class="metrics">
+      <div class="metric"><span class="metric-label">光粒子 · LUMEN</span><strong id="lumens">00 <span>/ 12</span></strong></div>
+      <div class="metric vitality"><span class="metric-label">护盾 · SHIELD</span><div class="shield-track"><span id="shield-fill"></span></div><strong id="shield-num">100%</strong></div>
+      <div class="metric combo"><span class="metric-label">COMBO</span><strong id="combo">× 1</strong></div>
+    </div>
+    <div class="progress"><div id="progress-fill"></div><div class="progress-light"></div></div>
+  </div>
+</div>
+<div id="notification" class="hidden" aria-live="polite"></div>
+<div id="hint" class="hidden" aria-live="polite">收集金色光粒子，躲开紫红色障碍</div>
+<div id="touch" class="hidden" aria-label="手机操控按钮">
+  <div class="direction"><button id="left" aria-label="向左变道"><span>‹</span><small>LEFT</small></button><button id="right" aria-label="向右变道"><span>›</span><small>RIGHT</small></button></div>
+  <button id="pulse" aria-label="释放光脉冲"><span>✳</span><small>光脉冲</small><i id="pulse-ring"></i></button>
+</div>
+<div id="intro" class="overlay">
+ <div class="intro-shine" aria-hidden="true"></div>
+ <div class="intro-orbit" aria-hidden="true"><div class="orbit-a"></div><div class="orbit-b"></div><span>✧</span></div>
+ <div class="intro-content">
+  <div class="eyebrow"><i></i> A CINEMATIC 3D ARCADE EXPERIENCE <i></i></div>
+  <div class="subtitle-top">THE CITY NEVER SLEEPS</div>
+  <h1>LUM<span>I</span>NA<span class="dot">.</span></h1>
+  <div class="cn-title">霓 光 跃 迁</div>
+  <p class="story">在日出之前，穿越流光都市。<br>让最后一束光，抵达天空的另一边。</p>
+  <button id="start" class="launch"><span>开始跃迁</span><span class="launch-arrow">↗</span></button>
+  <div class="intro-guide"><span><b>← → / A D</b> 切换航道</span><span><b>SPACE</b> 光脉冲</span><span><b>触屏</b> 左右按钮 / 滑动</span></div>
+  <div class="intro-footer"><span>ORIGINAL 3D WORLD</span><span class="sep">✦</span><span>NO LOGIN · INSTANT PLAY</span><span class="sep">✦</span><span>PHONE · iPAD · DESKTOP</span></div>
+ </div>
+</div>
+<div id="result" class="overlay hidden">
+ <div class="result-content">
+  <span class="result-kicker" id="result-kicker">MISSION COMPLETE</span>
+  <h2 id="result-title">黎明已送达</h2>
+  <p id="result-desc">光穿过了整座城市。</p>
+  <div class="result-stats">
+    <div><small>光粒子</small><strong id="end-lumens">0</strong></div>
+    <div><small>本次得分</small><strong id="end-score">0</strong></div>
+    <div><small>最佳记录</small><strong id="end-best">0</strong></div>
+  </div>
+  <button class="launch" id="restart"><span>再次出发</span><span class="launch-arrow">↗</span></button>
+  <button class="text-button" id="home">返回主界面</button>
+ </div>
+</div>
+<div id="pause-screen" class="overlay hidden">
+ <div class="pause-card">
+  <div class="eyebrow">SYSTEM PAUSED</div><h2>光轨暂停</h2>
+  <p>星城的风还在等你。</p>
+  <button class="launch" id="resume"><span>继续飞行</span><span class="launch-arrow">→</span></button>
+  <button class="text-button" id="quit">返回主界面</button>
+ </div>
+</div>
+<div id="fatal" class="overlay hidden">
+ <div class="pause-card"><div class="eyebrow">WEBGL ERROR</div><h2>光城暂时无法加载</h2><p id="fatal-message">请尝试联网刷新页面，或使用更新的浏览器。</p><button class="launch" onclick="location.reload()">刷新页面 ↻</button></div>
+</div>
+<script type="module" src="./game.js"></script>
+</body>
+</html>
