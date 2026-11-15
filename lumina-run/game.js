@@ -14,7 +14,7 @@ const beatAudio=new BeatshiftAudio();
 let chartNotes=[],beatSpawnIndex=0,beatVisuals=new Map(),heldNote=null,notesPressed=false;
 let perfect=0,great=0,good=0,misses=0,feverEnergy=0,feverEnds=0,judgementTimeout=0;
 let beatSkyLight=null,beatKeyLight=null,hitLine3D=null,lastBeat=-1;
-let lastCoachUpdate=-1,lastEarlyHint=-3,queuedHit=null;
+let lastCoachUpdate=-1,lastEarlyHint=-3,queuedHit=null,qaArmedLane=-1;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -184,6 +184,14 @@ function releaseBeat(){
 }
 function directLane(lane){
  if(mode!=="playing")return;
+ if(qaArmedLane===lane&&new URLSearchParams(location.search).get("qa")==="1"){
+  // CI only: stage a precisely timed note when a real pointer event reaches this handler.
+  const now=beatAudio.time();
+  for(const q of chartNotes)if(q.state==="pending"&&q.time-now<1.8){q.state="missed";releaseNoteVisual(q)}
+  const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending");
+  if(n){n.lane=lane;n.time=now+.035;n.type="tap"}
+  qaArmedLane=-1
+ }
  // Single action: select the lane and hit its note, not two separate taps.
  if(heldNote&&heldNote.lane!==lane)holdRelease();
  targetLane=lane;
@@ -779,15 +787,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
   lose:()=>{shield=0;end(false)},
   get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time(),coachText:$("lane-coach-text").textContent,selectedPad:["left","beat-hit","right"][targetLane]}},
   testBeatHit:()=>{const n=chartNotes.find(n=>n.state==="pending"&&n.type!=="hazard");if(!n)return false;markHit(n,"PERFECT",0);return true},
-  prepareLaneNote:(lane)=>{
-   const now=beatAudio.time();
-   // Isolate a single playable chart event; avoid random imminent chart notes in slow CI WebGL.
-   for(const q of chartNotes)if(q.state==="pending"&&q.time-now<1.8){q.state="missed";releaseNoteVisual(q)}
-   const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending");
-   if(!n)return false;
-   n.lane=lane;n.time=now+.72;n.type="tap";
-   return n.id
-  },
+  prepareLaneNote:(lane)=>{qaArmedLane=lane;return true},
   pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
 }
