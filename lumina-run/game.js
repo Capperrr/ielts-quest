@@ -257,6 +257,66 @@ function updateHUD(){
  $("pulse-ring").style.opacity=pulseIn>0?Math.max(.17,1-pulseIn/CONFIG.pulseCooldown):1;
  if(pulseIn<=0)$("pulse").classList.remove("cooling")
 }
+
+const SHIP_STYLES={
+ aqua:{body:0xbfdcff,light:0x74fff5},
+ rose:{body:0xffbde9,light:0xff90dd},
+ solar:{body:0xffe1b1,light:0xffd27f}
+};
+function updateTrail(){
+ const v=SHIP_STYLES[activeTrail]||SHIP_STYLES.aqua;
+ mat.body.color.setHex(v.body);mat.body.emissive.setHex(v.light);
+ mat.bodyDark.emissive.setHex(v.light);
+ if(craftGlow)craftGlow.material.color.setHex(v.light);
+}
+function applyStageLook(){
+ if(!scene||!root)return;
+ if(stageArt){stageArt.dispose();stageArt=null}
+ stageArt=createDistrict(THREE,scene,root,selectedStage,quality);
+ if(craft)updateTrail();
+}
+function refreshMenu(){
+ document.querySelectorAll("[data-stage]").forEach(btn=>{
+  const i=Number(btn.dataset.stage),locked=i>=progress.unlocked;
+  btn.disabled=locked;btn.classList.toggle("is-selected",i===selectedStage);
+  const desc=btn.querySelector("small"),record=progress.levels[i];
+  if(desc)desc.textContent=locked?"🔒 尚未解锁":record?"✦ "+record.stars+" 星 · "+record.rank+" 级":"可以挑战";
+ });
+ $("stage-story").textContent=LEVELS[selectedStage].mission;
+ $("launch-label").textContent="开始第 "+(selectedStage+1)+" 关";
+ document.querySelectorAll("[data-trail]").forEach(btn=>{
+  const t=btn.dataset.trail;
+  btn.disabled=t==="rose"?progress.unlocked<2:t==="solar"?progress.unlocked<3:false;
+  btn.classList.toggle("active",activeTrail===t);
+ })
+}
+function selectStage(index){
+ if(!Number.isInteger(index)||index<0||index>=progress.unlocked)return;
+ selectedStage=index;applyStageLook();refreshMenu()
+}
+function startStage(index=selectedStage){
+ stageIndex=Math.max(0,Math.min(LEVELS.length-1,index));selectedStage=stageIndex;
+ const L=LEVELS[stageIndex];
+ CONFIG.duration=L.duration;CONFIG.goal=L.goal;CONFIG.speed=L.speed;CONFIG.spawnEvery=L.spawnEvery;
+ CONFIG.pulseCooldown=stageIndex===0?6.3:stageIndex===1?5.8:5.4;
+ best=progress.levels[stageIndex]?.score||0;
+ applyStageLook();reset();mode="playing";clock.getDelta();
+ ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
+ ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
+ ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
+ ui.hint.textContent=stageIndex===0?"金色光粒子补充能量 · 紫粉色无人机是障碍":stageIndex===1?"天轨警戒 · 注意交错的无人机":"最终城区 · 释放光脉冲清除能量障碍";
+ soundDirector.start(stageIndex);soundDirector.milestone();
+ setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},4500)
+}
+function starsFor(success){
+ if(!success)return 0;
+ return 1+Number(shield>=60)+Number(lumens>=CONFIG.goal+3&&shield>=85)
+}
+function rankFor(success,stars){
+ if(!success)return "—";
+ if(stars===3&&score>=LEVELS[stageIndex].bonus)return "S";
+ return stars===3?"A":stars===2?"B":"C"
+}
 function reset(){
  elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;
  objects.forEach(o=>root.remove(o.group));objects=[];
@@ -266,32 +326,39 @@ function reset(){
  camera.position.set(0,8,20);
  updateHUD()
 }
-function start(){
- reset();mode="playing";clock.getDelta();
- ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
- ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
- ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
- playTone(535,.25);setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},4500)
-}
 function end(success){
  if(mode!=="playing")return;
- mode="result";ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
+ mode="result";soundDirector.stop();
+ ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
  if(success){
-  const bonus=Math.round(shield)*5+Math.max(0,lumens-CONFIG.goal)*100;score+=bonus;
-  $("result-kicker").textContent="MISSION COMPLETE / DAYBREAK DELIVERED";
-  $("result-title").textContent="黎明已送达";
-  $("result-desc").textContent="霓光穿过了整座城市。你把最后一束光送到了黎明。";
-  playTone(630,.45);setTimeout(()=>playTone(920,.5),190)
+  score+=Math.round(shield)*6+Math.max(0,lumens-CONFIG.goal)*160;
+  $("result-title").textContent=stageIndex===2?"核心已点亮":"航线已完成";
+  $("result-desc").textContent=stageIndex===2?"三座城区重新苏醒。你已经成为真正的霓光信使。":"你已照亮「"+LEVELS[stageIndex].name+"」。下一片城区正在等待。";
+  burst(0,7,-9,0x9ffff5,32);
+  soundDirector.milestone()
  }else{
-  $("result-kicker").textContent="SIGNAL LOST / TRY AGAIN";
-  $("result-title").textContent="光还没有熄灭";
-  $("result-desc").textContent="这次航线暂时中断。下一次，我们再靠近黎明一点。";
+  $("result-title").textContent="航线暂时中断";
+  $("result-desc").textContent="这个城区的挑战尚未完成。调整航线，再试一次。"
+ }
+ const stars=starsFor(success),rank=rankFor(success,stars);
+ if(success){
+  const old=progress.levels[stageIndex];
+  progress.levels[stageIndex]=(!old||score>old.score)?{score,stars:Math.max(stars,old?.stars||0),rank}:old;
+  progress.unlocked=Math.max(progress.unlocked,Math.min(3,stageIndex+2));
+  progress.totalCollected=(progress.totalCollected||0)+lumens;
+  saveProgress(progress)
  }
  if(score>best){best=score;try{localStorage.setItem("lumina-best",String(best))}catch{}}
- $("end-lumens").textContent=lumens;
+ $("result-kicker").textContent=success?"MISSION ACCOMPLISHED / "+LEVELS[stageIndex].label:"SIGNAL LOST / "+LEVELS[stageIndex].label;
+ $("end-stars").textContent=[0,1,2].map(i=>i<stars?"★":"☆").join(" ");
+ $("end-rank").textContent=rank;
+ $("end-lumens").textContent=lumens+" / "+CONFIG.goal;
  $("end-score").textContent=score.toLocaleString();
  $("end-best").textContent=best.toLocaleString();
- ui.result.classList.remove("hidden")
+ $("end-reward").textContent=success?(stageIndex===2?"三关全部点亮":"+"+(stars*100)+" EXP"):"—";
+ $("next-stage").classList.toggle("hidden",!success||stageIndex===LEVELS.length-1);
+ ui.result.classList.remove("hidden");
+ refreshMenu()
 }
 function pause(){
  if(mode!=="playing")return;
