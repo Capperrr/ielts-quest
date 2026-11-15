@@ -14,6 +14,7 @@ const beatAudio=new BeatshiftAudio();
 let chartNotes=[],beatSpawnIndex=0,beatVisuals=new Map(),heldNote=null,notesPressed=false;
 let perfect=0,great=0,good=0,misses=0,feverEnergy=0,feverEnds=0,judgementTimeout=0;
 let beatSkyLight=null,beatKeyLight=null,hitLine3D=null,lastBeat=-1;
+let lastCoachUpdate=-1,lastEarlyHint=-3;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -133,16 +134,27 @@ function holdRelease(force=false){
  if(force||now>=n.time+n.duration-.08)markHit(n,n.holdRating||"GREAT",n.holdDelta||0);
  else markMiss(n)
 }
+function stageTimingWindow(){return stageIndex===0?.40:stageIndex===1?.34:.30}
+function stageJudge(delta){
+ const d=Math.abs(delta);
+ if(stageIndex===0)return d<=.13?"PERFECT":d<=.24?"GREAT":d<=.40?"GOOD":null;
+ if(stageIndex===1)return d<=.11?"PERFECT":d<=.21?"GREAT":d<=.34?"GOOD":null;
+ return judgeDelta(delta)
+}
 function hitBeat(){
  if(mode!=="playing")return;
  notesPressed=true;$("beat-hit").classList.add("pressed");
  if(heldNote)return;
  const now=beatAudio.time();
- const candidates=chartNotes.filter(n=>(n.state==="pending"||n.state==="holding")&&n.type!=="hazard"&&n.lane===targetLane&&Math.abs(n.time-now)<=.31);
+ const candidates=chartNotes.filter(n=>(n.state==="pending"||n.state==="holding")&&n.type!=="hazard"&&n.lane===targetLane&&Math.abs(n.time-now)<=stageTimingWindow());
  candidates.sort((a,b)=>Math.abs(a.time-now)-Math.abs(b.time-now));
  const n=candidates[0];
- if(!n){judgement("MISS");beatAudio.effect("miss");return}
- const delta=now-n.time,quality=judgeDelta(delta);
+ if(!n){
+  const upcoming=chartNotes.find(q=>q.state==="pending"&&q.lane===targetLane&&q.type!=="hazard"&&q.time>now);
+  if(upcoming&&upcoming.time-now<1.3&&now-lastEarlyHint>.65){lastEarlyHint=now;toast("再等一下，音符到发光线时再点 "+["左","中","右"][targetLane])}
+  return
+ }
+ const delta=now-n.time,quality=stageJudge(delta);
  if(!quality)return;
  if(n.type==="hold"){
   n.state="holding";n.holdRating=quality;n.holdDelta=delta;heldNote=n;
@@ -150,8 +162,37 @@ function hitBeat(){
  }else markHit(n,quality,delta)
 }
 function releaseBeat(){
- notesPressed=false;$("beat-hit").classList.remove("pressed");
+ notesPressed=false;
+ document.querySelectorAll(".lane-pad").forEach(n=>n.classList.remove("pressed"));
  if(heldNote)holdRelease()
+}
+function directLane(lane){
+ if(mode!=="playing")return;
+ // Single action: select the lane and hit its note, not two separate taps.
+ if(heldNote&&heldNote.lane!==lane)holdRelease();
+ targetLane=lane;
+ $("left").classList.toggle("is-selected",lane===0);
+ $("beat-hit").classList.toggle("is-selected",lane===1);
+ $("right").classList.toggle("is-selected",lane===2);
+ haptic(12);
+ hitBeat()
+}
+function updateLaneCoach(now){
+ if(now-lastCoachUpdate<.07)return;lastCoachUpdate=now;
+ const coach=$("lane-coach"),word=$("lane-coach-text"),count=$("lane-coach-count");
+ const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending"&&q.time>=now-stageTimingWindow());
+ if(!n){coach.classList.add("hidden");document.querySelectorAll(".lane-pad").forEach(el=>el.classList.remove("incoming","hit-now"));return}
+ coach.classList.remove("hidden");
+ const d=n.time-now,labels=["左","中","右"],padIds=["left","beat-hit","right"];
+ const imminent=d<=.23&&d>=-stageTimingWindow();
+ const soon=d<=1.35;
+ word.textContent=imminent?"现在点「"+labels[n.lane]+"」":soon?"准备点「"+labels[n.lane]+"」":"观察音符 · 跟住节拍";
+ count.textContent=imminent?"NOW!":soon?(Math.max(0,d).toFixed(1)+"s"):"♪";
+ coach.classList.toggle("now",imminent);
+ padIds.forEach((id,i)=>{
+  $(id).classList.toggle("incoming",soon&&i===n.lane&&!imminent);
+  $(id).classList.toggle("hit-now",imminent&&i===n.lane)
+ })
 }
 function syncBeatfield(now,dt){
  while(beatSpawnIndex<chartNotes.length&&chartNotes[beatSpawnIndex].time-now<=3.15){
@@ -164,7 +205,7 @@ function syncBeatfield(now,dt){
  }
  for(const n of chartNotes){
   if(n.type==="hazard"||n.state==="hit"||n.state==="missed")continue;
-  if(n.state==="pending"&&now>n.time+.31){markMiss(n);continue}
+  if(n.state==="pending"&&now>n.time+stageTimingWindow()){markMiss(n);continue}
   if(n.state==="holding"){
    if(!notesPressed){markMiss(n);heldNote=null;continue}
    if(now>=n.time+n.duration){holdRelease(true);continue}
@@ -176,6 +217,7 @@ function syncBeatfield(now,dt){
   }
  }
  if(feverEnds>0&&now>=feverEnds){feverEnds=0;feverEnergy=0;beatAudio.setFever(false);toast("FEVER COMPLETE")}
+ updateLaneCoach(now);
  const ph=beatAudio.phase(now),pulse=Math.pow(1-ph,5);
  if(beatSkyLight)beatSkyLight.intensity=2.7+pulse*.43+(feverEnds>now?.75:0);
  if(beatKeyLight)beatKeyLight.intensity=2.3+pulse*.8;
@@ -502,8 +544,10 @@ function startStage(index=selectedStage){
  ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
  ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
  ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
- ui.hint.textContent=stageIndex===0?"◎ 左右选航道，音符飞到飞船前方时按 HIT。误差越小分数越高！":
- stageIndex===1?"◎ 紫色长音符出现时按住 HIT，直到长条经过判定线":"◎ 跟住高速鼓点，PERFECT 连击可进入双倍得分 FEVER！";
+ $("lane-coach").classList.remove("hidden");lastCoachUpdate=-1;lastEarlyHint=-3;
+ ui.hint.textContent=stageIndex===0?"手机：左／中／右对应哪个音符就点哪个，一下搞定！第一关判定更宽松。":
+ stageIndex===1?"点击对应的左／中／右键，紫色长音符持续按住不松开。":
+ "音乐加速！左／中／右三个键就能打音符，技能可清障和回能量。";
  $("track-name").textContent=TRACKS[stageIndex].title;
  $("track-detail").textContent=TRACKS[stageIndex].genre+" · "+TRACKS[stageIndex].bpm+" BPM · ORIGINAL MUSIC";
  setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},8500)
@@ -523,6 +567,7 @@ function reset(){
  chartNotes.forEach(n=>n.state="pending");heldNote=null;notesPressed=false;
  perfect=0;great=0;good=0;misses=0;feverEnergy=0;feverEnds=0;lastBeat=-1;
  document.body.classList.remove("fever-active");$("beat-screen-flash").classList.remove("on");
+ $("lane-coach").classList.add("hidden");document.querySelectorAll(".lane-pad").forEach(n=>n.classList.remove("incoming","hit-now","pressed","is-selected"));
  $("beat-judge").classList.add("hidden");$("beat-hit").classList.remove("pressed");
  $("pulse-fx").classList.remove("on");$("world").classList.remove("feedback-impact","feedback-pulse");
  objects.forEach(o=>root.remove(o.group));objects=[];
@@ -534,7 +579,7 @@ function reset(){
 }
 function end(success){
  if(mode!=="playing")return;
- mode="result";beatAudio.stop();releaseBeat();
+ mode="result";beatAudio.stop();releaseBeat();$("lane-coach").classList.add("hidden");
  ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
  if(success){
   score+=Math.round(shield)*6+Math.max(0,lumens-CONFIG.goal)*160;
@@ -576,7 +621,7 @@ function resume(){
  mode="playing";beatAudio.resume();ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
 }
 function toMenu(){
- mode="menu";beatAudio.stop();ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
+ mode="menu";beatAudio.stop();$("lane-coach").classList.add("hidden");ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
@@ -665,19 +710,29 @@ function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta
 $("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
 $("sound").onclick=()=>{soundOn=!soundOn;beatAudio.mute(!soundOn);$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"音乐已开启":"已静音")};
 window.addEventListener("keydown",e=>{
- if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD","KeyJ","KeyK","ShiftLeft","ShiftRight","Escape"].includes(e.code))e.preventDefault();
+ if(["ArrowLeft","ArrowRight","Space","KeyA","KeyS","KeyD","KeyJ","KeyK","ShiftLeft","ShiftRight","Escape"].includes(e.code))e.preventDefault();
  if(e.repeat)return;
- if(e.code==="ArrowLeft"||e.code==="KeyA")steer(-1);
- else if(e.code==="ArrowRight"||e.code==="KeyD")steer(1);
+ if(e.code==="KeyA")directLane(0);
+ else if(e.code==="KeyS")directLane(1);
+ else if(e.code==="KeyD")directLane(2);
+ else if(e.code==="ArrowLeft")steer(-1);
+ else if(e.code==="ArrowRight")steer(1);
  else if(e.code==="Space"||e.code==="KeyJ")hitBeat();
  else if(e.code==="KeyK"||e.code==="ShiftLeft"||e.code==="ShiftRight")pulse();
  else if(e.code==="Escape"){if(mode==="playing")pause();else if(mode==="paused")resume()}
 });
-window.addEventListener("keyup",e=>{if(e.code==="Space"||e.code==="KeyJ")releaseBeat()});
+window.addEventListener("keyup",e=>{
+ if(["KeyA","KeyS","KeyD","Space","KeyJ"].includes(e.code))releaseBeat()
+});
 function bind(id,fn){const node=$(id);node.addEventListener("pointerdown",e=>{e.preventDefault();fn()})}
-bind("left",()=>steer(-1));bind("right",()=>steer(1));bind("pulse",pulse);
-$("beat-hit").addEventListener("pointerdown",e=>{e.preventDefault();$("beat-hit").setPointerCapture(e.pointerId);hitBeat()});
-for(const type of ["pointerup","pointercancel","lostpointercapture"]){$("beat-hit").addEventListener(type,releaseBeat)}
+bind("pulse",pulse);
+[["left",0],["beat-hit",1],["right",2]].forEach(([id,lane])=>{
+ const button=$(id);
+ button.addEventListener("pointerdown",e=>{
+  e.preventDefault();button.setPointerCapture(e.pointerId);button.classList.add("pressed");directLane(lane)
+ });
+ for(const type of ["pointerup","pointercancel","lostpointercapture"])button.addEventListener(type,releaseBeat)
+});
 let startTouch=null,gestureMoved=false;
 $("world").addEventListener("pointerdown",e=>{startTouch={x:e.clientX,y:e.clientY,t:performance.now()};gestureMoved=false});
 $("world").addEventListener("pointerup",e=>{
@@ -693,7 +748,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
  window.__luminaQA={
   win:()=>{lumens=CONFIG.goal;end(true)},
   lose:()=>{shield=0;end(false)},
-  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time()}},
+  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time(),coachText:$("lane-coach-text").textContent,selectedPad:["left","beat-hit","right"][targetLane]}},
   testBeatHit:()=>{const n=chartNotes.find(n=>n.state==="pending"&&n.type!=="hazard");if(!n)return false;markHit(n,"PERFECT",0);return true},
   pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
