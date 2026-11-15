@@ -1,0 +1,48 @@
+const {chromium}=require("playwright");
+const fs=require("node:fs");
+const path=require("node:path");
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:["--no-sandbox","--enable-webgl","--use-angle=swiftshader","--enable-unsafe-swiftshader"]});
+ const errors=[];
+ const desktop=await browser.newPage({viewport:{width:1440,height:900}});
+ desktop.on("pageerror",e=>errors.push("desktop pageerror "+e.message));
+ const target="http://127.0.0.1:8765/lumina-run/?qa=1";
+ await desktop.goto(target,{waitUntil:"domcontentloaded",timeout:30000});
+ await desktop.locator("#world canvas").waitFor({timeout:60000});
+ await desktop.waitForFunction(()=>Boolean(window.__luminaQA),null,{timeout:60000});
+ await desktop.waitForTimeout(1800);
+ await desktop.screenshot({path:path.join(__dirname,"screenshot-desktop.png"),fullPage:true});
+ if(!(await desktop.locator('[data-stage="1"]').isDisabled()))throw Error("Stage 2 must start locked");
+ await desktop.locator("#start").click();
+ await desktop.waitForFunction(()=>window.__luminaQA?.get().mode==="playing");
+ await desktop.keyboard.press("ArrowRight");
+ await desktop.keyboard.press("Space");
+ await desktop.evaluate(()=>window.__luminaQA.win());
+ if(await desktop.locator("#next-stage").isHidden())throw Error("Missing next-level button after stage 1");
+ await desktop.locator("#next-stage").click();
+ await desktop.waitForFunction(()=>window.__luminaQA?.get().stageIndex===1);
+ await desktop.evaluate(()=>window.__luminaQA.win());
+ await desktop.locator("#next-stage").click();
+ await desktop.waitForFunction(()=>window.__luminaQA?.get().stageIndex===2);
+ await desktop.evaluate(()=>window.__luminaQA.win());
+ if(!(await desktop.locator("#next-stage").isHidden()))throw Error("Final stage must not have next button");
+ const saved=await desktop.evaluate(()=>JSON.parse(localStorage.getItem("lumina-progress-v2")));
+ if(saved.unlocked!==3||!saved.levels.every(x=>x&&typeof x.score==="number"))throw Error("Three-level local save failed");
+ await desktop.screenshot({path:path.join(__dirname,"screenshot-result.png"),fullPage:true});
+ const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
+ mobile.on("pageerror",e=>errors.push("mobile pageerror "+e.message));
+ await mobile.goto(target,{waitUntil:"domcontentloaded",timeout:30000});
+ await mobile.locator("#world canvas").waitFor({timeout:60000});
+ await mobile.locator("#start").click();
+ const coords=await mobile.evaluate(()=>{
+  const rect=id=>{let b=document.getElementById(id).getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height}};
+  return {left:rect("left"),right:rect("right"),pulse:rect("pulse"),viewport:{w:innerWidth,h:innerHeight}}
+ });
+ if(Math.abs(coords.left.y-coords.right.y)>3)throw Error("Left / right buttons not aligned: "+JSON.stringify(coords));
+ if(coords.pulse.y+coords.pulse.h>coords.right.y-5)throw Error("Pulse should be above right button: "+JSON.stringify(coords));
+ if(coords.right.x<=coords.left.x)throw Error("Right key isn't at bottom right");
+ await mobile.screenshot({path:path.join(__dirname,"screenshot-mobile.png"),fullPage:true});
+ if(errors.length)throw Error(errors.join("\n"));
+ console.log("PASS: WebGL desktop and mobile load, 3 stage transition/unlock, local save, control layout");
+ await browser.close()
+})().catch(e=>{console.error(e);process.exit(1)});
