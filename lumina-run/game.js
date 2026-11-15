@@ -469,7 +469,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
  window.__luminaQA={
   win:()=>{lumens=CONFIG.goal;end(true)},
   lose:()=>{shield=0;end(false)},
-  get:()=>({mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score})
+  get:()=>({mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn})
  };
 }
 try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
