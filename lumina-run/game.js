@@ -155,7 +155,7 @@ function buildScene(){
  const key=new THREE.DirectionalLight(0xeefcff,2.3);key.position.set(-32,60,-40);scene.add(key);
  for(const [c,x,y,z,power] of [[0x75ecff,-15,15,-20,90],[0xf47dff,17,13,-37,100],[0xffdb9d,0,25,-105,135]]){let light=new THREE.PointLight(c,power,90,2);light.position.set(x,y,z);scene.add(light)}
  glowMap=glowTexture();
- road();buildCraft();scene.updateMatrixWorld(true);
+ road();buildCraft();applyStageLook();scene.updateMatrixWorld(true);
  for(let i=0;i<45;i++){
   const x=(Math.random()-.5)*60,y=Math.random()*40+1,z=-Math.random()*220;
   const p=glow(i%2?0xc4ffff:0xfab7ff,.7+Math.random()*.8,x,y,z,root,.4);
@@ -362,14 +362,14 @@ function end(success){
 }
 function pause(){
  if(mode!=="playing")return;
- mode="paused";ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
+ mode="paused";soundDirector.stop();ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
 }
 function resume(){
  if(mode!=="paused")return;
- mode="playing";ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
+ mode="playing";soundDirector.start(stageIndex);ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
 }
 function toMenu(){
- mode="menu";ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset()
+ mode="menu";soundDirector.stop();ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
@@ -390,6 +390,7 @@ function update(dt){
  if(active){
   elapsed+=dt;spawnIn-=dt;pulseIn=Math.max(0,pulseIn-dt);invuln=Math.max(0,invuln-dt);shake=Math.max(0,shake-dt*2);
   if(spawnIn<=0){spawn();spawnIn=CONFIG.spawnEvery*(.85+Math.random()*.45)}
+  soundDirector.tick(dt,combo);
   currentX=lerp(currentX,CONFIG.lanes[targetLane],1-Math.exp(-dt*11));
   player.position.x=currentX;
   craft.rotation.z=lerp(craft.rotation.z,(CONFIG.lanes[targetLane]-currentX)*-.092,1-Math.exp(-dt*9));
@@ -400,13 +401,22 @@ function update(dt){
   for(const o of objects){
     o.group.position.z+=travel;
     o.age+=dt;
+    if(stageIndex>=1&&o.type==="drone")o.group.position.x=CONFIG.lanes[o.lane]+Math.sin(o.age*3.2+o.lane*2)*(.7+(stageIndex-1)*.35);
     if(o.type==="pickup"){o.group.rotation.y+=dt*3.7;o.group.children[0].rotation.z+=dt*.8;o.group.position.y=2.1+Math.sin(o.age*5)*.25}
     else{o.group.rotation.z=Math.sin(o.age*5)*.12;o.group.position.y=2.1+Math.sin(o.age*4)*.24}
     if(!o.hit&&Math.abs(o.group.position.z-4)<1.65&&Math.abs(o.group.position.x-currentX)<1.75){
       o.type==="pickup"?collect(o):hit();o.hit=true
     }
   }
-  for(let i=objects.length-1;i>=0;i--)if(objects[i].hit||objects[i].group.position.z>17){root.remove(objects[i].group);objects.splice(i,1)}
+  for(let i=objects.length-1;i>=0;i--){
+  const o=objects[i];
+  if(o.type==="drone"&&!o.hit&&!o.nearMissed&&o.group.position.z>6){
+   o.nearMissed=true;
+   const d=Math.abs(o.group.position.x-currentX);
+   if(d>1.8&&d<5.3){score+=85;combo=Math.min(combo+1,9);soundDirector.tone(520,.1,"triangle",.035);toast("✦ 擦肩而过 · +85")}
+  }
+  if(o.hit||o.group.position.z>17){root.remove(o.group);objects.splice(i,1)}
+ }
   // City loops seamlessly along the runway
   for(const b of city){b.g.position.z+=travel*.75;if(b.g.position.z>32)b.g.position.z-=city.length/2*12.5}
   for(const laneRow of roadTiles){laneRow.position.z+=travel;if(laneRow.position.z>20)laneRow.position.z-=roadTiles.length*8}
@@ -415,6 +425,7 @@ function update(dt){
  }
  // Animated sky-city is alive even behind the start screen
  if(mode!=="paused"){
+  if(stageArt)stageArt.update(dt,t);
   player.position.y=1.55+Math.sin(t*3.7)*.08;
   if(mode==="menu")craft.rotation.z=Math.sin(t*.8)*.09;
   for(let i=particles.length-1;i>=0;i--){
@@ -430,8 +441,8 @@ function update(dt){
  camera.lookAt(currentX*.31,2,-24);
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
-$("start").onclick=start;$("restart").onclick=start;$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
-$("sound").onclick=()=>{soundOn=!soundOn;$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"声音已开启":"已静音")};
+$("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
+$("sound").onclick=()=>{soundOn=!soundOn;soundDirector.toggle(soundOn);$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"声音已开启":"已静音")};
 window.addEventListener("keydown",e=>{
  if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD","Escape"].includes(e.code))e.preventDefault();
  if(e.repeat)return;
@@ -451,4 +462,6 @@ $("world").addEventListener("pointerup",e=>{
  startTouch=null
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&mode==="playing")pause()});
-try{init()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
+document.querySelectorAll("[data-stage]").forEach(button=>button.onclick=()=>selectStage(Number(button.dataset.stage)));
+document.querySelectorAll("[data-trail]").forEach(button=>button.onclick=()=>{if(button.disabled)return;activeTrail=button.dataset.trail;progress.skin=activeTrail;saveProgress(progress);updateTrail();refreshMenu()});
+try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
