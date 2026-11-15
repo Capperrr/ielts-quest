@@ -118,7 +118,7 @@ function road(){
  for(let i=0;i<max;i++){
   const z=7-i*12.5;
   for(const side of [-1,1]){
-   const x=side*(14+(i*7%18));
+   const x=side*(22+(i*7%16));
    makeBuilding(x,z,i*2+(side>0?1:0))
   }
  }
@@ -436,9 +436,10 @@ function update(dt){
   for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}}
  }
  const sh=active?shake*.75:0;
- const camX=mode==="menu"?Math.sin(t*.19)*2.6:currentX*.27;
- camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,mode==="menu"?8.3:6.6+(Math.random()-.5)*sh,mode==="menu"?22:17.5),1-Math.exp(-dt*3.2));
- camera.lookAt(currentX*.31,2,-24);
+ const camX=mode==="menu"?Math.sin(t*.19)*1.3:currentX*.22;
+ const portrait=innerWidth<innerHeight;
+ camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?14.0:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?24:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
+ camera.lookAt(currentX*.28,portrait?1.7:2.0,portrait?-8:-19);
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
 $("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
