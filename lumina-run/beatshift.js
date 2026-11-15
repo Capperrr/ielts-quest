@@ -79,7 +79,9 @@ export class BeatshiftAudio{
   if(this.ensure()){
    this.ctx.resume().catch(()=>{});
    this.startAt=this.ctx.currentTime+.12;
-   this.bus.gain.setTargetAtTime(this.enabled?this.volume:0,this.ctx.currentTime,.03)
+   this.bus.gain.setTargetAtTime(this.enabled?this.volume:0,this.ctx.currentTime,.03);
+   this.music.gain.cancelScheduledValues(this.ctx.currentTime);
+   this.music.gain.setTargetAtTime(.72,this.ctx.currentTime,.03)
   }else this.startAt=0
  }
  time(){
