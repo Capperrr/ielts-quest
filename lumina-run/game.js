@@ -74,14 +74,14 @@ function makeBuilding(x,z,index){
  box(w+.35,.2,d+.38,0,h+.07,0,index%2?mat.pink:mat.cyan,g);
  box(w+.35,.12,d+.38,0,h*.47,0,index%3?mat.lilac:mat.cyan,g);
  const lit=[mat.cyan,mat.lilac,mat.pink,mat.gold];
- const span=quality<1?3.6:2.9;
+ const span=quality<1?5.3:4.3;
  for(let y=2.2;y<h-1;y+=span){
-  for(let xx=-w/2+.8;xx<w/2-.4;xx+=2.05){
+  for(let xx=-w/2+.8;xx<w/2-.4;xx+=2.9){
    if((Math.floor(y*3+xx*7+index)%9)===0)continue;
    box(.91,1.2,.09,xx,y,d/2+.07,lit[(index+Math.round(y))%lit.length],g);
    box(.91,1.2,.09,xx,y,-d/2-.07,lit[(index+Math.round(y)+1)%lit.length],g);
   }
-  for(let zz=-d/2+.9;zz<d/2-.5;zz+=2.1){
+  for(let zz=-d/2+.9;zz<d/2-.5;zz+=3.1){
    box(.1,1.2,.91,w/2+.07,y,zz,lit[(index+Math.round(y)+2)%4],g);
   }
  }
@@ -95,7 +95,7 @@ function makeBuilding(x,z,index){
  city.push({g,z,h});
 }
 function road(){
- const sky=new THREE.Mesh(new THREE.SphereGeometry(170,24,16),new THREE.MeshBasicMaterial({color:0x7799e9,side:THREE.BackSide,fog:false}));root.add(sky);
+ const sky=new THREE.Mesh(new THREE.SphereGeometry(560,24,16),new THREE.MeshBasicMaterial({color:0x7799e9,side:THREE.BackSide,fog:false}));root.add(sky);
  // Radiant city floor and causeway
  box(150,.5,500,0,-.8,-165,mat.dark2);
  box(14,.25,500,0,-.25,-165,mat.road);
@@ -111,7 +111,7 @@ function road(){
   for(const x of [-1.3,1.3])box(.12,.06,1.55,x,-.04,0,mat.gold,row);
   roadTiles.push(row)
  }
- const max=quality<1?31:42;
+ const max=quality<1?19:27;
  for(let i=0;i<max;i++){
   const z=7-i*12.5;
   for(const side of [-1,1]){
