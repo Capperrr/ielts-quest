@@ -92,7 +92,7 @@ build("books",140,136,g=>{g.fillStyle(0x182841);g.fillRect(0,0,140,136);g.fillSt
 build("tower",130,180,g=>{g.fillStyle(0x27384e);g.fillRect(17,24,95,154);g.fillStyle(0x151f32);g.fillRect(10,17,110,14);g.fillRect(28,0,75,19);g.fillStyle(0xc0ad89);g.fillCircle(65,62,27);g.fillStyle(0x19273d);g.fillCircle(65,62,20);g.lineStyle(3,0xe6cfa0);g.lineBetween(65,62,65,48);g.lineBetween(65,62,79,69)});
 build("gate",116,120,g=>{g.fillStyle(0x3a516d);g.fillRect(0,0,23,120);g.fillRect(93,0,23,120);g.fillRect(0,0,116,16);g.fillStyle(0x13243a);g.fillRect(24,18,69,102);g.lineStyle(3,0xa9b9bb);g.strokeRect(30,24,55,89)});
 g.destroy()}
-rebuild(){this.children.removeAll(true);this.physics.world.colliders.destroy();this.objects=[];let z=data.zone,zone=zones[z];this.cameras.main.setBackgroundColor(zone.shade);this.physics.world.setBounds(0,0,1550,1060);
+rebuild(){this.children.removeAll(true);this.physics.world.colliders.removeAll();this.objects=[];let z=data.zone,zone=zones[z];this.cameras.main.setBackgroundColor(zone.shade);this.physics.world.setBounds(0,0,1550,1060);
 this.add.tileSprite(0,0,1550,1060,"floor").setOrigin(0).setTint([0x8fa2bc,0x8ba9ad,0xa39db9,0xad93ae,0xa8aca5][z]).setDepth(-10);
 let edge=this.add.graphics().setDepth(-8);edge.fillStyle(0x0a1425,.7);edge.fillRect(0,0,1550,95);edge.fillRect(0,972,1550,88);edge.fillRect(0,0,96,1060);edge.fillRect(1454,0,96,1060);edge.lineStyle(3,0x496783);edge.strokeRect(95,95,1359,877);
 for(let i=0;i<55;i++){let x=135+(i*239)%1280,y=132+(i*337)%790;edge.fillStyle(0xb5c8cf,.12);edge.fillRect(x,y,2,2)}
