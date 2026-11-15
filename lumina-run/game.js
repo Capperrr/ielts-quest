@@ -750,6 +750,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
   lose:()=>{shield=0;end(false)},
   get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time(),coachText:$("lane-coach-text").textContent,selectedPad:["left","beat-hit","right"][targetLane]}},
   testBeatHit:()=>{const n=chartNotes.find(n=>n.state==="pending"&&n.type!=="hazard");if(!n)return false;markHit(n,"PERFECT",0);return true},
+  prepareLaneNote:(lane)=>{const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending");if(!n)return false;n.lane=lane;n.time=beatAudio.time()+.04;n.type="tap";return n.id},
   pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
 }
