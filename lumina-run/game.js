@@ -1,4 +1,5 @@
 import * as THREE from "https://esm.sh/three@0.160.1";
+import {LEVELS,getProgress,saveProgress,createDistrict,AudioDirector} from "./lumina2.js";
 const $=id=>document.getElementById(id);
 const clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
 const ui={intro:$("intro"),result:$("result"),pause:$("pause-screen"),fatal:$("fatal"),hud:$("hud"),touch:$("touch"),timer:$("timer"),dist:$("distance"),lumens:$("lumens"),shield:$("shield-fill"),shieldText:$("shield-num"),combo:$("combo"),progress:$("progress-fill"),message:$("notification"),hint:$("hint")};
@@ -6,6 +7,8 @@ const CONFIG={duration:75,lanes:[-4,0,4],speed:34,spawnEvery:.89,goal:12,pulseCo
 let renderer,scene,camera,root,player,craft,craftGlow,trail=[],city=[],roadTiles=[],objects=[],particles=[],beams=[],clock=new THREE.Clock(),vignettePulse=0;
 let elapsed=0,score=0,lumens=0,shield=100,combo=0,best=0,mode="menu",targetLane=1,currentX=0,spawnIn=.4,invuln=0,pulseIn=0,shake=0,lastHUD=0,noticeTimeout=0,soundOn=true,audio=null,lastSwipe=null,quality=window.innerWidth<720?.7:1;
 const materials={};
+let stageIndex=0,selectedStage=0,stageArt=null,progress=getProgress(),soundDirector=new AudioDirector(),nearMisses=0;
+let activeTrail=progress.skin||"aqua";
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -182,22 +185,18 @@ function makeDrone(lane,z){
  objects.push({type:"drone",group,z,lane,age:0,hit:false})
 }
 function spawn(){
- const lane=Math.floor(Math.random()*3);
- const obstacle=Math.random()<.54;
- if(obstacle){makeDrone(lane,-125);if(Math.random()<.55)makePickup((lane+1+(Math.random()<.5?0:1))%3,-133)}
- else{makePickup(lane,-125);if(Math.random()<.2)makePickup((lane+1)%3,-139)}
+ const lane=Math.floor(Math.random()*3),cfg=LEVELS[stageIndex];
+ if(Math.random()<cfg.hazard){
+  makeDrone(lane,-125);
+  const other=(lane+1+(Math.random()<.5?0:1))%3;
+  if(Math.random()<.7)makePickup(other,-133);
+ }else{
+  makePickup(lane,-125);
+  if(Math.random()<.28)makePickup((lane+1)%3,-141)
+ }
+ if(stageIndex===2&&Math.random()<.11)makeDrone((lane+1)%3,-155);
 }
-function playTone(freq=440,duration=.14,type="sine",gain=.07){
- if(!soundOn)return;
- try{
-  if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==="suspended")audio.resume();
-  const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
-  o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(55,freq*.65),t+duration);
-  g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);
-  o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+duration+.03)
- }catch{}
-}
+function playTone(freq=440,duration=.14,type="sine",gain=.07){soundDirector.tone(freq,duration,type,gain)}
 function toast(msg){ui.message.textContent=msg;ui.message.classList.remove("hidden");clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>ui.message.classList.add("hidden"),1450)}
 function steer(d){
  if(mode!=="playing")return;
@@ -207,7 +206,7 @@ function steer(d){
 function pulse(){
  if(mode!=="playing"||pulseIn>0)return;
  pulseIn=CONFIG.pulseCooldown;
- playTone(620,.42,"sawtooth",.064);playTone(940,.43,"sine",.035);
+ soundDirector.pulse();
  shake=.34;toast("✳ LIGHT PULSE · 光脉冲");
  const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,8,68),new THREE.MeshBasicMaterial({color:0xa2fff9,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
  ring.rotation.x=Math.PI/2;ring.position.set(currentX,1.85,4);root.add(ring);
@@ -230,9 +229,9 @@ function burst(x,y,z,color=0xffefa8,count=12){
 }
 function hit(){
  if(invuln>0)return;
- shield=Math.max(0,shield-34);combo=0;invuln=1.35;shake=.52;
+ shield=Math.max(0,shield-LEVELS[stageIndex].damage);combo=0;invuln=1.35;shake=.52;
  $("impact").classList.add("on");setTimeout(()=>$("impact").classList.remove("on"),210);
- playTone(125,.35,"sawtooth",.1);
+ soundDirector.collision();
  toast("⚠ 护盾受损");
  if(shield<=0)end(false);
 }
@@ -241,13 +240,14 @@ function collect(o){
  const gained=100+combo*30;score+=gained;
  shield=Math.min(100,shield+4);
  burst(o.group.position.x,o.group.position.y,o.group.position.z,0xffe2a3,15);
- playTone(730+combo*55,.18,"sine",.055);
+ soundDirector.collect(combo);
  if(combo%4===0)toast("✦ "+combo+" COMBO · +"+gained);
- if(lumens===CONFIG.goal)toast("✦ 已集齐足够的光，继续冲向黎明")
+ if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");soundDirector.milestone()}
 }
 function formatTime(s){let v=Math.max(0,Math.ceil(s));return String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0")}
 function updateHUD(){
  ui.timer.textContent=formatTime(CONFIG.duration-elapsed);
+ $("district-name").textContent=LEVELS[stageIndex].sub+" / "+LEVELS[stageIndex].label;
  ui.dist.textContent=String(Math.floor(elapsed*CONFIG.speed)).padStart(4,"0")+" M";
  ui.lumens.innerHTML=String(lumens).padStart(2,"0")+' <span>/ '+CONFIG.goal+'</span>';
  ui.shield.style.width=shield+"%";ui.shieldText.textContent=Math.round(shield)+"%";
