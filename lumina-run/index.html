@@ -33,12 +33,13 @@
 </div>
 <div id="beat-judge" class="hidden" aria-live="polite"><strong id="judge-word">PERFECT</strong><span id="judge-ms">± 00 ms</span></div>
 <div id="beat-line" aria-hidden="true"><div class="beatline-marker"></div><div class="beatline-label">BEAT / HIT LINE</div></div>
+<div id="lane-coach" class="hidden" aria-hidden="true"><span class="lane-coach-tag">下一个音符</span><strong id="lane-coach-text">准备开始</strong><span id="lane-coach-count">♪</span></div>
 <div id="notification" class="hidden" aria-live="polite"></div>
-<div id="hint" class="hidden" aria-live="polite">♪ 音符到达飞船前方判定线时，按 HIT！左右变道选择音符航道。</div>
+<div id="hint" class="hidden" aria-live="polite">♪ 手机只需点对应的左 / 中 / 右键，就能同时变道和击中音符。紫色长音符要按住。</div>
 <div id="touch" class="hidden" aria-label="手机操控按钮">
-  <div class="direction"><button id="left" aria-label="向左变道"><span>‹</span><small>LEFT</small></button><button id="right" aria-label="向右变道"><span>›</span><small>RIGHT</small></button></div>
-  <button id="beat-hit" aria-label="在节拍线上点击音符；长音符需要按住" class="beat-hit"><span>◎</span><strong>HIT</strong><small>跟着节拍点击</small></button>
-  <div class="pulse-stack"><div id="pulse-legend" class="pulse-legend">ON BEAT · DROP</div><button id="pulse" aria-label="BEAT DROP：在节拍上释放增强技能、清障并恢复同步能量"><span>✳</span><small>BEAT DROP</small><b id="pulse-charge">READY</b><i id="pulse-ring"></i></button></div>
+  <div class="direction"><button id="left" class="lane-pad" aria-label="左航道：点击击中音符，长按击中长音符"><span>◀</span><strong>左</strong><small>LEFT / A</small></button><button id="right" class="lane-pad" aria-label="右航道：点击击中音符，长按击中长音符"><span>▶</span><strong>右</strong><small>RIGHT / D</small></button></div>
+  <button id="beat-hit" class="beat-hit lane-pad" aria-label="中航道：点击击中音符，长按击中长音符"><span>●</span><strong>中</strong><small>MIDDLE / S</small></button>
+  <div class="pulse-stack"><div id="pulse-legend" class="pulse-legend">技能 · BEAT DROP</div><button id="pulse" aria-label="BEAT DROP：在节拍上释放增强技能、清障并恢复同步能量"><span>✳</span><small>BEAT DROP</small><b id="pulse-charge">READY</b><i id="pulse-ring"></i></button></div>
 </div>
 <div id="intro" class="overlay">
  <div class="intro-shine" aria-hidden="true"></div>
@@ -48,7 +49,12 @@
   <div class="subtitle-top">THREE TRACKS · ONE ELECTRIC CITY</div>
   <h1>LUM<span>I</span>NA<span class="dot">.</span></h1>
   <div class="cn-title">霓 光 节 奏</div>
-  <p class="story">三首原创电子乐，三座会跳动的未来城区。<br>跟随音符变道、敲击节奏，让霓虹与音乐一同爆发。</p>
+  <p class="story">三首原创电子乐，三座会跳动的未来城区。<br>现在只需<strong>一个手指点对应航道</strong>，就能跟着节拍击中音符。</p>
+  <div class="simple-guide" aria-label="手机简易操作说明">
+    <span class="guide-heading">超简单的操作</span>
+    <div class="simple-guide-pads"><span>◀ 左</span><span>● 中</span><span>右 ▶</span></div>
+    <div class="guide-caption">音符到达飞船前面的发光线时，直接点对应按键；紫色长音符就按住。<br>无需先变道再按 HIT。</div>
+  </div>
   <div id="stage-select" class="stage-select" aria-label="选择游戏关卡">
     <button class="stage-card is-selected" data-stage="0"><span>01 / AURORA</span><strong>霓光高架</strong><small>已解锁</small></button>
     <button class="stage-card" data-stage="1"><span>02 / SKY RAIL</span><strong>天轨城区</strong><small>尚未解锁</small></button>
@@ -58,7 +64,7 @@
   <div class="music-preview"><span class="music-symbol">♫</span><span><strong id="track-name">AURORA DRIVE</strong><small id="track-detail">SYNTHWAVE · 100 BPM · ORIGINAL MUSIC</small></span><div class="preview-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
   <div class="trail-picker" aria-label="选择飞行器尾迹"><span>FLIGHT TRAIL</span><button data-trail="aqua" class="active">AQUA</button><button data-trail="rose">ROSE ✦</button><button data-trail="solar">SOLAR ✦</button></div>
   <button id="start" class="launch"><span id="launch-label">开始第一首歌</span><span class="launch-arrow">↗</span></button>
-  <div class="intro-guide"><span><b>← → / A D</b> 选择航道</span><span><b>SPACE / J / HIT</b> 跟拍敲音符</span><span><b>K / ✳</b> 节奏光脉冲</span><span><b>手机</b> 按左右键，再点中央 HIT</span></div>
+  <div class="intro-guide"><span><b>电脑 A / S / D</b> 左、中、右，一键敲音符</span><span><b>K / ✳</b> 光脉冲技能</span><span><b>手机</b> 点对应航道即可</span></div>
   <div class="intro-footer"><span>ORIGINAL 3D WORLD</span><span class="sep">✦</span><span>NO LOGIN · INSTANT PLAY</span><span class="sep">✦</span><span>PHONE · iPAD · DESKTOP</span></div>
  </div>
 </div>
@@ -84,7 +90,7 @@
 <div id="pause-screen" class="overlay hidden">
  <div class="pause-card">
   <div class="eyebrow">SYSTEM PAUSED</div><h2>光轨暂停</h2>
-  <p>星城的风还在等你。</p><p class="pulse-explainer"><strong>◎ HIT</strong>：在音符穿过光线时敲击（长音符需按住），按得越准，PERFECT 越多。<br><strong>✳ BEAT DROP</strong>：跟着鼓点释放，消除障碍并恢复同步能量，准确释放还能触发高能奖励。</p>
+  <p>星城的风还在等你。</p><p class="pulse-explainer"><strong>◀ 左 / ● 中 / 右 ▶</strong>：直接点音符所在航道，一次完成变道和击中。紫色长音符需按住。<br><strong>✳ BEAT DROP</strong>：右上角的技能键，清障并恢复能量；踩准鼓点额外加分。</p>
   <button class="launch" id="resume"><span>继续飞行</span><span class="launch-arrow">→</span></button>
   <button class="text-button" id="quit">返回主界面</button>
  </div>
