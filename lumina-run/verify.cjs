@@ -4,11 +4,27 @@ const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"style.css"),"utf8");
 const js=fs.readFileSync(path.join(root,"game.js"),"utf8");
 const addon=fs.readFileSync(path.join(root,"lumina2.js"),"utf8");
+const beat=fs.readFileSync(path.join(root,"beatshift.js"),"utf8");
 assert.ok(html.includes('type="module" src="./game.js"'),"missing module");
 assert.ok(html.includes('style.css'),"missing css");
 assert.ok(js.startsWith("import * as THREE from"),"missing Three.js import");
 new Function(js.replace(/^import[^\n]+\n/gm,""));
 new Function(addon.replace(/export /g,""));
+new Function(beat.replace(/export /g,""));
+const rhythms=new Function(beat.replace(/export /g,"")+";return {TRACKS,makeBeatmap,judgeDelta}")();
+assert.deepEqual(rhythms.TRACKS.map(x=>x.bpm),[100,128,160]);
+for(let i=0;i<3;i++){
+ const chart=rhythms.makeBeatmap(i,[47,55,66][i]);
+ assert.ok(chart.filter(x=>x.type==="tap").length>15,"too few hit notes");
+ assert.ok(chart.every((n,j)=>j===0||chart[j-1].time<=n.time),"beatmap not sorted");
+ assert.ok(new Set(chart.map(x=>x.id)).size===chart.length,"duplicate beat ids");
+ assert.ok(chart.every(n=>Number.isFinite(n.time)&&n.lane>=0&&n.lane<=2));
+ if(i>=1)assert.ok(chart.some(n=>n.type==="hold"),"missing hold notes");
+}
+assert.equal(rhythms.judgeDelta(.02),"PERFECT");
+assert.equal(rhythms.judgeDelta(.15),"GREAT");
+assert.equal(rhythms.judgeDelta(.25),"GOOD");
+assert.equal(rhythms.judgeDelta(.4),null);
 ["start","restart","pause","resume","left","right","pulse","shield-fill","end-score","result","world"].forEach(id=>assert.ok(html.includes('id="'+id+'"'),"missing UI control "+id));
 ["makeBuilding","buildCraft","spawn","makePickup","makeDrone","collect","pulse","end","pause","resume","resize"].forEach(token=>assert.ok(js.includes(token),"missing mechanism "+token));
 assert.ok(css.includes("@media"),"missing responsiveness");
@@ -20,4 +36,8 @@ assert.ok(html.includes("pulse-charge")&&html.includes("pulse-fx"),"missing puls
 assert.ok(css.includes("#touch #right") && css.includes("#touch #pulse"),"missing mobile control layout");
 assert.ok(html.includes("next-stage")&&html.includes("stage-select"),"missing stage navigation");
 assert.ok(addon.includes("AudioDirector")&&addon.includes("createDistrict"),"missing game upgrade");
-console.log("PASS: LUMINA markup, 3D game syntax, mechanics and responsive UI references.");
+assert.ok(js.includes("makeBeatmap")&&js.includes("hitBeat")&&js.includes("syncBeatfield"),"missing rhythm gameplay");
+assert.ok(js.includes('beatAudio.time()')&&beat.includes('this.ctx.currentTime'),"missing audio clock synchronization");
+assert.ok(html.includes('beat-hit')&&html.includes('beat-judge')&&html.includes('fever-fill'),"missing rhythm user interface");
+assert.ok(css.includes('.beat-hit')&&css.includes('#beat-line'),"missing rhythm CSS");
+console.log("PASS: LUMINA BEATSHIFT three original tracks, chart timing, 3D rhythm mechanics and responsive UI.");
