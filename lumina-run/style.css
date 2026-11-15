@@ -7,3 +7,76 @@
 @media(pointer:fine){#touch{display:none!important}}@media(max-width:700px){#hud{padding:12px 14px max(16px,env(safe-area-inset-bottom))}.hud-brand{font-size:14px;gap:5px}.brand-symbol{font-size:24px}.hud-brand small{font-size:6px;letter-spacing:.12em}.hud-center{padding:7px 12px}.hud-kicker{font-size:7px}.hud-center strong{font-size:21px}.meters{font-size:8px}.hud-actions button{height:34px;width:34px;font-size:17px}.metrics{gap:6px;padding-bottom:10px}.metric-label{font-size:8px}.metric strong{font-size:18px}.vitality{min-width:110px}.vitality strong{font-size:12px}.combo{display:none}.hud-bottom{margin-bottom:105px}#hint{top:17%;font-size:10px;max-width:95vw;white-space:normal}.intro-content{padding-top:0}.intro-content h1{font-size:clamp(65px,16vw,120px)}.eyebrow{font-size:8px;letter-spacing:.12em}.eyebrow i{margin:0 5px 3px;width:12px}.intro-orbit{right:-17vw;top:15vh;opacity:.25;width:77vw}.intro-footer{font-size:7px}.intro-guide{gap:13px;font-size:9px}.story{margin:25px 0 22px}#touch{bottom:18px}.direction{gap:8px}#touch button{height:63px;width:63px;border-radius:17px}#touch #pulse{height:71px;width:71px}.result-content,.pause-card{padding:34px 22px}.hud-actions{gap:4px}}
 @media(max-height:550px){.intro-content h1{font-size:clamp(65px,14vh,110px)}.story{margin:8px 0}.subtitle-top{margin:8px 0}.cn-title{margin-top:5px}.intro-guide{margin-top:12px}.intro-footer{margin-top:10px}.launch{height:48px}.hud-bottom{margin-bottom:0}.metrics{padding-bottom:5px}#touch{bottom:6px}#touch button{width:55px;height:55px}#touch #pulse{width:65px;height:65px}#notification{top:23%}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* LUMINA 2.0 — staged game design and mobile ergonomic controls */
+:root{--s2-primary:#bbfff6;--s2-line:#80e6ff}
+.stage-select{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px auto 10px;width:min(690px,92vw)}
+.stage-card{position:relative;text-align:left;min-height:88px;padding:13px 15px 12px;border:1px solid rgba(158,231,255,.44);border-radius:15px;color:#e0f2ff;background:linear-gradient(140deg,rgba(38,79,151,.5),rgba(33,42,104,.56));backdrop-filter:blur(15px);box-shadow:inset 0 1px 0 #a6deff18;transition:border-color .2s,background .2s,transform .2s}
+.stage-card:hover:not(:disabled){transform:translateY(-3px);border-color:#b8ffff}
+.stage-card.is-selected{border-color:#b8fff8;box-shadow:0 0 22px #70fffa48,inset 0 0 15px #78e6ff21;background:linear-gradient(145deg,rgba(65,115,180,.67),rgba(44,61,122,.68))}
+.stage-card:disabled{opacity:.5;cursor:default}
+.stage-card span{display:block;font-size:9px;letter-spacing:.14em;color:#97eefa}
+.stage-card strong{display:block;font-weight:600;font-size:15px;letter-spacing:.08em;margin:7px 0 4px}
+.stage-card small{display:block;font-size:10px;color:#e7cba3}
+.stage-story{font-size:12px;color:#cce7f4;letter-spacing:.06em;margin:8px auto 12px;min-height:18px}
+.trail-picker{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;margin:10px 0 12px}
+.trail-picker span{font-size:9px;letter-spacing:.16em;color:#b2d7ea;margin-right:7px}
+.trail-picker button{min-height:31px;padding:4px 10px;border-radius:50px;border:1px solid #87bde766;background:#20396e99;color:#e5f5fe;font-size:10px;letter-spacing:.1em}
+.trail-picker button.active{color:#112f65;background:#c4fff7;border-color:#c4fff7}
+.trail-picker button:disabled{opacity:.52;cursor:not-allowed}
+.secondary-launch{background:rgba(37,58,117,.52);border-color:#94d7ef;color:#e3f9ff;box-shadow:0 0 18px #90cfff1b}
+.level-stars{font-size:24px;letter-spacing:.3em;color:#ffe3a6;margin:12px 0 3px;text-shadow:0 0 17px #ffd8a68a}
+.rank{position:relative;width:77px;height:77px;display:grid;place-items:center;margin:13px auto 3px;border-radius:50%;border:2px solid #b9fff4;color:#f9ffff;font-family:Georgia,serif;font-style:italic;font-size:48px;text-shadow:0 0 23px #84fcff;box-shadow:0 0 30px #95fff74a,inset 0 0 22px #9af8ff37}
+.result-stats{margin:17px 0}
+#touch{position:fixed;inset:auto 0 0;height:206px;display:block;pointer-events:none;padding:0!important}
+#touch .direction{display:contents}
+#touch #left,#touch #right{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));top:auto}
+#touch #left{left:max(17px,env(safe-area-inset-left))}
+#touch #right{right:max(17px,env(safe-area-inset-right))}
+#touch #pulse{position:absolute;bottom:calc(107px + env(safe-area-inset-bottom));right:max(17px,env(safe-area-inset-right))}
+#touch button{touch-action:none}
+#touch button:active{transform:scale(.96);filter:brightness(1.3)}
+#touch #pulse:after{content:"";position:absolute;inset:-7px;border:1px solid #ffddb0a8;border-radius:50%;box-shadow:0 0 23px #fff5c542;pointer-events:none}
+.hud-center{border:1px solid #cdf3ff6b;box-shadow:0 0 22px #80e1ff23,inset 0 0 18px #9adfff16}
+.hud-brand{filter:drop-shadow(0 0 14px #9cfff74e)}
+#progress-fill{box-shadow:0 0 24px #b2fff9}
+.metric strong{filter:drop-shadow(0 0 8px #e5faff4e)}
+#notification{animation:noticePop .2s ease-out}
+@keyframes noticePop{from{opacity:0;transform:translate(-50%,13px) scale(.9)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@media(max-width:700px){
+ .stage-select{gap:5px;width:min(98vw,560px)}
+ .stage-card{min-height:75px;padding:9px 7px;border-radius:9px}
+ .stage-card span{font-size:7px}
+ .stage-card strong{font-size:11px;white-space:nowrap}
+ .stage-card small{font-size:8px}
+ .trail-picker{margin:6px auto}
+ .trail-picker span{font-size:8px}
+ .trail-picker button{font-size:8px;padding:4px 8px}
+ .stage-story{font-size:10px}
+ #touch #left,#touch #right{bottom:calc(16px + env(safe-area-inset-bottom))}
+ #touch #pulse{bottom:calc(94px + env(safe-area-inset-bottom))}
+ #hud .hud-bottom{margin-bottom:113px}
+ .result-stats strong{font-size:20px}
+}
+@media(max-height:600px){
+ #intro .intro-content{padding-top:12px}
+ #intro .subtitle-top{margin-top:5px}
+ #intro h1{font-size:clamp(48px,12vh,82px)}
+ #intro .story{margin:7px auto;font-size:11px}
+ #intro .cn-title{margin-top:2px}
+ #intro .stage-select{margin:8px auto 5px}
+ #intro .stage-card{min-height:57px;padding:6px 8px}
+ #intro .stage-card strong{margin:2px 0;font-size:11px}
+ #intro .intro-guide,#intro .intro-footer{margin-top:6px}
+ #intro .launch{height:42px;margin:5px auto}
+ #touch #pulse{bottom:calc(77px + env(safe-area-inset-bottom))}
+ #touch #left,#touch #right{bottom:calc(10px + env(safe-area-inset-bottom))}
+ #hud .hud-bottom{margin-bottom:0}
+}
+@media(max-width:390px){.stage-card strong{font-size:10px}.intro-guide{display:none}.intro-content h1{font-size:65px}}
+
+/* Portrait gameplay: give HUD a safe zone above the stacked action buttons. */
+@media(max-width:700px) and (orientation:portrait){
+ #hud .hud-bottom{margin-bottom:205px!important}
+ #hint{top:15%;font-size:10px}
+}

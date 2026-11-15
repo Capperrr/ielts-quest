@@ -1,4 +1,5 @@
 import * as THREE from "https://esm.sh/three@0.160.1";
+import {LEVELS,getProgress,saveProgress,createDistrict,AudioDirector} from "./lumina2.js";
 const $=id=>document.getElementById(id);
 const clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
 const ui={intro:$("intro"),result:$("result"),pause:$("pause-screen"),fatal:$("fatal"),hud:$("hud"),touch:$("touch"),timer:$("timer"),dist:$("distance"),lumens:$("lumens"),shield:$("shield-fill"),shieldText:$("shield-num"),combo:$("combo"),progress:$("progress-fill"),message:$("notification"),hint:$("hint")};
@@ -6,6 +7,8 @@ const CONFIG={duration:75,lanes:[-4,0,4],speed:34,spawnEvery:.89,goal:12,pulseCo
 let renderer,scene,camera,root,player,craft,craftGlow,trail=[],city=[],roadTiles=[],objects=[],particles=[],beams=[],clock=new THREE.Clock(),vignettePulse=0;
 let elapsed=0,score=0,lumens=0,shield=100,combo=0,best=0,mode="menu",targetLane=1,currentX=0,spawnIn=.4,invuln=0,pulseIn=0,shake=0,lastHUD=0,noticeTimeout=0,soundOn=true,audio=null,lastSwipe=null,quality=window.innerWidth<720?.7:1;
 const materials={};
+let stageIndex=0,selectedStage=0,stageArt=null,progress=getProgress(),soundDirector=new AudioDirector(),nearMisses=0;
+let activeTrail=progress.skin||"aqua",bossSpawned=false;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -26,6 +29,7 @@ const mat={
  bodyDark:colorMat("craftDark",0x3554a6,0x315de6,.62,.82,.17)
 };
 const boxGeo=new THREE.BoxGeometry(1,1,1),sphereGeo=new THREE.SphereGeometry(1,12,8);
+const burstGeo=new THREE.OctahedronGeometry(1,0),burstMaterials={};
 function box(w,h,d,x,y,z,m,parent=root){const o=new THREE.Mesh(boxGeo,m);o.scale.set(w,h,d);o.position.set(x,y,z);parent.add(o);return o}
 function sphere(r,x,y,z,m,parent=root){const o=new THREE.Mesh(sphereGeo,m);o.scale.setScalar(r);o.position.set(x,y,z);parent.add(o);return o}
 function glowTexture(){
@@ -115,7 +119,7 @@ function road(){
  for(let i=0;i<max;i++){
   const z=7-i*12.5;
   for(const side of [-1,1]){
-   const x=side*(14+(i*7%18));
+   const x=side*(22+(i*7%16));
    makeBuilding(x,z,i*2+(side>0?1:0))
   }
  }
@@ -152,7 +156,7 @@ function buildScene(){
  const key=new THREE.DirectionalLight(0xeefcff,2.3);key.position.set(-32,60,-40);scene.add(key);
  for(const [c,x,y,z,power] of [[0x75ecff,-15,15,-20,90],[0xf47dff,17,13,-37,100],[0xffdb9d,0,25,-105,135]]){let light=new THREE.PointLight(c,power,90,2);light.position.set(x,y,z);scene.add(light)}
  glowMap=glowTexture();
- road();buildCraft();scene.updateMatrixWorld(true);
+ road();buildCraft();applyStageLook();scene.updateMatrixWorld(true);
  for(let i=0;i<45;i++){
   const x=(Math.random()-.5)*60,y=Math.random()*40+1,z=-Math.random()*220;
   const p=glow(i%2?0xc4ffff:0xfab7ff,.7+Math.random()*.8,x,y,z,root,.4);
@@ -181,23 +185,33 @@ function makeDrone(lane,z){
  glow(0xff79c9,5,0,.2,0,group,.8);
  objects.push({type:"drone",group,z,lane,age:0,hit:false})
 }
+function makeSentinel(){
+ const lane=Math.floor(Math.random()*3),group=new THREE.Group();
+ group.position.set(CONFIG.lanes[lane],2.7,-142);root.add(group);
+ const shell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.35,1),mat.bodyDark);group.add(shell);
+ const eye=sphere(.72,0,0,.6,mat.pink,group);
+ for(let i=0;i<3;i++){
+  const torus=new THREE.Mesh(new THREE.TorusGeometry(1.55+i*.32,.11,7,40),i%2?mat.cyan:mat.pink);
+  torus.rotation.set(.4*i,.7*i,.2*i);group.add(torus)
+ }
+ glow(0xffb2f5,8,0,0,0,group,.85);
+ objects.push({type:"sentinel",group,z:-142,lane,age:0,hit:false});
+ toast("⚠ NEXUS SENTINEL · 核心哨兵接近！");
+ soundDirector.tone(190,.65,"sawtooth",.12);
+}
 function spawn(){
- const lane=Math.floor(Math.random()*3);
- const obstacle=Math.random()<.54;
- if(obstacle){makeDrone(lane,-125);if(Math.random()<.55)makePickup((lane+1+(Math.random()<.5?0:1))%3,-133)}
- else{makePickup(lane,-125);if(Math.random()<.2)makePickup((lane+1)%3,-139)}
+ const lane=Math.floor(Math.random()*3),cfg=LEVELS[stageIndex];
+ if(Math.random()<cfg.hazard){
+  makeDrone(lane,-125);
+  const other=(lane+1+(Math.random()<.5?0:1))%3;
+  if(Math.random()<.7)makePickup(other,-133);
+ }else{
+  makePickup(lane,-125);
+  if(Math.random()<.28)makePickup((lane+1)%3,-141)
+ }
+ if(stageIndex===2&&Math.random()<.11)makeDrone((lane+1)%3,-155);
 }
-function playTone(freq=440,duration=.14,type="sine",gain=.07){
- if(!soundOn)return;
- try{
-  if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==="suspended")audio.resume();
-  const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;
-  o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(55,freq*.65),t+duration);
-  g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(.0001,t+duration);
-  o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+duration+.03)
- }catch{}
-}
+function playTone(freq=440,duration=.14,type="sine",gain=.07){soundDirector.tone(freq,duration,type,gain)}
 function toast(msg){ui.message.textContent=msg;ui.message.classList.remove("hidden");clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>ui.message.classList.add("hidden"),1450)}
 function steer(d){
  if(mode!=="playing")return;
@@ -207,7 +221,7 @@ function steer(d){
 function pulse(){
  if(mode!=="playing"||pulseIn>0)return;
  pulseIn=CONFIG.pulseCooldown;
- playTone(620,.42,"sawtooth",.064);playTone(940,.43,"sine",.035);
+ soundDirector.pulse();
  shake=.34;toast("✳ LIGHT PULSE · 光脉冲");
  const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,8,68),new THREE.MeshBasicMaterial({color:0xa2fff9,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
  ring.rotation.x=Math.PI/2;ring.position.set(currentX,1.85,4);root.add(ring);
@@ -215,24 +229,24 @@ function pulse(){
  let removed=0;
  objects.forEach(o=>{
   const near=Math.abs(o.group.position.z-4)<30&&Math.abs(o.group.position.x-currentX)<3.4;
-  if(o.type==="drone"&&near&&!o.hit){o.hit=true;removed++;score+=80;burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,14)}
+  if((o.type==="drone"||o.type==="sentinel")&&near&&!o.hit){o.hit=true;removed++;score+=o.type==="sentinel"?500:80;burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,o.type==="sentinel"?28:14)}
  });
  if(removed){toast("✦ 清除 "+removed+" 个障碍");combo=Math.min(combo+removed,9)}
  $("pulse").classList.add("cooling")
 }
 function burst(x,y,z,color=0xffefa8,count=12){
- const material=new THREE.MeshBasicMaterial({color,toneMapped:false,transparent:true});
+ const material=burstMaterials[color]||(burstMaterials[color]=new THREE.MeshBasicMaterial({color,toneMapped:false,transparent:true}));
  for(let i=0;i<count;i++){
-  const mesh=new THREE.Mesh(new THREE.OctahedronGeometry(.12+Math.random()*.15,0),material);
+  const mesh=new THREE.Mesh(burstGeo,material);mesh.scale.setScalar(.12+Math.random()*.15);
   mesh.position.set(x,y,z);root.add(mesh);
   particles.push({burst:true,node:mesh,life:.45+Math.random()*.55,vx:(Math.random()-.5)*12,vy:(Math.random()-.2)*9,vz:(Math.random()-.5)*12})
  }
 }
-function hit(){
+function hit(big=false){
  if(invuln>0)return;
- shield=Math.max(0,shield-34);combo=0;invuln=1.35;shake=.52;
+ shield=Math.max(0,shield-(big?50:LEVELS[stageIndex].damage));combo=0;invuln=1.35;shake=.52;
  $("impact").classList.add("on");setTimeout(()=>$("impact").classList.remove("on"),210);
- playTone(125,.35,"sawtooth",.1);
+ soundDirector.collision();
  toast("⚠ 护盾受损");
  if(shield<=0)end(false);
 }
@@ -241,13 +255,14 @@ function collect(o){
  const gained=100+combo*30;score+=gained;
  shield=Math.min(100,shield+4);
  burst(o.group.position.x,o.group.position.y,o.group.position.z,0xffe2a3,15);
- playTone(730+combo*55,.18,"sine",.055);
+ soundDirector.collect(combo);
  if(combo%4===0)toast("✦ "+combo+" COMBO · +"+gained);
- if(lumens===CONFIG.goal)toast("✦ 已集齐足够的光，继续冲向黎明")
+ if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");soundDirector.milestone()}
 }
 function formatTime(s){let v=Math.max(0,Math.ceil(s));return String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0")}
 function updateHUD(){
  ui.timer.textContent=formatTime(CONFIG.duration-elapsed);
+ $("district-name").textContent=LEVELS[stageIndex].sub+" / "+LEVELS[stageIndex].label;
  ui.dist.textContent=String(Math.floor(elapsed*CONFIG.speed)).padStart(4,"0")+" M";
  ui.lumens.innerHTML=String(lumens).padStart(2,"0")+' <span>/ '+CONFIG.goal+'</span>';
  ui.shield.style.width=shield+"%";ui.shieldText.textContent=Math.round(shield)+"%";
@@ -257,8 +272,68 @@ function updateHUD(){
  $("pulse-ring").style.opacity=pulseIn>0?Math.max(.17,1-pulseIn/CONFIG.pulseCooldown):1;
  if(pulseIn<=0)$("pulse").classList.remove("cooling")
 }
+
+const SHIP_STYLES={
+ aqua:{body:0xbfdcff,light:0x74fff5},
+ rose:{body:0xffbde9,light:0xff90dd},
+ solar:{body:0xffe1b1,light:0xffd27f}
+};
+function updateTrail(){
+ const v=SHIP_STYLES[activeTrail]||SHIP_STYLES.aqua;
+ mat.body.color.setHex(v.body);mat.body.emissive.setHex(v.light);
+ mat.bodyDark.emissive.setHex(v.light);
+ if(craftGlow)craftGlow.material.color.setHex(v.light);
+}
+function applyStageLook(){
+ if(!scene||!root)return;
+ if(stageArt){stageArt.dispose();stageArt=null}
+ stageArt=createDistrict(THREE,scene,root,selectedStage,quality);
+ if(craft)updateTrail();
+}
+function refreshMenu(){
+ document.querySelectorAll("[data-stage]").forEach(btn=>{
+  const i=Number(btn.dataset.stage),locked=i>=progress.unlocked;
+  btn.disabled=locked;btn.classList.toggle("is-selected",i===selectedStage);
+  const desc=btn.querySelector("small"),record=progress.levels[i];
+  if(desc)desc.textContent=locked?"🔒 尚未解锁":record?"✦ "+record.stars+" 星 · "+record.rank+" 级":"可以挑战";
+ });
+ $("stage-story").textContent=LEVELS[selectedStage].mission;
+ $("launch-label").textContent="开始第 "+(selectedStage+1)+" 关";
+ document.querySelectorAll("[data-trail]").forEach(btn=>{
+  const t=btn.dataset.trail;
+  btn.disabled=t==="rose"?progress.unlocked<2:t==="solar"?progress.unlocked<3:false;
+  btn.classList.toggle("active",activeTrail===t);
+ })
+}
+function selectStage(index){
+ if(!Number.isInteger(index)||index<0||index>=progress.unlocked)return;
+ selectedStage=index;applyStageLook();refreshMenu()
+}
+function startStage(index=selectedStage){
+ stageIndex=Math.max(0,Math.min(LEVELS.length-1,index));selectedStage=stageIndex;
+ const L=LEVELS[stageIndex];
+ CONFIG.duration=L.duration;CONFIG.goal=L.goal;CONFIG.speed=L.speed;CONFIG.spawnEvery=L.spawnEvery;
+ CONFIG.pulseCooldown=stageIndex===0?6.3:stageIndex===1?5.8:5.4;
+ best=progress.levels[stageIndex]?.score||0;
+ applyStageLook();reset();mode="playing";clock.getDelta();
+ ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
+ ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
+ ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
+ ui.hint.textContent=stageIndex===0?"金色光粒子补充能量 · 紫粉色无人机是障碍":stageIndex===1?"天轨警戒 · 注意交错的无人机":"最终城区 · 释放光脉冲清除能量障碍";
+ soundDirector.start(stageIndex);soundDirector.milestone();
+ setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},4500)
+}
+function starsFor(success){
+ if(!success)return 0;
+ return 1+Number(shield>=60)+Number(lumens>=CONFIG.goal+3&&shield>=85)
+}
+function rankFor(success,stars){
+ if(!success)return "—";
+ if(stars===3&&score>=LEVELS[stageIndex].bonus)return "S";
+ return stars===3?"A":stars===2?"B":"C"
+}
 function reset(){
- elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;
+ elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;bossSpawned=false;
  objects.forEach(o=>root.remove(o.group));objects=[];
  beams.forEach(o=>root.remove(o.mesh));beams=[];
  player.position.set(0,1.55,4);
@@ -266,47 +341,54 @@ function reset(){
  camera.position.set(0,8,20);
  updateHUD()
 }
-function start(){
- reset();mode="playing";clock.getDelta();
- ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
- ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
- ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
- playTone(535,.25);setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},4500)
-}
 function end(success){
  if(mode!=="playing")return;
- mode="result";ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
+ mode="result";soundDirector.stop();
+ ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
  if(success){
-  const bonus=Math.round(shield)*5+Math.max(0,lumens-CONFIG.goal)*100;score+=bonus;
-  $("result-kicker").textContent="MISSION COMPLETE / DAYBREAK DELIVERED";
-  $("result-title").textContent="黎明已送达";
-  $("result-desc").textContent="霓光穿过了整座城市。你把最后一束光送到了黎明。";
-  playTone(630,.45);setTimeout(()=>playTone(920,.5),190)
+  score+=Math.round(shield)*6+Math.max(0,lumens-CONFIG.goal)*160;
+  $("result-title").textContent=stageIndex===2?"核心已点亮":"航线已完成";
+  $("result-desc").textContent=stageIndex===2?"三座城区重新苏醒。你已经成为真正的霓光信使。":"你已照亮「"+LEVELS[stageIndex].name+"」。下一片城区正在等待。";
+  burst(0,7,-9,0x9ffff5,32);
+  soundDirector.milestone()
  }else{
-  $("result-kicker").textContent="SIGNAL LOST / TRY AGAIN";
-  $("result-title").textContent="光还没有熄灭";
-  $("result-desc").textContent="这次航线暂时中断。下一次，我们再靠近黎明一点。";
+  $("result-title").textContent="航线暂时中断";
+  $("result-desc").textContent="这个城区的挑战尚未完成。调整航线，再试一次。"
+ }
+ const stars=starsFor(success),rank=rankFor(success,stars);
+ if(success){
+  const old=progress.levels[stageIndex];
+  progress.levels[stageIndex]=(!old||score>old.score)?{score,stars:Math.max(stars,old?.stars||0),rank}:old;
+  progress.unlocked=Math.max(progress.unlocked,Math.min(3,stageIndex+2));
+  progress.totalCollected=(progress.totalCollected||0)+lumens;
+  saveProgress(progress)
  }
  if(score>best){best=score;try{localStorage.setItem("lumina-best",String(best))}catch{}}
- $("end-lumens").textContent=lumens;
+ $("result-kicker").textContent=success?"MISSION ACCOMPLISHED / "+LEVELS[stageIndex].label:"SIGNAL LOST / "+LEVELS[stageIndex].label;
+ $("end-stars").textContent=[0,1,2].map(i=>i<stars?"★":"☆").join(" ");
+ $("end-rank").textContent=rank;
+ $("end-lumens").textContent=lumens+" / "+CONFIG.goal;
  $("end-score").textContent=score.toLocaleString();
  $("end-best").textContent=best.toLocaleString();
- ui.result.classList.remove("hidden")
+ $("end-reward").textContent=success?(stageIndex===2?"三关全部点亮":"+"+(stars*100)+" EXP"):"—";
+ $("next-stage").classList.toggle("hidden",!success||stageIndex===LEVELS.length-1);
+ ui.result.classList.remove("hidden");
+ refreshMenu()
 }
 function pause(){
  if(mode!=="playing")return;
- mode="paused";ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
+ mode="paused";soundDirector.stop();ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
 }
 function resume(){
  if(mode!=="paused")return;
- mode="playing";ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
+ mode="playing";soundDirector.start(stageIndex);ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
 }
 function toMenu(){
- mode="menu";ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset()
+ mode="menu";soundDirector.stop();ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
- renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?79:67;camera.updateProjectionMatrix();
+ renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?70:67;camera.updateProjectionMatrix();
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,w<700?1.35:1.7))
 }
 function init(){
@@ -323,6 +405,8 @@ function update(dt){
  if(active){
   elapsed+=dt;spawnIn-=dt;pulseIn=Math.max(0,pulseIn-dt);invuln=Math.max(0,invuln-dt);shake=Math.max(0,shake-dt*2);
   if(spawnIn<=0){spawn();spawnIn=CONFIG.spawnEvery*(.85+Math.random()*.45)}
+  if(stageIndex===2&&!bossSpawned&&elapsed>51){bossSpawned=true;makeSentinel()}
+  soundDirector.tick(dt,combo);
   currentX=lerp(currentX,CONFIG.lanes[targetLane],1-Math.exp(-dt*11));
   player.position.x=currentX;
   craft.rotation.z=lerp(craft.rotation.z,(CONFIG.lanes[targetLane]-currentX)*-.092,1-Math.exp(-dt*9));
@@ -333,13 +417,23 @@ function update(dt){
   for(const o of objects){
     o.group.position.z+=travel;
     o.age+=dt;
+    if(stageIndex>=1&&o.type==="drone")o.group.position.x=CONFIG.lanes[o.lane]+Math.sin(o.age*3.2+o.lane*2)*(.7+(stageIndex-1)*.35);
     if(o.type==="pickup"){o.group.rotation.y+=dt*3.7;o.group.children[0].rotation.z+=dt*.8;o.group.position.y=2.1+Math.sin(o.age*5)*.25}
+    else if(o.type==="sentinel"){o.group.rotation.y+=dt*2.2;o.group.position.y=2.8+Math.sin(o.age*3)*.4}
     else{o.group.rotation.z=Math.sin(o.age*5)*.12;o.group.position.y=2.1+Math.sin(o.age*4)*.24}
     if(!o.hit&&Math.abs(o.group.position.z-4)<1.65&&Math.abs(o.group.position.x-currentX)<1.75){
-      o.type==="pickup"?collect(o):hit();o.hit=true
+      o.type==="pickup"?collect(o):hit(o.type==="sentinel");o.hit=true
     }
   }
-  for(let i=objects.length-1;i>=0;i--)if(objects[i].hit||objects[i].group.position.z>17){root.remove(objects[i].group);objects.splice(i,1)}
+  for(let i=objects.length-1;i>=0;i--){
+  const o=objects[i];
+  if(o.type==="drone"&&!o.hit&&!o.nearMissed&&o.group.position.z>6){
+   o.nearMissed=true;
+   const d=Math.abs(o.group.position.x-currentX);
+   if(d>1.8&&d<5.3){score+=85;combo=Math.min(combo+1,9);soundDirector.tone(520,.1,"triangle",.035);toast("✦ 擦肩而过 · +85")}
+  }
+  if(o.hit||o.group.position.z>17){root.remove(o.group);objects.splice(i,1)}
+ }
   // City loops seamlessly along the runway
   for(const b of city){b.g.position.z+=travel*.75;if(b.g.position.z>32)b.g.position.z-=city.length/2*12.5}
   for(const laneRow of roadTiles){laneRow.position.z+=travel;if(laneRow.position.z>20)laneRow.position.z-=roadTiles.length*8}
@@ -348,6 +442,7 @@ function update(dt){
  }
  // Animated sky-city is alive even behind the start screen
  if(mode!=="paused"){
+  if(stageArt)stageArt.update(dt,t);
   player.position.y=1.55+Math.sin(t*3.7)*.08;
   if(mode==="menu")craft.rotation.z=Math.sin(t*.8)*.09;
   for(let i=particles.length-1;i>=0;i--){
@@ -358,13 +453,14 @@ function update(dt){
   for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}}
  }
  const sh=active?shake*.75:0;
- const camX=mode==="menu"?Math.sin(t*.19)*2.6:currentX*.27;
- camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,mode==="menu"?8.3:6.6+(Math.random()-.5)*sh,mode==="menu"?22:17.5),1-Math.exp(-dt*3.2));
- camera.lookAt(currentX*.31,2,-24);
+ const portrait=innerWidth<innerHeight;
+ const camX=mode==="menu"?Math.sin(t*.19)*1.3:currentX*(portrait?.62:.22);
+ camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?12.8:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?29:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
+ camera.lookAt(currentX*(portrait?.62:.28),portrait?0:2.0,portrait?-13:-19);
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
-$("start").onclick=start;$("restart").onclick=start;$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
-$("sound").onclick=()=>{soundOn=!soundOn;$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"声音已开启":"已静音")};
+$("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
+$("sound").onclick=()=>{soundOn=!soundOn;soundDirector.toggle(soundOn);$("sound").textContent=soundOn?"♪":"♩";toast(soundOn?"声音已开启":"已静音")};
 window.addEventListener("keydown",e=>{
  if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD","Escape"].includes(e.code))e.preventDefault();
  if(e.repeat)return;
@@ -384,4 +480,13 @@ $("world").addEventListener("pointerup",e=>{
  startTouch=null
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&mode==="playing")pause()});
-try{init()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
+document.querySelectorAll("[data-stage]").forEach(button=>button.onclick=()=>selectStage(Number(button.dataset.stage)));
+document.querySelectorAll("[data-trail]").forEach(button=>button.onclick=()=>{if(button.disabled)return;activeTrail=button.dataset.trail;progress.skin=activeTrail;saveProgress(progress);updateTrail();refreshMenu()});
+if(new URLSearchParams(location.search).get("qa")==="1"){
+ window.__luminaQA={
+  win:()=>{lumens=CONFIG.goal;end(true)},
+  lose:()=>{shield=0;end(false)},
+  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,playerScreen:{x:v.x,y:v.y}}}
+ };
+}
+try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
