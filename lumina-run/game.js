@@ -388,7 +388,7 @@ function toMenu(){
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
- renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?54:67;camera.updateProjectionMatrix();
+ renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?70:67;camera.updateProjectionMatrix();
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,w<700?1.35:1.7))
 }
 function init(){
@@ -453,10 +453,10 @@ function update(dt){
   for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}}
  }
  const sh=active?shake*.75:0;
- const camX=mode==="menu"?Math.sin(t*.19)*1.3:currentX*.22;
  const portrait=innerWidth<innerHeight;
- camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?9.8:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?19:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
- camera.lookAt(currentX*.28,portrait?2.0:2.0,portrait?-11:-19);
+ const camX=mode==="menu"?Math.sin(t*.19)*1.3:currentX*(portrait?.62:.22);
+ camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?12.8:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?29:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
+ camera.lookAt(currentX*(portrait?.62:.28),portrait?0:2.0,portrait?-13:-19);
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
 $("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
@@ -486,7 +486,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
  window.__luminaQA={
   win:()=>{lumens=CONFIG.goal;end(true)},
   lose:()=>{shield=0;end(false)},
-  get:()=>({mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn})
+  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,playerScreen:{x:v.x,y:v.y}}}
  };
 }
 try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
