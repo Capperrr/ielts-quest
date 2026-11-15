@@ -29,6 +29,7 @@ const mat={
  bodyDark:colorMat("craftDark",0x3554a6,0x315de6,.62,.82,.17)
 };
 const boxGeo=new THREE.BoxGeometry(1,1,1),sphereGeo=new THREE.SphereGeometry(1,12,8);
+const burstGeo=new THREE.OctahedronGeometry(1,0),burstMaterials={};
 function box(w,h,d,x,y,z,m,parent=root){const o=new THREE.Mesh(boxGeo,m);o.scale.set(w,h,d);o.position.set(x,y,z);parent.add(o);return o}
 function sphere(r,x,y,z,m,parent=root){const o=new THREE.Mesh(sphereGeo,m);o.scale.setScalar(r);o.position.set(x,y,z);parent.add(o);return o}
 function glowTexture(){
@@ -234,9 +235,9 @@ function pulse(){
  $("pulse").classList.add("cooling")
 }
 function burst(x,y,z,color=0xffefa8,count=12){
- const material=new THREE.MeshBasicMaterial({color,toneMapped:false,transparent:true});
+ const material=burstMaterials[color]||(burstMaterials[color]=new THREE.MeshBasicMaterial({color,toneMapped:false,transparent:true}));
  for(let i=0;i<count;i++){
-  const mesh=new THREE.Mesh(new THREE.OctahedronGeometry(.12+Math.random()*.15,0),material);
+  const mesh=new THREE.Mesh(burstGeo,material);mesh.scale.setScalar(.12+Math.random()*.15);
   mesh.position.set(x,y,z);root.add(mesh);
   particles.push({burst:true,node:mesh,life:.45+Math.random()*.55,vx:(Math.random()-.5)*12,vy:(Math.random()-.2)*9,vz:(Math.random()-.5)*12})
  }
