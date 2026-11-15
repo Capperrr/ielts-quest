@@ -16,7 +16,7 @@
 <div id="hud" class="hidden">
   <div class="hud-top">
     <div class="hud-brand"><span class="brand-symbol">✳</span><span>LUMINA<small>NEON COURIER / 光城信使</small></span></div>
-    <div class="hud-center"><span class="hud-kicker">DAWN APPROACH</span><strong id="timer">01:15</strong><span class="meters" id="distance">0000 M</span></div>
+    <div class="hud-center"><span class="hud-kicker" id="district-name">01 / AURORA CAUSEWAY</span><strong id="timer">01:15</strong><span class="meters" id="distance">0000 M</span></div>
     <div class="hud-actions"><button id="sound" aria-label="切换声音" title="切换声音">♪</button><button id="pause" aria-label="暂停" title="暂停">Ⅱ</button></div>
   </div>
   <div class="hud-bottom">
@@ -42,8 +42,15 @@
   <div class="subtitle-top">THE CITY NEVER SLEEPS</div>
   <h1>LUM<span>I</span>NA<span class="dot">.</span></h1>
   <div class="cn-title">霓 光 跃 迁</div>
-  <p class="story">在日出之前，穿越流光都市。<br>让最后一束光，抵达天空的另一边。</p>
-  <button id="start" class="launch"><span>开始跃迁</span><span class="launch-arrow">↗</span></button>
+  <p class="story">三段航程，三座未来城区。<br>驾驶霓光飞行器，把最后一束光送到黎明。</p>
+  <div id="stage-select" class="stage-select" aria-label="选择游戏关卡">
+    <button class="stage-card is-selected" data-stage="0"><span>01 / AURORA</span><strong>霓光高架</strong><small>已解锁</small></button>
+    <button class="stage-card" data-stage="1"><span>02 / SKY RAIL</span><strong>天轨城区</strong><small>尚未解锁</small></button>
+    <button class="stage-card" data-stage="2"><span>03 / NEXUS</span><strong>核心塔区</strong><small>尚未解锁</small></button>
+  </div>
+  <p id="stage-story" class="stage-story">沿着城市主光轨，完成第一趟黎明运输。</p>
+  <div class="trail-picker" aria-label="选择飞行器尾迹"><span>FLIGHT TRAIL</span><button data-trail="aqua" class="active">AQUA</button><button data-trail="rose">ROSE ✦</button><button data-trail="solar">SOLAR ✦</button></div>
+  <button id="start" class="launch"><span id="launch-label">开始第一关</span><span class="launch-arrow">↗</span></button>
   <div class="intro-guide"><span><b>← → / A D</b> 切换航道</span><span><b>SPACE</b> 光脉冲</span><span><b>触屏</b> 左右按钮 / 滑动</span></div>
   <div class="intro-footer"><span>ORIGINAL 3D WORLD</span><span class="sep">✦</span><span>NO LOGIN · INSTANT PLAY</span><span class="sep">✦</span><span>PHONE · iPAD · DESKTOP</span></div>
  </div>
@@ -51,14 +58,18 @@
 <div id="result" class="overlay hidden">
  <div class="result-content">
   <span class="result-kicker" id="result-kicker">MISSION COMPLETE</span>
+  <div class="level-stars" id="end-stars">☆ ☆ ☆</div>
+  <div class="rank" id="end-rank">A</div>
   <h2 id="result-title">黎明已送达</h2>
   <p id="result-desc">光穿过了整座城市。</p>
   <div class="result-stats">
     <div><small>光粒子</small><strong id="end-lumens">0</strong></div>
     <div><small>本次得分</small><strong id="end-score">0</strong></div>
+    <div><small>通关奖励</small><strong id="end-reward">—</strong></div>
     <div><small>最佳记录</small><strong id="end-best">0</strong></div>
   </div>
-  <button class="launch" id="restart"><span>再次出发</span><span class="launch-arrow">↗</span></button>
+  <button class="launch hidden" id="next-stage"><span>前往下一关</span><span class="launch-arrow">↗</span></button>
+  <button class="launch secondary-launch" id="restart"><span>重试本关</span><span class="launch-arrow">↻</span></button>
   <button class="text-button" id="home">返回主界面</button>
  </div>
 </div>
