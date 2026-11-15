@@ -49,6 +49,7 @@ const path=require("node:path");
  await mobile.locator("#pulse").click();
  const afterPulse=await mobile.evaluate(()=>window.__luminaQA.get().pulseIn);
  if(afterPulse<=0)throw Error("Mobile pulse not triggered");
+ await mobile.waitForTimeout(800);
  await mobile.screenshot({path:path.join(__dirname,"screenshot-mobile.png"),fullPage:true});
  if(errors.length)throw Error(errors.join("\n"));
  console.log("PASS: WebGL desktop and mobile load, 3 stage transition/unlock, local save, control layout");
