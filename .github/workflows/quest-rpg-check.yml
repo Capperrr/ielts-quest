@@ -1,0 +1,23 @@
+name: Validate IELTS Quest RPG
+
+on:
+  pull_request:
+    paths:
+      - 'quest-rpg/**'
+      - '.github/workflows/quest-rpg-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'quest-rpg/**'
+      - '.github/workflows/quest-rpg-check.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check IELTS content and JavaScript syntax
+        run: node quest-rpg/verify.cjs
