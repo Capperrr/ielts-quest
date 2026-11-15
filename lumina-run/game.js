@@ -1,5 +1,6 @@
 import * as THREE from "https://esm.sh/three@0.160.1";
 import {LEVELS,getProgress,saveProgress,createDistrict,AudioDirector} from "./lumina2.js";
+import {TRACKS,makeBeatmap,judgeDelta,BeatshiftAudio} from "./beatshift.js";
 const $=id=>document.getElementById(id);
 const clamp=THREE.MathUtils.clamp,lerp=THREE.MathUtils.lerp;
 const ui={intro:$("intro"),result:$("result"),pause:$("pause-screen"),fatal:$("fatal"),hud:$("hud"),touch:$("touch"),timer:$("timer"),dist:$("distance"),lumens:$("lumens"),shield:$("shield-fill"),shieldText:$("shield-num"),combo:$("combo"),progress:$("progress-fill"),message:$("notification"),hint:$("hint")};
@@ -9,6 +10,10 @@ let elapsed=0,score=0,lumens=0,shield=100,combo=0,best=0,mode="menu",targetLane=
 const materials={};
 let stageIndex=0,selectedStage=0,stageArt=null,progress=getProgress(),soundDirector=new AudioDirector(),nearMisses=0;
 let activeTrail=progress.skin||"aqua",bossSpawned=false,flashUntil=0;
+const beatAudio=new BeatshiftAudio();
+let chartNotes=[],beatSpawnIndex=0,beatVisuals=new Map(),heldNote=null,notesPressed=false;
+let perfect=0,great=0,good=0,misses=0,feverEnergy=0,feverEnds=0,judgementTimeout=0;
+let beatSkyLight=null,beatKeyLight=null,hitLine3D=null,lastBeat=-1;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -49,6 +54,138 @@ function makeSign(text,accent="#69fff2"){
  const m=new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false});
  return new THREE.Mesh(new THREE.PlaneGeometry(7.3,1.8),m)
 }
+function makeRhythmHitline(){
+ if(hitLine3D){root.remove(hitLine3D);hitLine3D.traverse(m=>{if(m.geometry)m.geometry.dispose()})}
+ hitLine3D=new THREE.Group();
+ for(let lane=0;lane<3;lane++){
+  const band=new THREE.Mesh(new THREE.TorusGeometry(1.55,.11,8,52),mat.cyan);
+  band.rotation.x=Math.PI/2;band.position.set(CONFIG.lanes[lane],.13,4);
+  hitLine3D.add(band);
+  const cross=box(3.2,.06,.20,CONFIG.lanes[lane],.11,4,mat.white,hitLine3D);
+ }
+ root.add(hitLine3D)
+}
+function noteVisual(note){
+ const group=new THREE.Group();
+ group.position.set(CONFIG.lanes[note.lane],1.98,4-(note.time-beatAudio.time())*CONFIG.speed);
+ const color=note.type==="hold"?mat.lilac:mat.gold;
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.93,.16,8,40),color);
+ ring.rotation.x=Math.PI/2.8;group.add(ring);
+ const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.73,0),color);
+ gem.rotation.y=.5;group.add(gem);
+ glow(note.type==="hold"?0xd4acff:0xfff0bc,4.5,0,0,0,group,.68);
+ if(note.type==="hold"){
+  const trail=new THREE.Mesh(new THREE.BoxGeometry(1.15,.14,Math.max(2,note.duration*CONFIG.speed)),mat.lilac);
+  trail.position.z=-note.duration*CONFIG.speed/2;group.add(trail)
+ }
+ root.add(group);beatVisuals.set(note.id,{group,ring,gem})
+}
+function releaseNoteVisual(note,burstColor=null){
+ const v=beatVisuals.get(note.id);if(!v)return;
+ if(burstColor)burst(v.group.position.x,v.group.position.y,v.group.position.z,burstColor,11);
+ root.remove(v.group);
+ v.group.traverse(o=>{
+   if(o.isMesh&&o.geometry)o.geometry.dispose();
+   if(o.isSprite&&o.material)o.material.dispose()
+ });
+ beatVisuals.delete(note.id)
+}
+function judgement(label,delta=0){
+ const n=$("beat-judge");
+ clearTimeout(judgementTimeout);
+ n.className="burst"+(label==="MISS"?" miss":label==="GREAT"?" great":label==="GOOD"?" good":"");
+ $("judge-word").textContent=label;
+ $("judge-ms").textContent=label==="MISS"?"KEEP THE RHYTHM":label==="HOLD"?"HOLD THE BEAT":label==="FEVER"?"CITY LIGHTS ON":(Math.round(Math.abs(delta)*1000)+" ms");
+ n.classList.remove("hidden");
+ judgementTimeout=setTimeout(()=>n.classList.add("hidden"),label==="FEVER"?1500:650)
+}
+function markMiss(n){
+ if(n.state==="hit"||n.state==="missed")return;
+ n.state="missed";releaseNoteVisual(n);
+ misses++;combo=0;feverEnergy=Math.max(0,feverEnergy-9);
+ shield=Math.max(0,shield-(stageIndex===0?1.6:stageIndex===1?1.8:1.9));
+ beatAudio.effect("miss");judgement("MISS");
+ if(shield<=0)end(false)
+}
+function markHit(n,rating,delta){
+ if(n.state==="hit")return;
+ n.state="hit";
+ releaseNoteVisual(n,rating==="PERFECT"?0xb8fff8:0xffe6bb);
+ lumens++;combo++;
+ if(rating==="PERFECT")perfect++;else if(rating==="GREAT")great++;else good++;
+ const multiplier=feverEnds>beatAudio.time()?2:1;
+ score+=Math.round(({PERFECT:320,GREAT:210,GOOD:120}[rating]+combo*14)*multiplier);
+ feverEnergy=Math.min(100,feverEnergy+(rating==="PERFECT"?12:rating==="GREAT"?9:6));
+ shield=Math.min(100,shield+1.6);
+ beatAudio.effect("hit",rating);haptic(rating==="PERFECT"?[18,15,18]:12);
+ judgement(rating,delta);metricPop();
+ if(feverEnergy>=100&&feverEnds<=beatAudio.time()){
+  feverEnds=beatAudio.time()+8;feverEnergy=100;beatAudio.setFever(true);beatAudio.effect("fever");
+  judgement("FEVER");toast("✦ FEVER MODE · 八秒双倍分数！")
+ }
+ if(combo>0&&combo%12===0){toast("⚡ "+combo+" COMBO");shake=.15}
+}
+function holdRelease(force=false){
+ if(!heldNote)return;
+ const n=heldNote,now=beatAudio.time();
+ heldNote=null;
+ if(n.state!=="holding")return;
+ if(force||now>=n.time+n.duration-.08)markHit(n,n.holdRating||"GREAT",n.holdDelta||0);
+ else markMiss(n)
+}
+function hitBeat(){
+ if(mode!=="playing")return;
+ notesPressed=true;$("beat-hit").classList.add("pressed");
+ if(heldNote)return;
+ const now=beatAudio.time();
+ const candidates=chartNotes.filter(n=>(n.state==="pending"||n.state==="holding")&&n.type!=="hazard"&&n.lane===targetLane&&Math.abs(n.time-now)<=.31);
+ candidates.sort((a,b)=>Math.abs(a.time-now)-Math.abs(b.time-now));
+ const n=candidates[0];
+ if(!n){judgement("MISS");beatAudio.effect("miss");return}
+ const delta=now-n.time,quality=judgeDelta(delta);
+ if(!quality)return;
+ if(n.type==="hold"){
+  n.state="holding";n.holdRating=quality;n.holdDelta=delta;heldNote=n;
+  judgement("HOLD");haptic(20)
+ }else markHit(n,quality,delta)
+}
+function releaseBeat(){
+ notesPressed=false;$("beat-hit").classList.remove("pressed");
+ if(heldNote)holdRelease()
+}
+function syncBeatfield(now,dt){
+ while(beatSpawnIndex<chartNotes.length&&chartNotes[beatSpawnIndex].time-now<=3.15){
+  const n=chartNotes[beatSpawnIndex++];
+  if(n.type==="hazard"){
+   // Hazards align to the same audio clock as the musical notes.
+   makeDrone(n.lane,4-(n.time-now)*CONFIG.speed);
+   objects[objects.length-1].hitTime=n.time;
+  }else noteVisual(n)
+ }
+ for(const n of chartNotes){
+  if(n.type==="hazard"||n.state==="hit"||n.state==="missed")continue;
+  if(n.state==="pending"&&now>n.time+.31){markMiss(n);continue}
+  if(n.state==="holding"){
+   if(!notesPressed){markMiss(n);heldNote=null;continue}
+   if(now>=n.time+n.duration){holdRelease(true);continue}
+  }
+  const v=beatVisuals.get(n.id);if(v){
+   v.group.position.z=4-(n.time-now)*CONFIG.speed;
+   v.group.position.y=1.97+Math.sin(now*5+n.beat)*.19;
+   v.ring.rotation.z+=dt*1.4;v.gem.rotation.y+=dt*2.8;
+  }
+ }
+ if(feverEnds>0&&now>=feverEnds){feverEnds=0;feverEnergy=0;beatAudio.setFever(false);toast("FEVER COMPLETE")}
+ const ph=beatAudio.phase(now),pulse=Math.pow(1-ph,5);
+ if(beatSkyLight)beatSkyLight.intensity=2.7+pulse*.43+(feverEnds>now?.75:0);
+ if(beatKeyLight)beatKeyLight.intensity=2.3+pulse*.8;
+ if(stageArt)stageArt.group.scale.y=1+pulse*.012;
+ $("beat-screen-flash").classList.toggle("on",ph<.11||feverEnds>now&&ph<.18);
+ const beatNumber=Math.floor(now/(60/TRACKS[stageIndex].bpm));
+ if(beatNumber!==lastBeat){lastBeat=beatNumber;const hitLine=hitLine3D;if(hitLine)hitLine.scale.setScalar(1.03);}
+ if(hitLine3D)hitLine3D.scale.setScalar(1+pulse*.11);
+}
+
 function buildCraft(){
  craft=new THREE.Group();player=new THREE.Group();root.add(player);player.add(craft);
  box(1.45,.35,3,0,.5,0,mat.body,craft);
@@ -152,11 +289,11 @@ function buildScene(){
  scene=new THREE.Scene();scene.background=new THREE.Color("#91b8f0");scene.fog=new THREE.FogExp2(0x88a4eb,.0085);
  root=new THREE.Group();scene.add(root);
  camera=new THREE.PerspectiveCamera(67,innerWidth/Math.max(innerHeight,1),.1,600);
- const hemi=new THREE.HemisphereLight(0xdaefff,0x6e68e9,2.7);scene.add(hemi);
- const key=new THREE.DirectionalLight(0xeefcff,2.3);key.position.set(-32,60,-40);scene.add(key);
+ const hemi=new THREE.HemisphereLight(0xdaefff,0x6e68e9,2.7);scene.add(hemi);beatSkyLight=hemi;
+ const key=new THREE.DirectionalLight(0xeefcff,2.3);key.position.set(-32,60,-40);scene.add(key);beatKeyLight=key;
  for(const [c,x,y,z,power] of [[0x75ecff,-15,15,-20,90],[0xf47dff,17,13,-37,100],[0xffdb9d,0,25,-105,135]]){let light=new THREE.PointLight(c,power,90,2);light.position.set(x,y,z);scene.add(light)}
  glowMap=glowTexture();
- road();buildCraft();applyStageLook();scene.updateMatrixWorld(true);
+ road();buildCraft();applyStageLook();makeRhythmHitline();scene.updateMatrixWorld(true);
  for(let i=0;i<45;i++){
   const x=(Math.random()-.5)*60,y=Math.random()*40+1,z=-Math.random()*220;
   const p=glow(i%2?0xc4ffff:0xfab7ff,.7+Math.random()*.8,x,y,z,root,.4);
