@@ -14,7 +14,7 @@ const beatAudio=new BeatshiftAudio();
 let chartNotes=[],beatSpawnIndex=0,beatVisuals=new Map(),heldNote=null,notesPressed=false;
 let perfect=0,great=0,good=0,misses=0,feverEnergy=0,feverEnds=0,judgementTimeout=0;
 let beatSkyLight=null,beatKeyLight=null,hitLine3D=null,lastBeat=-1;
-let lastCoachUpdate=-1,lastEarlyHint=-3;
+let lastCoachUpdate=-1,lastEarlyHint=-3,queuedHit=null;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -151,7 +151,16 @@ function hitBeat(){
  const n=candidates[0];
  if(!n){
   const upcoming=chartNotes.find(q=>q.state==="pending"&&q.lane===targetLane&&q.type!=="hazard"&&q.time>now);
-  if(upcoming&&upcoming.time-now<1.3&&now-lastEarlyHint>.65){lastEarlyHint=now;toast("再等一下，音符到发光线时再点 "+["左","中","右"][targetLane])}
+  const lead=upcoming?upcoming.time-now:Infinity;
+  const bufferLimit=[1.4,1.25,1.1][stageIndex];
+  if(upcoming&&lead>stageTimingWindow()&&lead<=bufferLimit){
+   queuedHit={id:upcoming.id,at:now};
+   judgement("READY");
+   $("judge-ms").textContent="已接住，等音符到线";
+   haptic(8);
+   return
+  }
+  if(upcoming&&lead<1.7&&now-lastEarlyHint>.65){lastEarlyHint=now;toast("再等一下，看到对应按键发光就点 "+["左","中","右"][targetLane])}
   return
  }
  const delta=now-n.time,quality=stageJudge(delta);
@@ -171,6 +180,7 @@ function directLane(lane){
  // Single action: select the lane and hit its note, not two separate taps.
  if(heldNote&&heldNote.lane!==lane)holdRelease();
  targetLane=lane;
+ queuedHit=null;
  $("left").classList.toggle("is-selected",lane===0);
  $("beat-hit").classList.toggle("is-selected",lane===1);
  $("right").classList.toggle("is-selected",lane===2);
@@ -185,8 +195,8 @@ function updateLaneCoach(now){
  coach.classList.remove("hidden");
  const d=n.time-now,labels=["左","中","右"],padIds=["left","beat-hit","right"];
  const imminent=d<=.23&&d>=-stageTimingWindow();
- const soon=d<=1.35;
- word.textContent=imminent?"现在点「"+labels[n.lane]+"」":soon?"准备点「"+labels[n.lane]+"」":"观察音符 · 跟住节拍";
+ const soon=d<=[1.4,1.25,1.1][stageIndex];
+ word.textContent=imminent?"现在点「"+labels[n.lane]+"」":soon?"可以先点「"+labels[n.lane]+"」":"观察音符 · 跟住节拍";
  count.textContent=imminent?"NOW!":soon?(Math.max(0,d).toFixed(1)+"s"):"♪";
  coach.classList.toggle("now",imminent);
  padIds.forEach((id,i)=>{
@@ -195,6 +205,18 @@ function updateLaneCoach(now){
  })
 }
 function syncBeatfield(now,dt){
+ if(queuedHit){
+  const n=chartNotes.find(x=>x.id===queuedHit.id);
+  if(!n||n.state!=="pending")queuedHit=null;
+  else if(now>=n.time-.065){
+   if(n.type==="hold"){
+    if(notesPressed){
+     n.state="holding";n.holdRating="GOOD";n.holdDelta=now-queuedHit.at;heldNote=n;judgement("HOLD");
+    }else markMiss(n)
+   }else markHit(n,"GOOD",n.time-queuedHit.at);
+   queuedHit=null
+  }
+ }
  while(beatSpawnIndex<chartNotes.length&&chartNotes[beatSpawnIndex].time-now<=3.15){
   const n=chartNotes[beatSpawnIndex++];
   if(n.type==="hazard"){
@@ -545,7 +567,7 @@ function startStage(index=selectedStage){
  ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
  ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
  $("lane-coach").classList.remove("hidden");lastCoachUpdate=-1;lastEarlyHint=-3;
- ui.hint.textContent=stageIndex===0?"手机：左／中／右对应哪个音符就点哪个，一下搞定！第一关判定更宽松。":
+ ui.hint.textContent=stageIndex===0?"点亮的左／中／右按钮可以提前按，GOOD 会自动帮你接住；踩准节拍则是 PERFECT！":
  stageIndex===1?"点击对应的左／中／右键，紫色长音符持续按住不松开。":
  "音乐加速！左／中／右三个键就能打音符，技能可清障和回能量。";
  $("track-name").textContent=TRACKS[stageIndex].title;
@@ -564,7 +586,7 @@ function rankFor(success,stars){
 function reset(){
  elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;bossSpawned=false;
  beatSpawnIndex=0;beatVisuals.forEach(({group})=>root.remove(group));beatVisuals.clear();
- chartNotes.forEach(n=>n.state="pending");heldNote=null;notesPressed=false;
+ chartNotes.forEach(n=>n.state="pending");heldNote=null;notesPressed=false;queuedHit=null;
  perfect=0;great=0;good=0;misses=0;feverEnergy=0;feverEnds=0;lastBeat=-1;
  document.body.classList.remove("fever-active");$("beat-screen-flash").classList.remove("on");
  $("lane-coach").classList.add("hidden");document.querySelectorAll(".lane-pad").forEach(n=>n.classList.remove("incoming","hit-now","pressed","is-selected"));
@@ -750,7 +772,7 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
   lose:()=>{shield=0;end(false)},
   get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y},bpm:TRACKS[stageIndex].bpm,noteCount:chartNotes.length,perfect,great,good,misses,songTime:beatAudio.time(),coachText:$("lane-coach-text").textContent,selectedPad:["left","beat-hit","right"][targetLane]}},
   testBeatHit:()=>{const n=chartNotes.find(n=>n.state==="pending"&&n.type!=="hazard");if(!n)return false;markHit(n,"PERFECT",0);return true},
-  prepareLaneNote:(lane)=>{const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending");if(!n)return false;n.lane=lane;n.time=beatAudio.time()+.04;n.type="tap";return n.id},
+  prepareLaneNote:(lane)=>{const n=chartNotes.find(q=>q.type!=="hazard"&&q.state==="pending");if(!n)return false;n.lane=lane;n.time=beatAudio.time()+.96;n.type="tap";return n.id},
   pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
 }
