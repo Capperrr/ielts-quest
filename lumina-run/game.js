@@ -209,7 +209,7 @@ function pulse(){
  pulseIn=CONFIG.pulseCooldown;
  playTone(620,.42,"sawtooth",.064);playTone(940,.43,"sine",.035);
  shake=.34;toast("✳ LIGHT PULSE · 光脉冲");
- const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,8,68),mat.cyan);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,8,68),new THREE.MeshBasicMaterial({color:0xa2fff9,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
  ring.rotation.x=Math.PI/2;ring.position.set(currentX,1.85,4);root.add(ring);
  beams.push({mesh:ring,life:.55});
  let removed=0;
@@ -355,7 +355,7 @@ function update(dt){
     p.node.position.y+=Math.sin(t+p.seed)*dt*.5;p.node.position.z+=dt*p.speed;if(p.node.position.z>19)p.node.position.z=-210
    }
   }
-  for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);beams.splice(i,1)}}
+  for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}}
  }
  const sh=active?shake*.75:0;
  const camX=mode==="menu"?Math.sin(t*.19)*2.6:currentX*.27;
