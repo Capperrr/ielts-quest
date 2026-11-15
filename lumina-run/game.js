@@ -8,7 +8,7 @@ let renderer,scene,camera,root,player,craft,craftGlow,trail=[],city=[],roadTiles
 let elapsed=0,score=0,lumens=0,shield=100,combo=0,best=0,mode="menu",targetLane=1,currentX=0,spawnIn=.4,invuln=0,pulseIn=0,shake=0,lastHUD=0,noticeTimeout=0,soundOn=true,audio=null,lastSwipe=null,quality=window.innerWidth<720?.7:1;
 const materials={};
 let stageIndex=0,selectedStage=0,stageArt=null,progress=getProgress(),soundDirector=new AudioDirector(),nearMisses=0;
-let activeTrail=progress.skin||"aqua",bossSpawned=false;
+let activeTrail=progress.skin||"aqua",bossSpawned=false,flashUntil=0;
 try{best=Number(localStorage.getItem("lumina-best")||0)||0}catch{}
 function colorMat(name,color,emissive=color,intensity=.25,metalness=.43,roughness=.28){
  if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:intensity,metalness,roughness});
@@ -212,27 +212,54 @@ function spawn(){
  if(stageIndex===2&&Math.random()<.11)makeDrone((lane+1)%3,-155);
 }
 function playTone(freq=440,duration=.14,type="sine",gain=.07){soundDirector.tone(freq,duration,type,gain)}
-function toast(msg){ui.message.textContent=msg;ui.message.classList.remove("hidden");clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>ui.message.classList.add("hidden"),1450)}
+function toast(msg){ui.message.textContent=msg;ui.message.classList.remove("hidden");clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>ui.message.classList.add("hidden"),1700)}
+function haptic(pattern){
+ try{if(typeof navigator.vibrate==="function")navigator.vibrate(pattern)}catch{}
+}
+function retrigger(id,className,ms=400){
+ const n=$(id);n.classList.remove(className);void n.offsetWidth;n.classList.add(className);
+ setTimeout(()=>n.classList.remove(className),ms)
+}
+function pulseVisual(){
+ retrigger("pulse-fx","on",760);
+ retrigger("world","feedback-pulse",420)
+}
+function hitVisual(){retrigger("world","feedback-impact",350)}
+function metricPop(){retrigger("lumens","feedback-pop",360)}
 function steer(d){
  if(mode!=="playing")return;
  const next=clamp(targetLane+d,0,2);
- if(next!==targetLane){targetLane=next;playTone(370, .075,"sine",.022)}
+ if(next!==targetLane){targetLane=next;haptic(16);playTone(370,.075,"sine",.035)}
 }
 function pulse(){
  if(mode!=="playing"||pulseIn>0)return;
  pulseIn=CONFIG.pulseCooldown;
- soundDirector.pulse();
- shake=.34;toast("✳ LIGHT PULSE · 光脉冲");
- const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.08,8,68),new THREE.MeshBasicMaterial({color:0xa2fff9,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
- ring.rotation.x=Math.PI/2;ring.position.set(currentX,1.85,4);root.add(ring);
- beams.push({mesh:ring,life:.55});
+ const previous=shield;
+ shield=Math.min(100,shield+20);
+ invuln=Math.max(invuln,.6);
+ soundDirector.pulse();haptic([35,35,95]);
+ shake=.95;pulseVisual();
+ // All three lanes, the whole forward danger field — visible and useful in every run.
  let removed=0;
  objects.forEach(o=>{
-  const near=Math.abs(o.group.position.z-4)<30&&Math.abs(o.group.position.x-currentX)<3.4;
-  if((o.type==="drone"||o.type==="sentinel")&&near&&!o.hit){o.hit=true;removed++;score+=o.type==="sentinel"?500:80;burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,o.type==="sentinel"?28:14)}
+  const front=o.group.position.z>=-104&&o.group.position.z<=14;
+  if((o.type==="drone"||o.type==="sentinel")&&front&&!o.hit){
+   o.hit=true;removed++;score+=o.type==="sentinel"?500:120;
+   burst(o.group.position.x,o.group.position.y,o.group.position.z,0x91fff3,o.type==="sentinel"?32:18)
+  }
  });
- if(removed){toast("✦ 清除 "+removed+" 个障碍");combo=Math.min(combo+removed,9)}
- $("pulse").classList.add("cooling")
+ combo=Math.min(combo+removed,9);
+ // Three giant shockwave discs race forward across all lanes.
+ for(let i=0;i<3;i++){
+  const matWave=new THREE.MeshBasicMaterial({color:[0xa8fff8,0x82ddff,0xf1c6ff][i],transparent:true,opacity:.95,depthWrite:false,toneMapped:false,side:THREE.DoubleSide});
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1,.095,8,80),matWave);
+  ring.rotation.x=Math.PI/2;ring.position.set(0,1.7,4-i*5);root.add(ring);
+  beams.push({mesh:ring,life:.85+i*.12,duration:.85+i*.12,startZ:4-i*5})
+ }
+ if(removed)toast("✳ 光脉冲 · 清除 "+removed+" 架无人机 · 护盾 +"+(Math.round(shield-previous))+"%");
+ else toast("✳ 光脉冲 · 前方已净空 · 护盾 +"+(Math.round(shield-previous))+"%");
+ $("pulse").classList.add("cooling");
+ updateHUD()
 }
 function burst(x,y,z,color=0xffefa8,count=12){
  const material=burstMaterials[color]||(burstMaterials[color]=new THREE.MeshBasicMaterial({color,toneMapped:false,transparent:true}));
@@ -246,7 +273,7 @@ function hit(big=false){
  if(invuln>0)return;
  shield=Math.max(0,shield-(big?50:LEVELS[stageIndex].damage));combo=0;invuln=1.35;shake=.52;
  $("impact").classList.add("on");setTimeout(()=>$("impact").classList.remove("on"),210);
- soundDirector.collision();
+ soundDirector.collision();haptic([85,45,135]);hitVisual();
  toast("⚠ 护盾受损");
  if(shield<=0)end(false);
 }
@@ -255,7 +282,7 @@ function collect(o){
  const gained=100+combo*30;score+=gained;
  shield=Math.min(100,shield+4);
  burst(o.group.position.x,o.group.position.y,o.group.position.z,0xffe2a3,15);
- soundDirector.collect(combo);
+ soundDirector.collect(combo);haptic(18);metricPop();
  if(combo%4===0)toast("✦ "+combo+" COMBO · +"+gained);
  if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");soundDirector.milestone()}
 }
@@ -269,7 +296,10 @@ function updateHUD(){
  ui.combo.textContent="× "+Math.max(1,combo);
  ui.progress.style.width=clamp(elapsed/CONFIG.duration*100,0,100)+"%";
  document.querySelector(".progress-light").style.left=clamp(elapsed/CONFIG.duration*100,0,100)+"%";
- $("pulse-ring").style.opacity=pulseIn>0?Math.max(.17,1-pulseIn/CONFIG.pulseCooldown):1;
+ const ready=Math.max(0,1-pulseIn/CONFIG.pulseCooldown);
+ $("pulse").style.setProperty("--charge",(ready*360).toFixed(1)+"deg");
+ $("pulse-charge").textContent=pulseIn>0?pulseIn.toFixed(1)+"s":"READY";
+ $("pulse").disabled=pulseIn>.03;
  if(pulseIn<=0)$("pulse").classList.remove("cooling")
 }
 
@@ -319,9 +349,9 @@ function startStage(index=selectedStage){
  ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
  ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
  ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
- ui.hint.textContent=stageIndex===0?"金色光粒子补充能量 · 紫粉色无人机是障碍":stageIndex===1?"天轨警戒 · 注意交错的无人机":"最终城区 · 释放光脉冲清除能量障碍";
+ ui.hint.textContent=stageIndex===0?"✳ 光脉冲 = 清除前方约100米所有航道障碍 + 回复20%护盾（冷却6秒）":stageIndex===1?"✳ 紫粉色无人机可用光脉冲一次清除 · 同时补充护盾":"✳ 光脉冲可清除核心哨兵，并恢复20%护盾";
  soundDirector.start(stageIndex);soundDirector.milestone();
- setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},4500)
+ setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},8500)
 }
 function starsFor(success){
  if(!success)return 0;
@@ -334,6 +364,7 @@ function rankFor(success,stars){
 }
 function reset(){
  elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;bossSpawned=false;
+ $("pulse-fx").classList.remove("on");$("world").classList.remove("feedback-impact","feedback-pulse");
  objects.forEach(o=>root.remove(o.group));objects=[];
  beams.forEach(o=>root.remove(o.mesh));beams=[];
  player.position.set(0,1.55,4);
@@ -450,7 +481,14 @@ function update(dt){
     p.node.position.y+=Math.sin(t+p.seed)*dt*.5;p.node.position.z+=dt*p.speed;if(p.node.position.z>19)p.node.position.z=-210
    }
   }
-  for(let i=beams.length-1;i>=0;i--){let b=beams[i];b.life-=dt;b.mesh.scale.setScalar(1+(1-b.life/.55)*22);b.mesh.material.opacity=Math.max(0,b.life/.55);if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}}
+  for(let i=beams.length-1;i>=0;i--){
+  const b=beams[i];b.life-=dt;
+  const ratio=1-Math.max(0,b.life)/b.duration;
+  b.mesh.scale.setScalar(1+ratio*8.6);
+  b.mesh.position.z=b.startZ-ratio*93;
+  b.mesh.material.opacity=Math.max(0,(1-ratio)*.95);
+  if(b.life<=0){root.remove(b.mesh);b.mesh.geometry.dispose();b.mesh.material.dispose();beams.splice(i,1)}
+ }
  }
  const sh=active?shake*.75:0;
  const portrait=innerWidth<innerHeight;
@@ -486,7 +524,8 @@ if(new URLSearchParams(location.search).get("qa")==="1"){
  window.__luminaQA={
   win:()=>{lumens=CONFIG.goal;end(true)},
   lose:()=>{shield=0;end(false)},
-  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,playerScreen:{x:v.x,y:v.y}}}
+  get:()=>{let v=new THREE.Vector3();if(player)player.getWorldPosition(v);if(camera)v.project(camera);return {mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score,targetLane,pulseIn,enemyCount:objects.filter(o=>(o.type==="drone"||o.type==="sentinel")&&!o.hit).length,playerScreen:{x:v.x,y:v.y}}},
+  pulseTest:()=>{shield=55;makeDrone(0,-26);makeDrone(2,-36);updateHUD();return objects.filter(o=>o.type==="drone"&&!o.hit).length}
  };
 }
 try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
