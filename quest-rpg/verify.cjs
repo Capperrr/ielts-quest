@@ -1,0 +1,22 @@
+const fs=require("node:fs");const vm=require("node:vm");const assert=require("node:assert/strict");const path=require("node:path");
+const root=__dirname;
+const src=fs.readFileSync(path.join(root,"questions.js"),"utf8");
+const world={window:{}};vm.runInNewContext(src,world,{timeout:3000});
+const q=world.window.QUEST_QUESTIONS;
+const meta=world.window.QUEST_BANK_META;
+assert.ok(Array.isArray(q)&&q.length>=100,"expected 100+ original questions");
+assert.equal(new Set(q.map(x=>x.id)).size,q.length,"duplicate IDs");
+assert.deepEqual([...meta.validationErrors],[],"question validation failures");
+const kinds=["gap","match","order","chart","overview","keyword","edit","choice"];
+kinds.forEach(t=>assert.ok(q.some(x=>x.type===t),"missing exercise type "+t));
+q.forEach(x=>{
+assert.ok(x.prompt&&x.explain&&x.translation,"missing copy "+x.id);
+if(x.answer&&x.options)assert.ok(x.options.includes(x.answer),"answer missing from options "+x.id);
+if(x.type==="match")assert.equal(x.pairs.length,3,"invalid match "+x.id);
+if(x.type==="keyword")assert.ok(x.required.every(v=>x.options.includes(v)),"invalid keywords "+x.id);
+if(x.type==="order")assert.equal(x.answer.length,x.pieces.length,"invalid order "+x.id);
+});
+["game.js","questions.js"].forEach(file=>new Function(fs.readFileSync(path.join(root,file),"utf8")));
+const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
+for(const file of ["style.css","questions.js","game.js"])assert.ok(html.includes(file),"missing asset "+file);
+console.log("PASS: "+q.length+" questions; "+kinds.length+" mechanics; code syntax and asset references valid");
