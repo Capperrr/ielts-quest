@@ -4,7 +4,7 @@
 const el=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const storage="ielts-quest-rpg-v1";
-const fresh=()=>({zone:0,unlocked:0,completed:[],answered:[],wrong:[],shards:0,chinese:true,mute:false,lowEffects:false,visits:0,position:null});
+const fresh=()=>({zone:0,unlocked:0,completed:[],answered:[],wrong:[],shards:0,zoneAnswers:{},chinese:true,mute:false,lowEffects:false,visits:0,position:null});
 let data=fresh();try{data={...data,...JSON.parse(localStorage.getItem(storage)||"{}")}}catch(e){}
 const save=()=>{try{localStorage.setItem(storage,JSON.stringify(data))}catch(e){console.warn(e)}};
 const zones=[
@@ -21,7 +21,7 @@ let activeScene=null,game=null,lastToast=null;
 let keys={left:0,right:0,up:0,down:0},touch={left:0,right:0,up:0,down:0};
 const visible=()=>el("menu").classList.contains("hidden");
 const chapterList=z=>questions.filter(q=>z===4?true:q.chapter===z);
-const chapterCount=z=>data.answered.filter(id=>chapterList(z).some(q=>q.id===id)).length;
+const chapterCount=z=>(data.zoneAnswers&&data.zoneAnswers[z]?data.zoneAnswers[z].length:data.answered.filter(id=>chapterList(z).some(q=>q.id===id)).length);
 const done=z=>data.completed.includes(z);
 function note(t){el("toast").textContent=t;el("toast").classList.remove("hidden");clearTimeout(lastToast);lastToast=setTimeout(()=>el("toast").classList.add("hidden"),2600)}
 function hud(){el("zone-label").textContent=("0"+(data.zone+1)).slice(-2)+" / "+zones[data.zone].cn;el("shard-count").textContent="✧ "+data.shards;el("progress-count").textContent=data.completed.length+" / 5 区域";el("quest-tip").textContent=done(data.zone)?"已点亮本区域 · 可继续挑战更多题目":"完成 "+chapterCount(data.zone)+" / 4 道新挑战，点亮下一站"}
@@ -58,7 +58,7 @@ function drawOrder(){const q=state.quiz,rest=shuffle(q.pieces,q.prompt.length).f
 function drawMulti(){const q=state.quiz,items=shuffle(q.options,q.prompt.length);el("multi").innerHTML=items.map((s,i)=>'<button class="option '+(state.selected.includes(s)?"selected":"")+'" data-multi="'+i+'">'+esc(s)+'</button>').join("");document.querySelectorAll("[data-multi]").forEach(b=>b.onclick=()=>{let s=items[+b.dataset.multi];state.selected=state.selected.includes(s)?state.selected.filter(x=>x!==s):[...state.selected,s];drawMulti()});el("multi-submit").onclick=()=>{if(!state.selected.length){note("请选择所有核心要点");return}judge(state.selected.length===q.required.length&&state.selected.every(x=>q.required.includes(x)))}}
 function drawMatches(){let q=state.quiz,left=q.pairs.map(p=>p[0]),right=shuffle(q.pairs.map(p=>p[1]),q.prompt.length);el("matches").innerHTML='<div><p class="divider-title">表达</p>'+left.map((s,i)=>'<button class="chip '+(state.pending===i?"selected":"")+'" style="display:block;width:100%;margin-bottom:8px" data-l="'+i+'">'+esc(s)+(state.links.some(p=>p[0]===i)?" ✓":"")+'</button>').join("")+'</div><div><p class="divider-title">对应含义</p>'+right.map((s,i)=>'<button class="chip" style="display:block;width:100%;margin-bottom:8px" data-r="'+i+'">'+esc(s)+(state.links.some(p=>p[1]===i)?" ✓":"")+'</button>').join("")+'</div>';
 document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{const i=+b.dataset.l;if(state.links.some(p=>p[0]===i))return;state.pending=i;drawMatches()});document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const j=+b.dataset.r;if(state.pending===null){note("先选择左侧表达");return}if(state.links.some(p=>p[1]===j))return;state.links.push([state.pending,j]);state.pending=null;if(state.links.length===q.pairs.length)judge(state.links.every(p=>q.pairs[p[0]][1]===right[p[1]]));else drawMatches()});el("match-reset").onclick=()=>{state.links=[];state.pending=null;drawMatches()}}
-function judge(ok){if(state.locked)return;state.locked=true;let q=state.quiz;if(ok){if(!data.answered.includes(q.id)){data.answered.push(q.id);data.shards+=2}data.wrong=data.wrong.filter(id=>id!==q.id)}else if(!data.wrong.includes(q.id))data.wrong.push(q.id);save();
+function judge(ok){if(state.locked)return;state.locked=true;let q=state.quiz;if(ok){if(!data.answered.includes(q.id)){data.answered.push(q.id);data.shards+=2}data.zoneAnswers=data.zoneAnswers||{};data.zoneAnswers[data.zone]=data.zoneAnswers[data.zone]||[];if(!data.zoneAnswers[data.zone].includes(q.id))data.zoneAnswers[data.zone].push(q.id);data.wrong=data.wrong.filter(id=>id!==q.id)}else if(!data.wrong.includes(q.id))data.wrong.push(q.id);save();
 const correct=q.type==="order"?q.answer.join(" → "):q.type==="keyword"?q.required.join("、"):q.type==="match"?q.pairs.map(p=>p.join(" → ")).join("；"):q.answer;
 document.querySelectorAll("[data-opt]").forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer)b.classList.add("selected")});
 el("panel-content").insertAdjacentHTML("beforeend",'<div class="feedback '+(ok?"":"bad")+'"><strong>'+(ok?"✦ 找回词语碎片":"◇ 这一题需要再检查")+'</strong><div>'+esc(q.explain)+'</div>'+(ok?"":'<div class="answer-small">正确答案：'+esc(correct)+'</div>')+'</div>');
