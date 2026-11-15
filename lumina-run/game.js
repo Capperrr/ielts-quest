@@ -421,16 +421,19 @@ function collect(o){
  burst(o.group.position.x,o.group.position.y,o.group.position.z,0xffe2a3,15);
  soundDirector.collect(combo);haptic(18);metricPop();
  if(combo%4===0)toast("✦ "+combo+" COMBO · +"+gained);
- if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");soundDirector.milestone()}
+ if(lumens===CONFIG.goal){toast("✦ 光粒子达标！朝终点冲刺");beatAudio.effect("fever")}
 }
 function formatTime(s){let v=Math.max(0,Math.ceil(s));return String(Math.floor(v/60)).padStart(2,"0")+":"+String(v%60).padStart(2,"0")}
 function updateHUD(){
  ui.timer.textContent=formatTime(CONFIG.duration-elapsed);
  $("district-name").textContent=LEVELS[stageIndex].sub+" / "+LEVELS[stageIndex].label;
- ui.dist.textContent=String(Math.floor(elapsed*CONFIG.speed)).padStart(4,"0")+" M";
+ ui.dist.textContent=TRACKS[stageIndex].genre+" · "+TRACKS[stageIndex].bpm+" BPM";
  ui.lumens.innerHTML=String(lumens).padStart(2,"0")+' <span>/ '+CONFIG.goal+'</span>';
  ui.shield.style.width=shield+"%";ui.shieldText.textContent=Math.round(shield)+"%";
- ui.combo.textContent="× "+Math.max(1,combo);
+ ui.combo.textContent="× "+combo;
+ $("fever-fill").style.width=feverEnergy+"%";
+ $("fever-label").textContent=feverEnds>beatAudio.time()?"⚡ FEVER / 2× SCORE":"FEVER ENERGY";
+ document.body.classList.toggle("fever-active",feverEnds>beatAudio.time());
  ui.progress.style.width=clamp(elapsed/CONFIG.duration*100,0,100)+"%";
  document.querySelector(".progress-light").style.left=clamp(elapsed/CONFIG.duration*100,0,100)+"%";
  const ready=Math.max(0,1-pulseIn/CONFIG.pulseCooldown);
@@ -465,7 +468,9 @@ function refreshMenu(){
   if(desc)desc.textContent=locked?"🔒 尚未解锁":record?"✦ "+record.stars+" 星 · "+record.rank+" 级":"可以挑战";
  });
  $("stage-story").textContent=LEVELS[selectedStage].mission;
- $("launch-label").textContent="开始第 "+(selectedStage+1)+" 关";
+ $("launch-label").textContent="PLAY TRACK 0"+(selectedStage+1);
+ $("track-name").textContent=TRACKS[selectedStage].title;
+ $("track-detail").textContent=TRACKS[selectedStage].genre+" · "+TRACKS[selectedStage].bpm+" BPM · ORIGINAL MUSIC";
  document.querySelectorAll("[data-trail]").forEach(btn=>{
   const t=btn.dataset.trail;
   btn.disabled=t==="rose"?progress.unlocked<2:t==="solar"?progress.unlocked<3:false;
@@ -479,28 +484,38 @@ function selectStage(index){
 function startStage(index=selectedStage){
  stageIndex=Math.max(0,Math.min(LEVELS.length-1,index));selectedStage=stageIndex;
  const L=LEVELS[stageIndex];
- CONFIG.duration=L.duration;CONFIG.goal=L.goal;CONFIG.speed=L.speed;CONFIG.spawnEvery=L.spawnEvery;
+ CONFIG.duration=L.duration;CONFIG.speed=L.speed;CONFIG.spawnEvery=L.spawnEvery;
+ chartNotes=makeBeatmap(stageIndex,CONFIG.duration);
+ CONFIG.goal=Math.max(5,Math.ceil(chartNotes.filter(n=>n.type!=="hazard").length*.36));
  CONFIG.pulseCooldown=stageIndex===0?6.3:stageIndex===1?5.8:5.4;
  best=progress.levels[stageIndex]?.score||0;
  applyStageLook();reset();mode="playing";clock.getDelta();
+ beatAudio.mute(!soundOn);beatAudio.start(stageIndex);
  ui.intro.classList.add("hidden");ui.result.classList.add("hidden");ui.pause.classList.add("hidden");
  ui.hud.classList.remove("hidden");ui.hint.classList.remove("hidden");
  ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);
- ui.hint.textContent=stageIndex===0?"✳ 光脉冲 = 清除前方约100米所有航道障碍 + 回复20%护盾（冷却6秒）":stageIndex===1?"✳ 紫粉色无人机可用光脉冲一次清除 · 同时补充护盾":"✳ 光脉冲可清除核心哨兵，并恢复20%护盾";
- soundDirector.start(stageIndex);soundDirector.milestone();
+ ui.hint.textContent=stageIndex===0?"◎ 左右选航道，音符飞到飞船前方时按 HIT。误差越小分数越高！":
+ stageIndex===1?"◎ 紫色长音符出现时按住 HIT，直到长条经过判定线":"◎ 跟住高速鼓点，PERFECT 连击可进入双倍得分 FEVER！";
+ $("track-name").textContent=TRACKS[stageIndex].title;
+ $("track-detail").textContent=TRACKS[stageIndex].genre+" · "+TRACKS[stageIndex].bpm+" BPM · ORIGINAL MUSIC";
  setTimeout(()=>{if(mode==="playing")ui.hint.classList.add("hidden")},8500)
 }
 function starsFor(success){
  if(!success)return 0;
- return 1+Number(shield>=60)+Number(lumens>=CONFIG.goal+3&&shield>=85)
+ return 1+Number((perfect+great)/Math.max(1,chartNotes.filter(n=>n.type!=="hazard").length)>=.55)+Number(perfect/Math.max(1,chartNotes.filter(n=>n.type!=="hazard").length)>=.4&&misses<12)
 }
 function rankFor(success,stars){
  if(!success)return "—";
- if(stars===3&&score>=LEVELS[stageIndex].bonus)return "S";
+ if(stars===3&&perfect/Math.max(1,perfect+great+good+misses)>.8)return "S";
  return stars===3?"A":stars===2?"B":"C"
 }
 function reset(){
  elapsed=0;score=0;lumens=0;shield=100;combo=0;invuln=0;pulseIn=0;spawnIn=.5;targetLane=1;currentX=0;shake=0;bossSpawned=false;
+ beatSpawnIndex=0;beatVisuals.forEach(({group})=>root.remove(group));beatVisuals.clear();
+ chartNotes.forEach(n=>n.state="pending");heldNote=null;notesPressed=false;
+ perfect=0;great=0;good=0;misses=0;feverEnergy=0;feverEnds=0;lastBeat=-1;
+ document.body.classList.remove("fever-active");$("beat-screen-flash").classList.remove("on");
+ $("beat-judge").classList.add("hidden");$("beat-hit").classList.remove("pressed");
  $("pulse-fx").classList.remove("on");$("world").classList.remove("feedback-impact","feedback-pulse");
  objects.forEach(o=>root.remove(o.group));objects=[];
  beams.forEach(o=>root.remove(o.mesh));beams=[];
@@ -511,7 +526,7 @@ function reset(){
 }
 function end(success){
  if(mode!=="playing")return;
- mode="result";soundDirector.stop();
+ mode="result";beatAudio.stop();releaseBeat();
  ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.hint.classList.add("hidden");
  if(success){
   score+=Math.round(shield)*6+Math.max(0,lumens-CONFIG.goal)*160;
@@ -536,6 +551,7 @@ function end(success){
  $("end-stars").textContent=[0,1,2].map(i=>i<stars?"★":"☆").join(" ");
  $("end-rank").textContent=rank;
  $("end-lumens").textContent=lumens+" / "+CONFIG.goal;
+ $("result-accuracy").textContent="PERFECT "+perfect+" · GREAT "+great+" · GOOD "+good+" · MISS "+misses;
  $("end-score").textContent=score.toLocaleString();
  $("end-best").textContent=best.toLocaleString();
  $("end-reward").textContent=success?(stageIndex===2?"三关全部点亮":"+"+(stars*100)+" EXP"):"—";
@@ -545,14 +561,14 @@ function end(success){
 }
 function pause(){
  if(mode!=="playing")return;
- mode="paused";soundDirector.stop();ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
+ mode="paused";beatAudio.pause();releaseBeat();ui.pause.classList.remove("hidden");ui.touch.classList.add("hidden")
 }
 function resume(){
  if(mode!=="paused")return;
- mode="playing";soundDirector.start(stageIndex);ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
+ mode="playing";beatAudio.resume();ui.pause.classList.add("hidden");ui.touch.classList.toggle("hidden",!matchMedia("(pointer:coarse)").matches);clock.getDelta()
 }
 function toMenu(){
- mode="menu";soundDirector.stop();ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
+ mode="menu";beatAudio.stop();ui.pause.classList.add("hidden");ui.result.classList.add("hidden");ui.hud.classList.add("hidden");ui.touch.classList.add("hidden");ui.intro.classList.remove("hidden");reset();refreshMenu()
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
@@ -571,10 +587,10 @@ function init(){
 function update(dt){
  const active=mode==="playing",t=clock.elapsedTime;
  if(active){
-  elapsed+=dt;spawnIn-=dt;pulseIn=Math.max(0,pulseIn-dt);invuln=Math.max(0,invuln-dt);shake=Math.max(0,shake-dt*2);
-  if(spawnIn<=0){spawn();spawnIn=CONFIG.spawnEvery*(.85+Math.random()*.45)}
+  elapsed=beatAudio.time();spawnIn-=dt;pulseIn=Math.max(0,pulseIn-dt);invuln=Math.max(0,invuln-dt);shake=Math.max(0,shake-dt*2);
+  beatAudio.tick();
+  syncBeatfield(elapsed,dt);
   if(stageIndex===2&&!bossSpawned&&elapsed>51){bossSpawned=true;makeSentinel()}
-  soundDirector.tick(dt,combo);
   currentX=lerp(currentX,CONFIG.lanes[targetLane],1-Math.exp(-dt*11));
   player.position.x=currentX;
   craft.rotation.z=lerp(craft.rotation.z,(CONFIG.lanes[targetLane]-currentX)*-.092,1-Math.exp(-dt*9));
@@ -583,9 +599,9 @@ function update(dt){
   craftGlow.scale.set(4.1+Math.sin(t*15)*.55,4.1+Math.sin(t*15)*.55,1);
   const travel=CONFIG.speed*dt;
   for(const o of objects){
-    o.group.position.z+=travel;
+    o.group.position.z=o.hitTime===undefined?o.group.position.z+travel:4-(o.hitTime-elapsed)*CONFIG.speed;
     o.age+=dt;
-    if(stageIndex>=1&&o.type==="drone")o.group.position.x=CONFIG.lanes[o.lane]+Math.sin(o.age*3.2+o.lane*2)*(.7+(stageIndex-1)*.35);
+    if(stageIndex>=1&&o.type==="drone"&&o.hitTime===undefined)o.group.position.x=CONFIG.lanes[o.lane]+Math.sin(o.age*3.2+o.lane*2)*(.7+(stageIndex-1)*.35);
     if(o.type==="pickup"){o.group.rotation.y+=dt*3.7;o.group.children[0].rotation.z+=dt*.8;o.group.position.y=2.1+Math.sin(o.age*5)*.25}
     else if(o.type==="sentinel"){o.group.rotation.y+=dt*2.2;o.group.position.y=2.8+Math.sin(o.age*3)*.4}
     else{o.group.rotation.z=Math.sin(o.age*5)*.12;o.group.position.y=2.1+Math.sin(o.age*4)*.24}
@@ -605,7 +621,11 @@ function update(dt){
   // City loops seamlessly along the runway
   for(const b of city){b.g.position.z+=travel*.75;if(b.g.position.z>32)b.g.position.z-=city.length/2*12.5}
   for(const laneRow of roadTiles){laneRow.position.z+=travel;if(laneRow.position.z>20)laneRow.position.z-=roadTiles.length*8}
-  if(elapsed>=CONFIG.duration){end(lumens>=CONFIG.goal);if(lumens<CONFIG.goal){$("result-title").textContent="还差一点光";$("result-desc").textContent="收集 "+CONFIG.goal+" 枚光粒子即可唤醒终点。你获得了 "+lumens+" 枚。"}}
+  if(elapsed>=CONFIG.duration){
+   const cleared=lumens>=CONFIG.goal&&shield>0;
+   end(cleared);
+   if(!cleared){$("result-title").textContent="节奏尚未同步";$("result-desc").textContent="命中至少 "+CONFIG.goal+" 个音符即可解锁下一首。你命中了 "+lumens+" 个，再挑战一次！"}
+  }
   lastHUD+=dt;if(lastHUD>.06){lastHUD=0;updateHUD()}
  }
  // Animated sky-city is alive even behind the start screen
