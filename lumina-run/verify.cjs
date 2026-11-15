@@ -39,5 +39,7 @@ assert.ok(addon.includes("AudioDirector")&&addon.includes("createDistrict"),"mis
 assert.ok(js.includes("makeBeatmap")&&js.includes("hitBeat")&&js.includes("syncBeatfield"),"missing rhythm gameplay");
 assert.ok(js.includes('beatAudio.time()')&&beat.includes('this.ctx.currentTime'),"missing audio clock synchronization");
 assert.ok(html.includes('beat-hit')&&html.includes('beat-judge')&&html.includes('fever-fill'),"missing rhythm user interface");
+assert.ok(js.includes("function directLane(")&&js.includes("function updateLaneCoach("),"missing simplified one-tap controls");
+assert.ok(html.includes("无需先变道再按 HIT")&&html.includes("lane-coach"),"missing beginner control guide");
 assert.ok(css.includes('.beat-hit')&&css.includes('#beat-line'),"missing rhythm CSS");
 console.log("PASS: LUMINA BEATSHIFT three original tracks, chart timing, 3D rhythm mechanics and responsive UI.");

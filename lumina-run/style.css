@@ -207,3 +207,64 @@ body.fever-active #beat-screen-flash{background:radial-gradient(ellipse at 50% 6
  .music-preview{margin:3px auto;padding:4px 10px}
  .preview-bars{height:18px}
 }
+
+/* LUMINA 3.1 — ONE TAP RHYTHM: three ergonomic equal-height lanes */
+#lane-coach{position:fixed;z-index:13;pointer-events:none;top:39%;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:92vw;display:flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid rgba(153,250,249,.6);border-radius:16px;background:rgba(22,37,91,.69);backdrop-filter:blur(12px);box-shadow:0 0 21px #75fcf83a;text-shadow:0 0 10px #74f8ff}
+#lane-coach .lane-coach-tag{font-size:9px;color:#b6d8ed;letter-spacing:.07em}
+#lane-coach strong{font-size:15px;white-space:nowrap;letter-spacing:.08em}
+#lane-coach-count{min-width:35px;max-width:70px;font-size:13px;font-weight:800;color:#ffdc9c}
+#lane-coach.now{border-color:#ffeca7;background:rgba(62,68,113,.87);box-shadow:0 0 35px #fff1b78a;animation:coach-zoom .23s ease-in-out}
+#lane-coach.now strong,#lane-coach.now #lane-coach-count{color:#fff6b8}
+@keyframes coach-zoom{50%{transform:translate(-50%,-50%) scale(1.07)}}
+.simple-guide{width:min(520px,94vw);margin:10px auto;padding:12px 14px 10px;border:1px solid #a1fff278;border-radius:17px;background:rgba(15,45,100,.58);box-shadow:0 0 28px #77fff123}
+.simple-guide .guide-heading{font-size:11px;color:#8bfff5;font-weight:700;letter-spacing:.12em}
+.simple-guide-pads{display:flex;align-items:center;justify-content:center;gap:9px;margin:8px auto}
+.simple-guide-pads span{flex:1;max-width:113px;background:linear-gradient(125deg,#75dfff99,#996deaa8);border:1px solid #d3ffffd1;color:#fff;font-weight:800;font-size:16px;padding:7px 3px;border-radius:12px;box-shadow:0 0 12px #83caff4d}
+.simple-guide-pads span:nth-child(2){background:linear-gradient(120deg,#aefff7c9,#a0a7ffba);color:#193f75}
+.simple-guide .guide-caption{font-size:10px;color:#e3f6ff;line-height:1.5}
+#touch .lane-pad{position:absolute!important;z-index:2!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;top:auto!important;bottom:calc(clamp(81px,11dvh,112px) + env(safe-area-inset-bottom))!important;width:clamp(82px,24vw,108px)!important;height:clamp(82px,24vw,108px)!important;border-radius:22px!important;border:2px solid #ceffff!important;color:#fff!important;box-shadow:0 0 28px #93c9ff70,inset 0 1px 12px #ffffff42!important;touch-action:none;-webkit-user-select:none;user-select:none;transition:filter .08s,box-shadow .08s}
+#touch #left.lane-pad{left:max(12px,env(safe-area-inset-left))!important;right:auto!important;transform:none!important;background:linear-gradient(145deg,#4878cddd,#2863adf2)!important}
+#touch #right.lane-pad{right:max(12px,env(safe-area-inset-right))!important;left:auto!important;transform:none!important;background:linear-gradient(145deg,#7a62d8e6,#a164e5f0)!important}
+#touch #beat-hit.lane-pad{left:50%!important;right:auto!important;transform:translateX(-50%)!important;background:linear-gradient(150deg,#c9fff6,#81defa 65%,#91a6ff)!important;color:#18366c!important;border-radius:22px!important}
+#touch .lane-pad span{font-size:23px!important;line-height:1!important;margin:0!important;color:inherit!important}
+#touch .lane-pad strong{font-size:25px!important;line-height:1.0!important;letter-spacing:.02em!important;color:inherit!important}
+#touch .lane-pad small{font-size:10px!important;letter-spacing:.08em!important;color:inherit!important;margin:4px 0 0!important}
+#touch .lane-pad.pressed,#touch .lane-pad:active{filter:brightness(1.33)!important}
+#touch #beat-hit.lane-pad.pressed,#touch #beat-hit.lane-pad:active{transform:translateX(-50%) scale(.96)!important}
+#touch #left.lane-pad.pressed,#touch #right.lane-pad.pressed{transform:scale(.96)!important}
+#touch .lane-pad.is-selected{box-shadow:0 0 38px #fffcb887,inset 0 1px 18px #fffbb661!important}
+#touch .lane-pad.incoming{border-color:#ffe59f!important;box-shadow:0 0 34px #fff1b58f,0 0 55px #b7fbff91!important;animation:pad-cue .55s ease-in-out infinite alternate}
+#touch .lane-pad.hit-now{border-color:#fff8c8!important;box-shadow:0 0 43px 6px #fff4a6bc,inset 0 0 27px #fffbcb88!important;animation:pad-now .23s ease-in-out infinite alternate}
+@keyframes pad-cue{to{filter:brightness(1.35)}}
+@keyframes pad-now{to{filter:brightness(1.55) saturate(1.6)}}
+#touch .pulse-stack{right:max(13px,env(safe-area-inset-right))!important;bottom:calc(clamp(194px,25dvh,250px) + env(safe-area-inset-bottom))!important}
+#touch #pulse{width:69px!important;height:69px!important}
+#touch .pulse-legend{font-size:9px!important}
+#hint{font-size:11px!important;line-height:1.5}
+@media(max-width:700px) and (orientation:portrait){
+ #hud .hud-bottom{margin-bottom:clamp(318px,42dvh,370px)!important}
+ #lane-coach{top:42%;padding:8px 10px}
+ #lane-coach .lane-coach-tag{font-size:8px}
+ #lane-coach strong{font-size:13px}
+ #hint{top:14%;font-size:10px!important}
+ #touch .lane-pad{bottom:calc(clamp(86px,11dvh,118px) + env(safe-area-inset-bottom))!important}
+}
+@media(orientation:landscape) and (max-height:600px){
+ #touch .lane-pad{width:70px!important;height:70px!important;bottom:calc(41px + env(safe-area-inset-bottom))!important;border-radius:16px!important}
+ #touch .lane-pad span{font-size:16px!important}
+ #touch .lane-pad strong{font-size:20px!important}
+ #touch .lane-pad small{font-size:8px!important}
+ #touch .pulse-stack{bottom:calc(132px + env(safe-area-inset-bottom))!important}
+ #lane-coach{top:36%;padding:5px 10px}
+ #lane-coach strong{font-size:11px}
+ .simple-guide{padding:5px 10px;margin:3px auto}
+ .simple-guide-pads{margin:3px auto}
+ .simple-guide-pads span{padding:3px}
+ .simple-guide .guide-caption{display:none}
+}
+@media(max-width:360px){
+ #touch .lane-pad{width:78px!important;height:78px!important}
+ #touch .lane-pad strong{font-size:22px!important}
+ #touch .lane-pad small{font-size:8px!important}
+}
+@media(prefers-reduced-motion:reduce){#touch .lane-pad.incoming,#touch .lane-pad.hit-now,#lane-coach.now{animation:none!important}}
