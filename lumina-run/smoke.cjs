@@ -4,7 +4,8 @@ const path=require("node:path");
 (async()=>{
  const browser=await chromium.launch({headless:true,args:["--no-sandbox","--enable-webgl","--use-angle=swiftshader","--enable-unsafe-swiftshader"]});
  const errors=[];
- const desktop=await browser.newPage({viewport:{width:1440,height:900}});
+ const context=await browser.newContext({viewport:{width:1440,height:900},hasTouch:true,deviceScaleFactor:1});
+ const desktop=await context.newPage();
  desktop.on("pageerror",e=>errors.push("desktop pageerror "+e.message));
  const target="http://127.0.0.1:8765/lumina-run/?qa=1";
  await desktop.goto(target,{waitUntil:"domcontentloaded",timeout:30000});
@@ -29,11 +30,11 @@ const path=require("node:path");
  const saved=await desktop.evaluate(()=>JSON.parse(localStorage.getItem("lumina-progress-v2")));
  if(saved.unlocked!==3||!saved.levels.every(x=>x&&typeof x.score==="number"))throw Error("Three-level local save failed");
  await desktop.screenshot({path:path.join(__dirname,"screenshot-result.png"),fullPage:true});
- const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
- mobile.on("pageerror",e=>errors.push("mobile pageerror "+e.message));
- await mobile.goto(target,{waitUntil:"domcontentloaded",timeout:30000});
- await mobile.locator("#world canvas").waitFor({timeout:60000});
+ await desktop.locator("#home").click();
+ await desktop.setViewportSize({width:390,height:844});
+ const mobile=desktop;
  await mobile.locator("#start").click();
+ await mobile.waitForFunction(()=>window.__luminaQA?.get().mode==="playing");
  const coords=await mobile.evaluate(()=>{
   const rect=id=>{let b=document.getElementById(id).getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height}};
   return {left:rect("left"),right:rect("right"),pulse:rect("pulse"),viewport:{w:innerWidth,h:innerHeight}}
