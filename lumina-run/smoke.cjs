@@ -44,9 +44,10 @@ const path=require("node:path");
  await mobile.waitForFunction(()=>window.__luminaQA?.get().mode==="playing");
  const coords=await mobile.evaluate(()=>{
   const rect=id=>{let b=document.getElementById(id).getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height}};
-  return {left:rect("left"),right:rect("right"),pulse:rect("pulse"),hud:rect("progress-fill"),viewport:{w:innerWidth,h:innerHeight}}
+  return {left:rect("left"),middle:rect("beat-hit"),right:rect("right"),pulse:rect("pulse"),hud:rect("progress-fill"),viewport:{w:innerWidth,h:innerHeight}}
  });
- if(Math.abs(coords.left.y-coords.right.y)>3)throw Error("Left / right buttons not aligned: "+JSON.stringify(coords));
+ if(Math.abs(coords.left.y-coords.right.y)>3||Math.abs(coords.middle.y-coords.left.y)>3)throw Error("Three rhythm lane pads must align: "+JSON.stringify(coords));
+ if(!(coords.left.x+coords.left.w+9<coords.middle.x&&coords.middle.x+coords.middle.w+9<coords.right.x))throw Error("Rhythm pads overlap: "+JSON.stringify(coords));
  if(coords.pulse.y+coords.pulse.h>coords.right.y-5)throw Error("Pulse should be above right button: "+JSON.stringify(coords));
  if(coords.right.x<=coords.left.x)throw Error("Right key isn't at bottom right");
  if(coords.viewport.h-(coords.right.y+coords.right.h)<55)throw Error("Controls still too near bottom to reach: "+JSON.stringify(coords));
@@ -56,10 +57,17 @@ const path=require("node:path");
  if(!(await mobile.locator("#beat-hit").isVisible()))throw Error("Missing touch HIT button");
  const hitRect=await mobile.locator("#beat-hit").boundingBox();
  if(!hitRect||hitRect.width<70||hitRect.x<65||hitRect.x+hitRect.width>coords.viewport.w-65)throw Error("Touch HIT placement incorrect");
- await mobile.locator("#beat-hit").tap();
- await mobile.locator("#right").click();
+ for(const [id,lane] of [["left",0],["beat-hit",1],["right",2]]){
+   const before=await mobile.evaluate(()=>window.__luminaQA.get().lumens);
+   const prepared=await mobile.evaluate(lane=>window.__luminaQA.prepareLaneNote(lane),lane);
+   if(!prepared)throw Error("Failed to prepare rhythm test note for "+id);
+   await mobile.locator("#"+id).tap();
+   const state=await mobile.evaluate(()=>window.__luminaQA.get());
+   if(state.targetLane!==lane)throw Error("One-tap did not select lane "+id+": "+JSON.stringify(state));
+   if(state.lumens!==before+1)throw Error("One-tap did not HIT note on "+id+": "+JSON.stringify(state));
+ }
  const afterRight=await mobile.evaluate(()=>window.__luminaQA.get().targetLane);
- if(afterRight!==2)throw Error("Mobile right steering not triggered");
+ if(afterRight!==2)throw Error("Mobile right lane selection failed");
  const prePulse=await mobile.evaluate(()=>{const n=window.__luminaQA.pulseTest();return {...window.__luminaQA.get(),spawned:n}});
  if(prePulse.spawned<2)throw Error("Failed to spawn pulse test drones");
  await mobile.locator("#pulse").click();
