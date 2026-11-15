@@ -154,9 +154,16 @@ function hitBeat(){
   const lead=upcoming?upcoming.time-now:Infinity;
   const bufferLimit=[1.4,1.25,1.1][stageIndex];
   if(upcoming&&lead>stageTimingWindow()&&lead<=bufferLimit){
+   if(upcoming.type==="tap"){
+    // Beginner assist: a lane tap while its pad is glowing catches the note as GOOD.
+    // A precisely timed tap still scores GREAT or PERFECT.
+    markHit(upcoming,"GOOD",lead);
+    return
+   }
+   // Sustained notes still require holding through the visual trail.
    queuedHit={id:upcoming.id,at:now};
    judgement("READY");
-   $("judge-ms").textContent="已接住，等音符到线";
+   $("judge-ms").textContent="继续按住，等长音符经过";
    haptic(8);
    return
   }
