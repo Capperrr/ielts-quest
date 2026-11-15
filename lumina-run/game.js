@@ -464,4 +464,11 @@ $("world").addEventListener("pointerup",e=>{
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&mode==="playing")pause()});
 document.querySelectorAll("[data-stage]").forEach(button=>button.onclick=()=>selectStage(Number(button.dataset.stage)));
 document.querySelectorAll("[data-trail]").forEach(button=>button.onclick=()=>{if(button.disabled)return;activeTrail=button.dataset.trail;progress.skin=activeTrail;saveProgress(progress);updateTrail();refreshMenu()});
+if(new URLSearchParams(location.search).get("qa")==="1"){
+ window.__luminaQA={
+  win:()=>{lumens=CONFIG.goal;end(true)},
+  lose:()=>{shield=0;end(false)},
+  get:()=>({mode,stageIndex,selectedStage,unlocked:progress.unlocked,lumens,shield,score})
+ };
+}
 try{init();refreshMenu()}catch(error){console.error("LUMINA init error",error);$("fatal-message").textContent="当前浏览器无法启动3D画面："+String(error.message||error);ui.fatal.classList.remove("hidden");}
