@@ -373,7 +373,7 @@ function toMenu(){
 }
 function resize(){
  const w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
- renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?79:67;camera.updateProjectionMatrix();
+ renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?54:67;camera.updateProjectionMatrix();
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,w<700?1.35:1.7))
 }
 function init(){
@@ -438,8 +438,8 @@ function update(dt){
  const sh=active?shake*.75:0;
  const camX=mode==="menu"?Math.sin(t*.19)*1.3:currentX*.22;
  const portrait=innerWidth<innerHeight;
- camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?14.0:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?24:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
- camera.lookAt(currentX*.28,portrait?1.7:2.0,portrait?-8:-19);
+ camera.position.lerp(new THREE.Vector3(camX+(Math.random()-.5)*sh,portrait?9.8:mode==="menu"?8.3:7.6+(Math.random()-.5)*sh,portrait?19:mode==="menu"?22:19),1-Math.exp(-dt*3.2));
+ camera.lookAt(currentX*.28,portrait?2.0:2.0,portrait?-11:-19);
 }
 function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.045);update(dt);renderer.render(scene,camera)}
 $("start").onclick=()=>startStage(selectedStage);$("restart").onclick=()=>startStage(stageIndex);$("next-stage").onclick=()=>startStage(Math.min(stageIndex+1,LEVELS.length-1));$("home").onclick=toMenu;$("pause").onclick=pause;$("resume").onclick=resume;$("quit").onclick=toMenu;
