@@ -68,10 +68,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
 (()=>{'use strict';
   const $=id=>document.getElementById(id);
   const state={puzzles:[],byId:new Map(),category:'全部',query:'',deathOnly:false,favOnly:false,visible:24,selected:null,active:null,role:null,answers:null,ticker:null,toastTimer:null};
+  const clockCache=new Map();
   const favorites=new Set(loadJson('midnightSoup:favs',[]));
   const solved=new Set(loadJson('midnightSoup:solved',[]));
   function loadJson(k,fallback){try{return JSON.parse(localStorage.getItem(k))||fallback}catch{return fallback}}
-  function saveSet(k,set){localStorage.setItem(k,JSON.stringify([...set]))}
+  function saveSet(k,set){try{localStorage.setItem(k,JSON.stringify([...set]))}catch{}}
   function el(tag,cls,txt){const x=document.createElement(tag);if(cls)x.className=cls;if(txt!=null)x.textContent=String(txt);return x}
   function tell(msg){const node=$('toast');node.textContent=msg;node.classList.add('show');clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>node.classList.remove('show'),2600)}
   function labels(p){let arr=[p.category];if(p.death)arr.push('死亡');return arr}
@@ -88,8 +89,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
   async function decryptVault(pass){const r=await fetch('./vault.json',{cache:'no-store'});if(!r.ok)throw new Error('密钥文件读取失败');const blob=await r.json();const raw=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:bytes(blob.salt),iterations:blob.iterations,hash:'SHA-256'},raw,{name:'AES-GCM',length:256},false,['decrypt']);const result=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(blob.iv)},key,bytes(blob.ciphertext));return JSON.parse(new TextDecoder().decode(result))}
   async function unlock(){const code=$('hostCode').value.trim();if(!code){$('authError').textContent='请填写主持人密钥。';return}const btn=$('unlockHost');btn.disabled=true;btn.textContent='正在安全解锁…';$('authError').textContent='';try{state.answers=await decryptVault(code);if(!state.answers||!state.answers[state.selected.id])throw new Error('invalid');startGame(state.selected,'host')}catch(e){$('authError').textContent=e.message==='密钥文件读取失败'?'题库文件暂时不可用，请稍后重试。':'密钥错误，无法查看汤底。';state.answers=null}finally{btn.disabled=false;btn.textContent='解锁主持人视角';$('hostCode').value=''}}
   function clockKey(id){return 'midnightSoup:clock:'+id}
-  function getClock(id){try{const raw=sessionStorage.getItem(clockKey(id));if(raw){const x=JSON.parse(raw);if(x.started&&x.started<=Date.now()+1000)return x}}catch{}const fresh={started:Date.now(),firstRead:null,secondRead:null,count:0};sessionStorage.setItem(clockKey(id),JSON.stringify(fresh));return fresh}
-  function patchClock(id,patch){const x={...getClock(id),...patch};sessionStorage.setItem(clockKey(id),JSON.stringify(x));return x}
+  function getClock(id){try{const raw=sessionStorage.getItem(clockKey(id));if(raw){const x=JSON.parse(raw);if(x.started&&x.started<=Date.now()+1000){clockCache.set(id,x);return x}}}catch{}if(clockCache.has(id))return clockCache.get(id);const fresh={started:Date.now(),firstRead:null,secondRead:null,count:0};clockCache.set(id,fresh);try{sessionStorage.setItem(clockKey(id),JSON.stringify(fresh))}catch{}return fresh}
+  function patchClock(id,patch){const x={...getClock(id),...patch};clockCache.set(id,x);try{sessionStorage.setItem(clockKey(id),JSON.stringify(x))}catch{}return x}
   function remain(until){return Math.max(0,Math.ceil((until-Date.now())/1000))}
   function format(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
   function renderClock(){if(!state.active)return;const p=state.active,c=getClock(p.id),left1=remain(c.started+240000);const b1=$('hint1Button'),b2=$('hint2Button');if(c.firstRead){$('hint1Text').textContent=p.hint1;b1.textContent='✓ 第一条线索已公开';b1.disabled=true}else{$('hint1Text').textContent='推理一段时间后，第一条线索才会出现。';b1.disabled=left1>0;b1.textContent=left1>0?'🔒 '+format(left1)+' 后可查看':'揭开第一条提示'}
