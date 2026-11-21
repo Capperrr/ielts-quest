@@ -127,6 +127,11 @@ select{color-scheme:light}
 
 .error-row .error-kind{grid-column:1/-1!important;background:#edf4f6;color:#2a5467;font-size:12px;font-weight:750}
 @media(max-width:580px){.error-row .error-kind{grid-column:auto!important}}
+
+.mode-guide{margin:14px 0 0;padding:11px 13px;background:#e8f6f2;border:1px solid #cce7df;border-left:3px solid #138c7f;border-radius:7px;color:#385666;display:flex;flex-direction:column;gap:5px}
+.mode-guide strong{font-size:12px;color:#15796e}.mode-guide span{font-size:12px;line-height:1.55}
+#task1Mode{background:#f0fbf7;color:#135f58;font-weight:800;border-color:#85c7bb}
+[hidden]{display:none!important}
 </style>
 </head>
 <body><main class="wrap">
@@ -136,8 +141,10 @@ select{color-scheme:light}
 <section class="panel"><h2><span class="number">01</span>考生与任务信息</h2><div class="grid">
 <label class="field"><span>学生姓名</span><input id="name" maxlength="35" placeholder="例如：陈同学"></label>
 <label class="field"><span>作文类型</span><select id="task"><option value="task1">Task 1 · 小作文</option><option value="task2">Task 2 · 大作文</option></select></label>
-<label class="field full"><span>题目、图表类型或备注（选填）</span><textarea id="prompt" rows="2" placeholder="动态图 / 静态图 / 地图 / 流程图，或 Task 2 题目"></textarea></label>
-</div><p class="hint">评分仍由教师判断；下方的本地规则初筛仅提供初步语言检查，不能替代人工阅卷。</p></section>
+<label class="field" id="task1ModeField"><span>Task 1 图表分类（必选）</span><select id="task1Mode"><option value="">请选择图表分类</option><option value="dynamic">动态图 · 跨时间变化</option><option value="static">静态图 · 单时间点比较</option><option value="other">地图 / 流程图 · 其他任务</option></select></label>
+<label class="field" id="chartTypeField"><span>具体图表形式</span><select id="chartType"><option value="">请先选图表分类</option></select></label>
+<label class="field full"><span>题目及备注（选填）</span><textarea id="prompt" rows="2" placeholder="动态图 / 静态图 / 地图 / 流程图，或 Task 2 题目"></textarea></label>
+</div><div class="mode-guide" id="modeGuide"><strong>分类不同，批改重点不同</strong><span id="modeGuideText">动态图主要看趋势、变化幅度、峰值、时间；静态图主要看最值、相似值、倍数、类别分组。</span></div><p class="hint">评分仍由教师判断；下方的本地规则初筛仅提供初步语言检查，不能替代人工阅卷。</p></section>
 <section class="panel auto-check-panel" id="local-review">
 <h2><span class="number">02</span>粘贴作文 · 本地规则初筛</h2>
 <p class="hint">把学生的完整英文作文粘贴进来，点击检查。系统会尝试识别常见主谓一致、三单、情态动词、词形、介词搭配及部分拼写疑点；标点提示自动合并并排在最后。结果仍需教师确认。</p>
@@ -249,12 +256,55 @@ for(const type of ["task1","task2"]){
 
 const FOUR_ESSAY_INSIGHTS={"task1":{"T":{"good":[["关键年份和峰值判断准确","能够识别关键年份、峰值与主要转折点"]],"bad":[["国家排名与原图不符","Overview 中的排名或国家间高低关系与原图不一致","核对各国在关键年份的数值后重写排名判断"],["起止值或幅度错误","某些年份的数值、变化幅度或对应单位与原图不一致","逐一标注起点、终点、数值和单位后重新核实"],["峰值年份或时间范围错误","对峰值出现时间、下降起点或时间跨度的判断不准确","确定转折年份并重新划分变化时段"],["综述缺乏数据支撑","能够概括趋势，但主体段缺少必要的起止数值与直接比较","为每个主要趋势加入关键数值作为证据"],["Overview 与主体矛盾","综述的排名或变化判断与主体段具体信息相互矛盾","逐句核对 Overview 与主体数据是否一致"]]},"C":{"good":[["两组数据分段合理","能够将相似走势或相关类别放在一起比较"]],"bad":[["重复概括但缺少细节","结尾重复概括走势而未提供有意义的主体信息","把冗余句子改写为关键数字与比较"],["衔接词与实际关系不符","In contrast 等衔接词未反映前后真正的比较或转折","先判断逻辑关系，再改写连接方式"]]},"L":{"good":[["趋势词自然丰富","能够恰当使用 rose steadily、fell gradually 和 reached a peak"]],"bad":[["词性或选词错误","单词拼写正确，但在上下文中的词性或词义不正确","区分选词错误和拼写错误，对照词性与固定搭配修改"],["趋势搭配不自然","变化词、名词和副词组合不准确，影响表意","练习 rose sharply、a sharp rise、an increase in 等表达"]]},"G":{"good":[],"bad":[["图表历史数据时态不稳","描述过去的数据时，谓语时态使用不够准确","标注年份并逐句核对谓语动词"],["主谓一致与指代问题","emissions、the percentage 或 the figure 的谓语搭配有误","圈出中心主语并检查单复数与对应谓语"],["句子必要成分缺失","一些句子缺少必要主谓或比较对象，导致句子不完整","逐句核对主谓和必要比较结构"]]}},"task2":{"T":{"good":[],"bad":[["论据与论点关联较弱","虽然提到相关内容，但未解释论据如何支持中心论点","补充作用机制并回扣论点"]]},"C":{"good":[],"bad":[["句间存在推理跳跃","相邻句子之间的原因和影响关系尚未解释完整","补充因果链中间环节"]]},"L":{"good":[],"bad":[["单词拼写正确但用词有误","词汇虽存在，但词义或搭配不符合实际语境","分别检查拼写、词义与搭配"]]},"G":{"good":[],"bad":[["复杂句遗漏成分","从句或主句缺少必要主谓等结构","拆分主从句并检查核心成分"]]}}};
 for(const type of ["task1","task2"]){for(const key of ["T","C","L","G"]){BANK[type][key].good.push(...FOUR_ESSAY_INSIGHTS[type][key].good);BANK[type][key].bad.push(...FOUR_ESSAY_INSIGHTS[type][key].bad);}}
+const TASK1_SUBTYPE_BANK={"dynamic":{"T":{"good":[["总体变化趋势抓得准","Overview 能抓住总体升降、共同变化和主要差异"],["关键年份与峰值判断准确","能够识别重要转折年份、最高点和最低点"]],"bad":[["未概括时间变化","Overview 只列排名，没有总结不同时间段的总体趋势","先提炼主要上升、下降和稳定走势，再写总体概括"],["峰值或时间阶段错误","峰值年份、趋势转折或下降起点判断不准确","找出关键年份再重写对应变化"],["变化幅度与终值混淆","increase by、increase to 与 increase from...to... 的含义混淆","标出起点、终点和变化量，再选择对应介词"],["缺少关键年份的数据对比","只有各条线的描述，缺少重要年份的组间对比","补充起点、终点与关键转折点的横向比较"]]},"C":{"good":[["按变化趋势组织主体","能够将走势相近的国家或类别分组比较"]],"bad":[["变化阶段呈现顺序混乱","年份跳跃且缺乏清晰的先后逻辑","按分组与时间顺序组织描述"]]},"L":{"good":[["趋势与幅度词使用准确","能够正确使用 rose sharply、fell gradually、remained stable 等词组"]],"bad":[["变化介词搭配不准确","描述增幅、起点或终点时混用 by、from 和 to","使用同组数据练习从起点到终点和增幅表达"]]},"G":{"good":[["动态图时态准确","能根据已结束的历史年份正确使用过去时"]],"bad":[["动态图时态不稳定","描述历史数据时未能保持恰当的过去时","逐句核对动词与图表时间的一致性"]]}},"static":{"T":{"good":[["综述突出最值与差异","Overview 能概括主要高低排名和显著的类别差距"],["相似值比较明确","能够将数据接近的类别进行有效分组"],["倍数与比例关系准确","能够准确比较倍数、比例和百分比"]],"bad":[["缺少最高与最低类别","Overview 未指出最突出的类别特征","先找最高值、最低值及主要分布差异"],["相似数值比较不足","主体段逐项罗列而缺乏相似值比较","把相似类别归组后进行横向对比"],["倍数或比例关系不准确","倍数、比例及比较基准理解错误","核对分母和比较对象后重写"],["静态图误用上升下降描述","单一时间点数据被误写成随时间上升或下降","用占比、排名和差距描述，避免推断不存在的时间变化"]]},"C":{"good":[["按最值与相似性分组","主体段依照最高最低或相近类别自然分组"]],"bad":[["分类罗列缺乏对比","顺序列出全部数字，缺少比较关系","根据相似性和高低差距重新分组"]]},"L":{"good":[["比较与占比词恰当","能够准确使用 accounted for、twice as high as、similar to 等表达"]],"bad":[["比例与倍数搭配不准确","部分占比或倍数表达不自然","专项练习 the proportion of、twice as ... as 等句型"]]},"G":{"good":[["比较句语法准确","较准确使用 than、as...as 和倍数结构"]],"bad":[["比较结构不完整","比较句缺少合适的比较对象或必要连接结构","标出比较双方，补全 than 等结构"]]}},"other":{"T":{"good":[["主要阶段或地图变化清楚","能够识别流程重要步骤或地图主要空间变化"]],"bad":[["关键步骤或空间变化遗漏","部分重要流程阶段或地图改动未被完整呈现","核对原图后补全关键步骤或主要空间变化"]]},"C":{"good":[["流程与空间组织清晰","能按时间步骤或空间区域组织描述"]],"bad":[["阶段或方位顺序不清","流程或地图描述顺序存在跳跃","按正确步骤或空间区域重新排序"]]},"L":{"good":[["步骤与位置词准确","能够使用恰当的流程动词和位置表达"]],"bad":[["方位或过程表达不准确","方位描述或过程动词使用不当","对照原图订正关键方位与动作词"]]},"G":{"good":[],"bad":[["流程被动结构不稳","流程描述中的被动语态或动词形式不正确","练习 be + past participle 的被动表达"]]}}};
+for(const m of ["dynamic","static","other"])for(const k of ["T","C","L","G"])for(const mood of ["good","bad"]){BANK.task1[k][mood].push(...TASK1_SUBTYPE_BANK[m][k][mood].map(item=>[item[0],item[1],item[2]||null,m]));}
+
+const SUBTYPE_CHARTS={
+ dynamic:["折线图（跨年份）","柱状图（跨年份）","饼图（跨年份）","表格（跨年份）","时间序列混合图"],
+ static:["柱状图（单时点）","饼图（单时点）","表格（单时点）","其他单时点对比"],
+ other:["地图","流程图"]
+};
+const SUBTYPE_FACTS={
+ dynamic:["趋势方向错误","峰值年份或时间范围错误","起止数值或变化幅度错误","关键年份比较错误","Overview 与主体变化描述矛盾"],
+ static:["最高或最低类别判断错误","相似值比较不准确","倍数或比例判断错误","类别排名错误","静态图使用了不存在的时间趋势"],
+ other:["地图主要变化错误","流程关键阶段遗漏","步骤顺序错误","空间位置描述错误"]
+};
+const RUBRIC_EXCLUDES={
+ dynamic:new Set(["静态图比较类型丰富","相似值与倍数对比不足"]),
+ static:new Set(["动态图综述提炼完整","按时间梳理清晰","关键年份和峰值判断准确","峰值年份或时间范围错误","图表历史数据时态不稳","趋势词自然丰富","主动替换升降表达","图表替换表达更灵活","趋势词单一"]),
+ other:new Set(["动态图综述提炼完整","静态图比较类型丰富","按时间梳理清晰","关键年份和峰值判断准确","峰值年份或时间范围错误","图表历史数据时态不稳","趋势词自然丰富","主动替换升降表达","图表替换表达更灵活","相似值与倍数对比不足"])
+};
+function visibleOption(row){
+ if($("task").value!=="task1")return true;
+ const mode=$("task1Mode").value;
+ return row[3]?row[3]===mode:!mode||!RUBRIC_EXCLUDES[mode].has(row[0]);
+}
+function refreshSubtype(){
+ const isTask1=$("task").value==="task1",mode=$("task1Mode").value;
+ for(const id of ["task1ModeField","chartTypeField","modeGuide"])$(id).hidden=!isTask1;
+ function populate(id,values,placeholder){
+  const sel=$(id);sel.textContent="";
+  const first=document.createElement("option");first.value="";first.textContent=placeholder;sel.append(first);
+  (values||[]).forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;sel.append(option);});
+ }
+ populate("chartType",SUBTYPE_CHARTS[mode],mode?"可选择具体图表形式":"请先选图表类别");
+ populate("factIssue",SUBTYPE_FACTS[mode],"无 / 未核查");
+ $("modeGuideText").textContent=mode==="dynamic"?"动态图：看整体趋势、峰值、时间区间、变化幅度及关键年份比较；跨时间的柱状图和饼图也属于动态图。":mode==="static"?"静态图：看最高最低值、相似数据、倍数、比例及组间差异；没有时间维度时不要写升降趋势。":mode==="other"?"地图／流程图：单独按空间变化、步骤顺序和过程表达批改。":"先选择动态图或静态图；地图、流程图另列。";
+}
+function onSubtypeChange(){
+ const preserved={},picked=new Set([...document.querySelectorAll(".chip[aria-pressed='true']")].map(x=>x.dataset.id));
+ for(const key of KEYS)preserved[key]={score:$("score-"+key)?.value||"",note:$("note-"+key)?.value||""};
+ clearFactRecord();render();
+ for(const key of KEYS){$("score-"+key).value=preserved[key].score;$("note-"+key).value=preserved[key].note;}
+ for(const btn of document.querySelectorAll(".chip"))if(picked.has(btn.dataset.id))btn.setAttribute("aria-pressed","true");
+ updateScore();$("status").textContent="已切换 Task 1 类别，保留已填写的评分和仍适用的观察项；事实问题列表已更新。";
+}
 const KEYS=["T","C","L","G"],SELECTED={};
 const countText={lt:"少于5次（<5）",eq:"恰好5次（=5）",gt:"多于5次（>5）"};
 const scores=["",...Array.from({length:18},(_,i)=>(i+2)/2).filter(n=>n<=9).map(n=>n.toFixed(1))];
 function getScores(){return KEYS.map(k=>{let v=$("score-"+k).value;return v===""?null:Number(v);});}
 function roundHalf(n){return Math.floor((n+1e-9)*2)/2;}
-function toggleFactBox(){ $("task1Facts").hidden=$("task").value!=="task1"; }
+function toggleFactBox(){ $("task1Facts").hidden=$("task").value!=="task1";refreshSubtype(); }
 function render(){
  const task=$("task").value,root=$("criteria");root.textContent="";
  KEYS.forEach(k=>{
@@ -267,6 +317,7 @@ function render(){
    let title=document.createElement("div");title.className="group-title";title.textContent=mode==="good"?"✦ 优点":"⚡ 不足";box.append(title);
    let chips=document.createElement("div");chips.className="chips";
    data[mode].forEach((row,i)=>{
+    if(!visibleOption(row))return;
     let button=document.createElement("button");button.type="button";button.className="chip";button.textContent=row[0];button.title=row[1];
     button.setAttribute("aria-pressed","false");button.dataset.id=k+":"+mode+":"+i;
     button.addEventListener("click",()=>button.setAttribute("aria-pressed",button.getAttribute("aria-pressed")==="true"?"false":"true"));chips.append(button);
@@ -522,11 +573,13 @@ function addError(){
 }
 function generateReport(){
  let name=$("name").value.trim();if(!name){$("name").focus();$("status").textContent="请先填写学生姓名";return null;}
+ if($("task").value==="task1"&&!$("task1Mode").value){$("task1Mode").focus();$("status").textContent="请先选 Task 1 静态图或动态图。";return null;}
  if(!updateScore()){$("status").textContent="请先选择四项分数";return null;}
  if($("spelling").value==="gt"&&selected("L","good").some(item=>/几乎没有拼写错误|本篇拼写问题较少/.test(item[0]))){
    $("status").textContent="拼写记录相互矛盾：勾选了拼写很少，但数量选择为多于5次。请先核对。";return null;
  }
  let task=$("task").value,scores=getScores(),s="【学生姓名】："+name+"\n【作文类型】："+(task==="task1"?"Task 1（小作文）":"Task 2（大作文）");
+ if(task==="task1"){s+="\n【Task 1 分类】："+({dynamic:"动态图",static:"静态图",other:"地图／流程图"}[$("task1Mode").value]);if($("chartType").value)s+="\n【具体图表】："+$("chartType").value;}
  if($("prompt").value.trim())s+="\n【题目/图表】："+$("prompt").value.trim();
  if($("essay").value.trim())s+="\n【英文词数（本地估算）】："+words($("essay").value);
  s+="\n\n";
@@ -571,7 +624,7 @@ function generate(){
 function press(id){let b=document.querySelector('[data-id="'+id+'"]');if(b)b.setAttribute("aria-pressed","true");}
 function clearFactRecord(){["factIssue","factStudent","factVerified"].forEach(id=>$(id).value="");$("factStatus").value="已与原图核对";}
 function sample(kind){clearFactRecord();
- $("task").value=kind;render();$("name").value="示例学生";$("prompt").value=kind==="task1"?"动态图 · 时间变化对比":"观点类 · 让步反驳";
+ $("task").value=kind;$("task1Mode").value=kind==="task1"?"dynamic":"";render();$("name").value="示例学生";$("prompt").value=kind==="task1"?"动态图 · 时间变化对比":"观点类 · 让步反驳";
  $("misspellings").value="";$("errors").textContent="";$("spelling").value="lt";$("grammar").value="lt";
  if(kind==="task1"){
   ["T","C","L","G"].forEach(k=>$("score-"+k).value="6.0");
@@ -588,6 +641,7 @@ function sample(kind){clearFactRecord();
  updateScore();generate();
  $("status").textContent="演示已填入：错词与错句留空，需根据学生真实作文填写。";
 }
+$("task1Mode").addEventListener("change",onSubtypeChange);
 $("task").addEventListener("change",()=>{
  clearFactRecord();updateEssayStats();lastIssues=[];appliedIssues.clear();
  $("reviewBox").hidden=true;$("issueCount").textContent="—";render();
@@ -599,7 +653,7 @@ $("sample1").addEventListener("click",()=>sample("task1"));
 $("sample2").addEventListener("click",()=>sample("task2"));
 $("clear").addEventListener("click",()=>{
  ["name","prompt","misspellings","overview","homework","result","essay"].forEach(k=>$(k).value="");lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";updateEssayStats();
- $("spelling").value="";$("grammar").value="";$("errors").textContent="";clearFactRecord();$("task").value="task1";
+ $("spelling").value="";$("grammar").value="";$("errors").textContent="";clearFactRecord();$("task").value="task1";$("task1Mode").value="";
  render();$("status").textContent="已清空，不会自动保存学生数据";
 });
 $("result").addEventListener("input",()=>$("printout").textContent=$("result").value);
