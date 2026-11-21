@@ -523,8 +523,12 @@ function addError(){
 function generateReport(){
  let name=$("name").value.trim();if(!name){$("name").focus();$("status").textContent="请先填写学生姓名";return null;}
  if(!updateScore()){$("status").textContent="请先选择四项分数";return null;}
+ if($("spelling").value==="gt"&&selected("L","good").some(item=>/几乎没有拼写错误|本篇拼写问题较少/.test(item[0]))){
+   $("status").textContent="拼写记录相互矛盾：勾选了拼写很少，但数量选择为多于5次。请先核对。";return null;
+ }
  let task=$("task").value,scores=getScores(),s="【学生姓名】："+name+"\n【作文类型】："+(task==="task1"?"Task 1（小作文）":"Task 2（大作文）");
  if($("prompt").value.trim())s+="\n【题目/图表】："+$("prompt").value.trim();
+ if($("essay").value.trim())s+="\n【英文词数（本地估算）】："+words($("essay").value);
  s+="\n\n";
  KEYS.forEach((k,i)=>{
   let label=k==="T"?(task==="task1"?"TA":"TR"):k==="C"?"CC":k==="L"?"LR":"GRA";
@@ -584,7 +588,11 @@ function sample(kind){clearFactRecord();
  updateScore();generate();
  $("status").textContent="演示已填入：错词与错句留空，需根据学生真实作文填写。";
 }
-$("task").addEventListener("change",()=>{clearFactRecord();updateEssayStats();lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";render();$("status").textContent="已切换作文类型，分项评分已清空";});
+$("task").addEventListener("change",()=>{
+ clearFactRecord();updateEssayStats();lastIssues=[];appliedIssues.clear();
+ $("reviewBox").hidden=true;$("issueCount").textContent="—";render();
+ $("status").textContent="已切换作文类型并清空分项评分；原文和错句记录仍保留。换学生时请使用「清空」，避免混用数据。";
+});
 $("add").addEventListener("click",addError);
 $("generate").addEventListener("click",generate);
 $("sample1").addEventListener("click",()=>sample("task1"));
