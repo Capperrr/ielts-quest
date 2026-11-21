@@ -115,6 +115,15 @@ select{color-scheme:light}
 .punctuation-category>.review-category-head{cursor:pointer;margin:8px 0;list-style:none;background:#f0f5f6;color:#6e7e86}
 .punctuation-category>.review-category-head::-webkit-details-marker{display:none}
 .punctuation-category .issue{margin-bottom:8px}
+
+[hidden]{display:none!important}
+.fact-box{background:#f6fafb;border:1px solid #d7e5e8;border-radius:9px;margin-top:19px;padding:16px}
+.fact-title{font-size:14px;font-weight:850;color:#244c5a;margin-bottom:9px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fact-title span{font-size:11px;font-weight:650;color:#687f8b}
+.fact-box .grid{margin-top:13px}
+.fact-box .field span{font-size:12px}
+.fact-box textarea{min-height:85px;background:#fff}
+@media(max-width:580px){.fact-box{padding:12px}}
 </style></head>
 <body><main class="wrap">
 <nav><div class="identity"><span class="identity-mark">W</span><div class="brandtext"><strong>Writing Assessment Studio</strong><small>IELTS · TEACHER PORTAL</small></div></div><a href="../">← 返回课堂反馈助手</a></nav>
@@ -143,7 +152,15 @@ select{color-scheme:light}
 </div>
 </section>
 <section class="panel"><h2><span class="number">03</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA、Task 2 使用 TR。新增数据事实核对、词性与拼写区分、时态与主谓一致等细分评价；仅勾选真实出现的问题。</p>
-<div class="crit-grid" id="criteria"></div></section>
+<div class="crit-grid" id="criteria"></div><div class="fact-box" id="task1Facts">
+<div class="fact-title">Task 1 · 图表事实核对 <span>仅由教师依据原图填写</span></div>
+<p class="hint">描述排名、数值、年份或峰值是否准确，属于 TA。不要把事实问题当作拼写或语法错误。</p>
+<div class="grid">
+<label class="field"><span>事实问题类型</span><select id="factIssue"><option value="">无 / 未核查</option><option>国家排名／最值不符</option><option>起止数值／变化幅度错误</option><option>峰值年份／时间范围错误</option><option>趋势方向错误</option><option>单位与数值对应错误</option><option>Overview 与主体描述矛盾</option><option>缺少必要数据支撑</option></select></label>
+<label class="field"><span>核对状态</span><select id="factStatus"><option value="已与原图核对">已与原图核对</option><option value="待核对">待核对，不作定论</option></select></label>
+<label class="field"><span>学生原文的事实描述</span><textarea id="factStudent" rows="2" placeholder="摘录本篇作文中真实出现的排名／数据问题"></textarea></label>
+<label class="field"><span>原图核实后的正确信息</span><textarea id="factVerified" rows="2" placeholder="仅在核实图表后填写；未核实时留空"></textarea></label>
+</div></div></section>
 <section class="panel"><h2><span class="number">04</span>语言错误与修改记录</h2>
 <div class="count-grid">
 <label class="count-card"><strong>LR · 拼写错误数量</strong><select id="spelling"><option value="">未统计 / 不填写</option><option value="lt">少于 5 次（&lt;5）</option><option value="eq">恰好 5 次（=5）</option><option value="gt">多于 5 次（&gt;5）</option></select><small>数次错误并不自动决定 LR 分数。</small></label>
@@ -233,6 +250,7 @@ const countText={lt:"少于5次（<5）",eq:"恰好5次（=5）",gt:"多于5次�
 const scores=["",...Array.from({length:18},(_,i)=>(i+2)/2).filter(n=>n<=9).map(n=>n.toFixed(1))];
 function getScores(){return KEYS.map(k=>{let v=$("score-"+k).value;return v===""?null:Number(v);});}
 function roundHalf(n){return Math.floor((n+1e-9)*2)/2;}
+function toggleFactBox(){ $("task1Facts").hidden=$("task").value!=="task1"; }
 function render(){
  const task=$("task").value,root=$("criteria");root.textContent="";
  KEYS.forEach(k=>{
@@ -254,7 +272,7 @@ function render(){
   let area=document.createElement("textarea");area.id="note-"+k;area.rows=2;area.placeholder="例如：具体的一处表现或需要改进的问题";box.append(area);
   root.append(box);
  });
- updateScore();$("result").value="";$("printout").textContent="";
+ updateScore();toggleFactBox();$("result").value="";$("printout").textContent="";
 }
 function selected(k,mode){
  return BANK[$("task").value][k][mode].filter((row,i)=>{
@@ -509,6 +527,15 @@ function generateReport(){
   s+=(i+1)+". "+label+"-"+scores[i].toFixed(1)+"\n"+(text.length?text.join("；")+"。":"尚未填写该项具体评语。")+"\n";
  });
  s+="\n【本篇得分】："+$("total").textContent+"\n";
+ if(task==="task1"){
+ const issue=$("factIssue").value,original=$("factStudent").value.trim(),verified=$("factVerified").value.trim(),status=$("factStatus").value;
+ if(issue||original||verified){
+  s+="\n【图表事实核对（TA）】：\n";
+  if(issue)s+="问题类别："+issue+"；核对状态："+status+"\n";
+  if(original)s+="学生原文："+original+"\n";
+  if(verified)s+="原图核实："+verified+"\n";
+ }
+}
  if($("overview").value.trim())s+="\n【整体评价】："+$("overview").value.trim()+"\n";
  if($("misspellings").value.trim())s+="\n【本篇实际拼写错误】：\n"+$("misspellings").value.trim()+"\n";
  let errors=[...$("errors").children].map(e=>[...e.querySelectorAll("input")].map(x=>x.value.trim())).filter(x=>x.some(Boolean));
@@ -524,7 +551,8 @@ function generate(){
  $("result").value=report;$("printout").textContent=report;$("status").textContent="批改报告已生成，可编辑并复制";
 }
 function press(id){let b=document.querySelector('[data-id="'+id+'"]');if(b)b.setAttribute("aria-pressed","true");}
-function sample(kind){
+function clearFactRecord(){["factIssue","factStudent","factVerified"].forEach(id=>$(id).value="");$("factStatus").value="已与原图核对";}
+function sample(kind){clearFactRecord();
  $("task").value=kind;render();$("name").value="示例学生";$("prompt").value=kind==="task1"?"动态图 · 时间变化对比":"观点类 · 让步反驳";
  $("misspellings").value="";$("errors").textContent="";$("spelling").value="lt";$("grammar").value="lt";
  if(kind==="task1"){
@@ -542,14 +570,14 @@ function sample(kind){
  updateScore();generate();
  $("status").textContent="演示已填入：错词与错句留空，需根据学生真实作文填写。";
 }
-$("task").addEventListener("change",()=>{updateEssayStats();lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";render();$("status").textContent="已切换作文类型，分项评分已清空";});
+$("task").addEventListener("change",()=>{clearFactRecord();updateEssayStats();lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";render();$("status").textContent="已切换作文类型，分项评分已清空";});
 $("add").addEventListener("click",addError);
 $("generate").addEventListener("click",generate);
 $("sample1").addEventListener("click",()=>sample("task1"));
 $("sample2").addEventListener("click",()=>sample("task2"));
 $("clear").addEventListener("click",()=>{
  ["name","prompt","misspellings","overview","homework","result","essay"].forEach(k=>$(k).value="");lastIssues=[];appliedIssues.clear();$("reviewBox").hidden=true;$("issueCount").textContent="—";updateEssayStats();
- $("spelling").value="";$("grammar").value="";$("errors").textContent="";$("task").value="task1";
+ $("spelling").value="";$("grammar").value="";$("errors").textContent="";clearFactRecord();$("task").value="task1";
  render();$("status").textContent="已清空，不会自动保存学生数据";
 });
 $("result").addEventListener("input",()=>$("printout").textContent=$("result").value);
