@@ -142,7 +142,7 @@ select{color-scheme:light}
  <button class="btn primary" type="button" id="applyIssues">加入批改记录（已确认项目）</button>
 </div>
 </section>
-<section class="panel"><h2><span class="number">03</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA；Task 2 使用 TR。选择每项分数，再选择对应优点和不足，也可填写自己的评语。</p>
+<section class="panel"><h2><span class="number">03</span>评分标准与表现记录</h2><p class="hint">Task 1 使用 TA、Task 2 使用 TR。新增数据事实核对、词性与拼写区分、时态与主谓一致等细分评价；仅勾选真实出现的问题。</p>
 <div class="crit-grid" id="criteria"></div></section>
 <section class="panel"><h2><span class="number">04</span>语言错误与修改记录</h2>
 <div class="count-grid">
@@ -226,6 +226,8 @@ for(const type of ["task1","task2"]){
  }
 }
 
+const FOUR_ESSAY_INSIGHTS={"task1":{"T":{"good":[["关键年份和峰值判断准确","能够识别关键年份、峰值与主要转折点"]],"bad":[["国家排名与原图不符","Overview 中的排名或国家间高低关系与原图不一致","核对各国在关键年份的数值后重写排名判断"],["起止值或幅度错误","某些年份的数值、变化幅度或对应单位与原图不一致","逐一标注起点、终点、数值和单位后重新核实"],["峰值年份或时间范围错误","对峰值出现时间、下降起点或时间跨度的判断不准确","确定转折年份并重新划分变化时段"],["综述缺乏数据支撑","能够概括趋势，但主体段缺少必要的起止数值与直接比较","为每个主要趋势加入关键数值作为证据"],["Overview 与主体矛盾","综述的排名或变化判断与主体段具体信息相互矛盾","逐句核对 Overview 与主体数据是否一致"]]},"C":{"good":[["两组数据分段合理","能够将相似走势或相关类别放在一起比较"]],"bad":[["重复概括但缺少细节","结尾重复概括走势而未提供有意义的主体信息","把冗余句子改写为关键数字与比较"],["衔接词与实际关系不符","In contrast 等衔接词未反映前后真正的比较或转折","先判断逻辑关系，再改写连接方式"]]},"L":{"good":[["趋势词自然丰富","能够恰当使用 rose steadily、fell gradually 和 reached a peak"]],"bad":[["词性或选词错误","单词拼写正确，但在上下文中的词性或词义不正确","区分选词错误和拼写错误，对照词性与固定搭配修改"],["趋势搭配不自然","变化词、名词和副词组合不准确，影响表意","练习 rose sharply、a sharp rise、an increase in 等表达"]]},"G":{"good":[],"bad":[["图表历史数据时态不稳","描述过去的数据时，谓语时态使用不够准确","标注年份并逐句核对谓语动词"],["主谓一致与指代问题","emissions、the percentage 或 the figure 的谓语搭配有误","圈出中心主语并检查单复数与对应谓语"],["句子必要成分缺失","一些句子缺少必要主谓或比较对象，导致句子不完整","逐句核对主谓和必要比较结构"]]}},"task2":{"T":{"good":[],"bad":[["论据与论点关联较弱","虽然提到相关内容，但未解释论据如何支持中心论点","补充作用机制并回扣论点"]]},"C":{"good":[],"bad":[["句间存在推理跳跃","相邻句子之间的原因和影响关系尚未解释完整","补充因果链中间环节"]]},"L":{"good":[],"bad":[["单词拼写正确但用词有误","词汇虽存在，但词义或搭配不符合实际语境","分别检查拼写、词义与搭配"]]},"G":{"good":[],"bad":[["复杂句遗漏成分","从句或主句缺少必要主谓等结构","拆分主从句并检查核心成分"]]}}};
+for(const type of ["task1","task2"]){for(const key of ["T","C","L","G"]){BANK[type][key].good.push(...FOUR_ESSAY_INSIGHTS[type][key].good);BANK[type][key].bad.push(...FOUR_ESSAY_INSIGHTS[type][key].bad);}}
 const KEYS=["T","C","L","G"],SELECTED={};
 const countText={lt:"少于5次（<5）",eq:"恰好5次（=5）",gt:"多于5次（>5）"};
 const scores=["",...Array.from({length:18},(_,i)=>(i+2)/2).filter(n=>n<=9).map(n=>n.toFixed(1))];
