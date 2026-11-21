@@ -124,7 +124,7 @@ select{color-scheme:light}
 .fact-box .field span{font-size:12px}
 .fact-box textarea{min-height:85px;background:#fff}
 @media(max-width:580px){.fact-box{padding:12px}}
-</style></head>
+</head>
 <body><main class="wrap">
 <nav><div class="identity"><span class="identity-mark">W</span><div class="brandtext"><strong>Writing Assessment Studio</strong><small>IELTS · TEACHER PORTAL</small></div></div><a href="../">← 返回课堂反馈助手</a></nav>
 <header class="hero"><div><span class="eyebrow">ASSESSMENT / WRITING / REVIEW</span><h1>雅思写作 <span>专业批改工作台</span></h1><p>面向教师的结构化写作评估：粘贴作文进行非 AI 规则初筛，人工确认语言问题，再记录四项成绩、典型错句与教学建议。报告可编辑、复制及打印。</p></div><div class="hero-label">PRIVATE · BROWSER ONLY</div></header>
@@ -168,7 +168,7 @@ select{color-scheme:light}
 </div>
 <p class="group-title">实际拼写错误（可选；不会预填其他学生错词）</p>
 <textarea id="misspellings" rows="3" placeholder="请填写本名学生真实出现的拼写：例如 错词 → 正确拼写；一行一组"></textarea>
-<p class="group-title">具体错句订正（可选）</p>
+<p class="group-title">具体错句与错误类型（可选）</p><p class="hint">原句需来自当前学生作文。请区分拼写与词义选用错误；数据事实错误属于 TA。</p>
 <div id="errors"></div><button type="button" class="btn" id="add">＋ 增加一条错句</button>
 <p class="group-title">整体评价 / 特别观察（可选）</p><textarea id="overview" rows="3" placeholder="例如：主要趋势抓取得不错，但同组数据仍可增加对比。"></textarea>
 <p class="group-title">课后任务（不填则使用已选不足匹配建议）</p><textarea id="homework" rows="3" placeholder="例如：范文学习 + 重写主体段1 + 复盘错句"></textarea>
@@ -478,6 +478,8 @@ function applyCheckedIssues(){
       if(!lines.includes(line))$("misspellings").value=current?current+"\n"+line:line;
    }else{
       const inputs=addError();
+      const kind=inputs[0].closest(".error-row").querySelector(".error-kind");
+      if(kind)kind.value=issue.type==="搭配"?"词汇搭配":issue.type==="标点"?"标点":issue.type==="拼写"?"拼写":"语法";
       const raw=$("essay").value.slice(issue.contextStart,issue.contextEnd);
       const offset=issue.start-issue.contextStart;
       const corrected=raw.slice(0,offset)+issue.suggestion+raw.slice(offset+issue.original.length);
@@ -506,11 +508,13 @@ $("clearEssay").addEventListener("click",()=>{
 
 function addError(){
  let row=document.createElement("div");row.className="error-row";
+ let kind=document.createElement("select");kind.className="error-kind";kind.setAttribute("aria-label","批改错误类型");
+ ["语法","词汇搭配","词性／词义","拼写","标点","数据事实（TA）","时间范围（TA）","论证逻辑（TR/CC）"].forEach(type=>{const opt=document.createElement("option");opt.value=type;opt.textContent="错误类型 · "+type;kind.append(opt);});
  let wrong=document.createElement("input");wrong.placeholder="学生实际错句";wrong.setAttribute("aria-label","错句");
  let right=document.createElement("input");right.placeholder="正确修改";right.setAttribute("aria-label","修改");
  let why=document.createElement("input");why.placeholder="错误原因（选填）";why.className="wide";why.setAttribute("aria-label","原因");
  let remove=document.createElement("button");remove.className="btn";remove.type="button";remove.textContent="× 删除";remove.addEventListener("click",()=>row.remove());
- row.append(wrong,right,why,remove);$("errors").append(row);return [wrong,right,why];
+ row.append(kind,wrong,right,why,remove);$("errors").append(row);return [wrong,right,why];
 }
 function generateReport(){
  let name=$("name").value.trim();if(!name){$("name").focus();$("status").textContent="请先填写学生姓名";return null;}
@@ -538,8 +542,14 @@ function generateReport(){
 }
  if($("overview").value.trim())s+="\n【整体评价】："+$("overview").value.trim()+"\n";
  if($("misspellings").value.trim())s+="\n【本篇实际拼写错误】：\n"+$("misspellings").value.trim()+"\n";
- let errors=[...$("errors").children].map(e=>[...e.querySelectorAll("input")].map(x=>x.value.trim())).filter(x=>x.some(Boolean));
- if(errors.length){s+="\n【典型语法及词汇错句】：\n";errors.forEach((e,i)=>s+=(i+1)+". "+(e[0]?"原句："+e[0]:"")+(e[1]?"；订正："+e[1]:"")+(e[2]?"；说明："+e[2]:"")+"\n");}
+ let errors=[...$("errors").children].map(row=>{
+ const kind=row.querySelector(".error-kind");
+ return {kind:kind?kind.value:"语法",parts:[...row.querySelectorAll("input")].map(x=>x.value.trim())};
+ }).filter(x=>x.parts.some(Boolean));
+ if(errors.length){
+  s+="\n【典型问题及订正】：\n";
+  errors.forEach((entry,i)=>{const e=entry.parts;s+=(i+1)+". ["+entry.kind+"] "+(e[0]?"原句："+e[0]:"")+(e[1]?"；订正："+e[1]:"")+(e[2]?"；说明："+e[2]:"")+"\n";});
+ }
  let homework=$("homework").value.trim();
  let advice=KEYS.flatMap(k=>selected(k,"bad").map(row=>row[2])).filter((v,i,a)=>v&&a.indexOf(v)===i).slice(0,4);
  if(homework)s+="\n【提升方法与作业】：\n"+homework;
